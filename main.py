@@ -12,6 +12,7 @@ from pytube import YouTube
 from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtWidgets import *
 from ytpd_beta import Ui_MainWindow as UiMainWindow
+from song_property import *
 
 
 def seconds_to_mmss(seconds):
@@ -73,8 +74,8 @@ class MainPage(QMainWindow, UiMainWindow):
         self.download_button.clicked.connect(self.download_button_click)
         self.download_path.clicked.connect(self.get_file_dir)
         # Get the desktop path, set folder name, full download path, set label.
-        self.download_folder_select.setText("Folder: ")
         self.download_dir = os.path.dirname(os.path.abspath(__file__))  # base no-selection download dir
+        self.download_folder_select.setText("Folder: ../{}".format([i for i in self.download_dir.split('/')][-1]))
 
 
 # Input url threading
@@ -206,6 +207,7 @@ def thread_download(args):
     try:
         video = YouTube(full_link)
         stream = video.streams.filter(only_audio=True, audio_codec="mp4a.40.2").first()
+        # could be strange to create new folder/path in multithread - no collision yet but maybe a source of a bug
         mp4_dir = os.path.join(download_path, "mp4")
         stream.download(mp4_dir)
         # convert generated mp4 files to mp3 -- problem with MacOS where mp4 is twice length of video
@@ -226,18 +228,21 @@ def thread_download(args):
 
 def thumbnail_download(directory, vid_url, vid_name):
     """Download video thumbnail and add to mp3 file"""
-    youtube_id = vid_url.partition("?v=")[2]
-    thumb_nail_download = f"https://img.youtube.com/vi/{youtube_id}/maxresdefault.jpg"
     file_jpg = f"{vid_name}.jpg"
     file_mp3 = f"{vid_name}.mp3"
 
-    x = requests.get(thumb_nail_download, stream=True)
-    with open(os.path.join(directory, file_jpg), 'wb') as f:
-        x.raw.decode_content=True
-        shutil.copyfileobj(x.raw, f)
+    # download thumbnail
+    # youtube_id = vid_url.partition("?v=")[2]
+    # thumb_nail_download = f"https://img.youtube.com/vi/{youtube_id}/maxresdefault.jpg"
+    # x = requests.get(thumb_nail_download, stream=True)
+    # with open(os.path.join(directory, file_jpg), 'wb') as f:
+    #     x.raw.decode_content=True
+    #     shutil.copyfileobj(x.raw, f)
 
-    with open(os.path.join(directory, file_jpg), 'rb') as img_file:
-        album = img_file.read()
+    # with open(os.path.join(directory, file_jpg), 'rb') as img_file:
+    #     album = img_file.read()
+
+    SONG_META_JSON = get_song_properties(vid_url)
 
     audio = MP3(os.path.join(directory, file_mp3), ID3=ID3)    
     audio.tags.add(
@@ -246,9 +251,13 @@ def thumbnail_download(directory, vid_url, vid_name):
             mime='image/jpeg', # image/jpeg or image/png
             type=3, # 3 is for the cover image
             desc=u'Cover',
-            data=album
+            data=SONG_META_JSON['artwork_url_fullres']
         )
     )
+    audio["TALB"] = TALB(encoding=3, text=SONG_META_JSON['album_name'])
+    audio["TPE1"] = TPE1(encoding=3, text=SONG_META_JSON['artist_name'])
+    audio["TIT2"] = TIT2(encoding=3, text=SONG_META_JSON['track_name'])
+    audio["TCON"] = TCON(encoding=3, text=SONG_META_JSON['primary_genre_name'])
     audio.save()
     print('hit')
     os.remove(os.path.join(directory, file_jpg))
