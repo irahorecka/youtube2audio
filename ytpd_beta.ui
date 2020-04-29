@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>827</width>
-    <height>498</height>
+    <width>825</width>
+    <height>504</height>
    </rect>
   </property>
   <property name="font">
@@ -30,9 +30,9 @@
    <widget class="QLabel" name="title_label">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>0</y>
-      <width>371</width>
+      <x>340</x>
+      <y>-10</y>
+      <width>131</width>
       <height>41</height>
      </rect>
     </property>
@@ -51,28 +51,15 @@
      <string notr="true">color: rgb(252, 1, 7)</string>
     </property>
     <property name="text">
-     <string notr="true">Turbo YouTube Playlist Downloader</string>
-    </property>
-   </widget>
-   <widget class="QListWidget" name="listWidget">
-    <property name="geometry">
-     <rect>
-      <x>520</x>
-      <y>40</y>
-      <width>281</width>
-      <height>301</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(255, 255, 255)</string>
+     <string notr="true">TurboTubeMp3</string>
     </property>
    </widget>
    <widget class="QLabel" name="enter_playlist_url_label">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>70</y>
-      <width>131</width>
+      <x>120</x>
+      <y>310</y>
+      <width>61</width>
       <height>21</height>
      </rect>
     </property>
@@ -85,27 +72,30 @@
      </font>
     </property>
     <property name="text">
-     <string>Enter playlist url:</string>
+     <string>Playlist URL</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="url_input">
     <property name="geometry">
      <rect>
-      <x>140</x>
-      <y>70</y>
-      <width>301</width>
-      <height>20</height>
+      <x>120</x>
+      <y>330</y>
+      <width>480</width>
+      <height>21</height>
      </rect>
     </property>
     <property name="styleSheet">
      <string notr="true">background-color: rgb(255, 255, 255)</string>
     </property>
+    <property name="alignment">
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+    </property>
    </widget>
    <widget class="QPushButton" name="url_load_button">
     <property name="geometry">
      <rect>
-      <x>370</x>
-      <y>100</y>
+      <x>30</x>
+      <y>330</y>
       <width>71</width>
       <height>23</height>
      </rect>
@@ -114,30 +104,31 @@
      <string>Load</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="remove_from_list_button">
+   <widget class="QPushButton" name="remove_from_table_button">
     <property name="geometry">
      <rect>
-      <x>670</x>
-      <y>350</y>
+      <x>660</x>
+      <y>240</y>
       <width>131</width>
       <height>23</height>
      </rect>
     </property>
     <property name="text">
-     <string>Remove from list</string>
+     <string>Remove from table</string>
     </property>
    </widget>
    <widget class="QLabel" name="url_error_label">
     <property name="geometry">
      <rect>
-      <x>140</x>
-      <y>50</y>
-      <width>271</width>
+      <x>200</x>
+      <y>311</y>
+      <width>171</width>
       <height>16</height>
      </rect>
     </property>
     <property name="font">
      <font>
+      <pointsize>10</pointsize>
       <weight>50</weight>
       <bold>false</bold>
       <underline>false</underline>
@@ -150,15 +141,17 @@
    <widget class="QLabel" name="url_fetching_data_label">
     <property name="geometry">
      <rect>
-      <x>140</x>
-      <y>102</y>
-      <width>231</width>
+      <x>520</x>
+      <y>310</y>
+      <width>91</width>
       <height>21</height>
      </rect>
     </property>
     <property name="font">
      <font>
+      <pointsize>10</pointsize>
       <weight>50</weight>
+      <italic>true</italic>
       <bold>false</bold>
       <underline>false</underline>
      </font>
@@ -167,39 +160,12 @@
      <string>Loading playlist...</string>
     </property>
    </widget>
-   <widget class="QLabel" name="guide_label">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>130</y>
-      <width>451</width>
-      <height>111</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>8</pointsize>
-      <weight>50</weight>
-      <bold>false</bold>
-      <underline>false</underline>
-     </font>
-    </property>
-    <property name="text">
-     <string>Guide:
-- Once the data from the url is loaded, video titles will be displayed in the box to the right.
-- By selecting a video title and pressing the Remove from list button you can remove
-  the vido from the download list.
-- Then type in the folder name in wich the files will be downloaded.
-- The download path is automaticly set to Desktop and can not be changed.
-- To download the files click Download. </string>
-    </property>
-   </widget>
    <widget class="QLabel" name="listWidget_label">
     <property name="geometry">
      <rect>
-      <x>520</x>
+      <x>30</x>
       <y>20</y>
-      <width>201</width>
+      <width>101</width>
       <height>16</height>
      </rect>
     </property>
@@ -217,8 +183,8 @@
    <widget class="QPushButton" name="download_button">
     <property name="geometry">
      <rect>
-      <x>12</x>
-      <y>340</y>
+      <x>30</x>
+      <y>430</y>
       <width>91</width>
       <height>23</height>
      </rect>
@@ -230,14 +196,15 @@
    <widget class="QLabel" name="downloaded_label">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>380</y>
-      <width>131</width>
-      <height>16</height>
+      <x>230</x>
+      <y>360</y>
+      <width>151</width>
+      <height>20</height>
      </rect>
     </property>
     <property name="font">
      <font>
+      <pointsize>10</pointsize>
       <weight>50</weight>
       <bold>false</bold>
       <underline>false</underline>
@@ -247,50 +214,17 @@
      <string/>
     </property>
    </widget>
-   <widget class="QLabel" name="credits_label">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>420</y>
-      <width>581</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <weight>50</weight>
-      <bold>false</bold>
-      <underline>false</underline>
-     </font>
-    </property>
-    <property name="text">
-     <string>Ira's turbo-downloader: https://github.com/irahorecka</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="turbo_enable">
-    <property name="geometry">
-     <rect>
-      <x>120</x>
-      <y>342</y>
-      <width>62</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Turbo</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="download_path">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>251</y>
-      <width>113</width>
-      <height>32</height>
+      <x>30</x>
+      <y>380</y>
+      <width>71</width>
+      <height>23</height>
      </rect>
     </property>
     <property name="text">
-     <string>Storage Folder</string>
+     <string>Folder</string>
     </property>
     <property name="autoDefault">
      <bool>false</bool>
@@ -299,9 +233,9 @@
    <widget class="QLabel" name="download_folder_select">
     <property name="geometry">
      <rect>
-      <x>140</x>
-      <y>255</y>
-      <width>301</width>
+      <x>120</x>
+      <y>380</y>
+      <width>480</width>
       <height>21</height>
      </rect>
     </property>
@@ -318,13 +252,475 @@
      <string>Folder: </string>
     </property>
    </widget>
+   <widget class="QTableWidget" name="video_table">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>40</y>
+      <width>761</width>
+      <height>192</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 255, 255)</string>
+    </property>
+    <property name="midLineWidth">
+     <number>0</number>
+    </property>
+    <property name="sortingEnabled">
+     <bool>false</bool>
+    </property>
+    <property name="rowCount">
+     <number>250</number>
+    </property>
+    <property name="columnCount">
+     <number>5</number>
+    </property>
+    <attribute name="horizontalHeaderVisible">
+     <bool>true</bool>
+    </attribute>
+    <attribute name="horizontalHeaderCascadingSectionResizes">
+     <bool>false</bool>
+    </attribute>
+    <attribute name="horizontalHeaderDefaultSectionSize">
+     <number>143</number>
+    </attribute>
+    <attribute name="verticalHeaderDefaultSectionSize">
+     <number>25</number>
+    </attribute>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <column>
+     <property name="text">
+      <string>song</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>album</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>artist</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>genre</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>artwork</string>
+     </property>
+    </column>
+   </widget>
+   <widget class="QPushButton" name="cancel_button">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>430</y>
+      <width>91</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Cancel</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="enter_playlist_url_label_2">
+    <property name="geometry">
+     <rect>
+      <x>120</x>
+      <y>360</y>
+      <width>91</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+      <underline>false</underline>
+     </font>
+    </property>
+    <property name="text">
+     <string>Download Folder</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="set_artist">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>240</y>
+      <width>71</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Set artist</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="set_album">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>240</y>
+      <width>71</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Set album</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="set_genre">
+    <property name="geometry">
+     <rect>
+      <x>171</x>
+      <y>240</y>
+      <width>71</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Set genre</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="video_info_input">
+    <property name="geometry">
+     <rect>
+      <x>340</x>
+      <y>240</y>
+      <width>260</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 255, 255)</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="itunes_annotate">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>270</y>
+      <width>111</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>iTunes annotate</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="revert_annotate">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>270</y>
+      <width>111</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Revert</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="album_artwork">
+    <property name="geometry">
+     <rect>
+      <x>630</x>
+      <y>290</y>
+      <width>171</width>
+      <height>171</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 255, 255)</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>default_artwork.png</pixmap>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="set_artwork">
+    <property name="geometry">
+     <rect>
+      <x>242</x>
+      <y>240</y>
+      <width>81</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Set artwork</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>827</width>
+     <width>825</width>
      <height>22</height>
     </rect>
    </property>
