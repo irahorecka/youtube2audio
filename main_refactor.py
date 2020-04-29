@@ -11,7 +11,7 @@ from functools import partial
 import youtube_dl
 from pytube import YouTube
 from PyQt5.QtCore import QThread, QPersistentModelIndex, pyqtSignal
-from PyQt5 import QtGui
+from PyQt5 import QtGui, QtCore
 from PyQt5.QtWidgets import *
 from ytpd_beta_refactor import Ui_MainWindow as UiMainWindow
 from itunes_annotate import get_itunes_metadata
@@ -78,12 +78,17 @@ class MainPage(QMainWindow, UiMainWindow):
         self.set_album.clicked.connect(partial(self.set_column_val, column_index=1))
         self.set_artist.clicked.connect(partial(self.set_column_val, column_index=2))
         self.set_genre.clicked.connect(partial(self.set_column_val, column_index=3))
+        self.set_artwork.clicked.connect(partial(self.set_column_val, column_index=4))
         self.videos_dict = dict()
         # Buttons Connection with the appropriate functions
         self.url_load_button.clicked.connect(self.url_loading_button_click)
         self.download_button.clicked.connect(self.download_button_click)
         self.download_path.clicked.connect(self.get_file_dir)
-        self.itunes_annotate.clicked.connect(self.prep_itunes_annotate)
+        self.itunes_annotate.clicked.connect(self.itunes_annotate_table)
+        self.revert_annotate.clicked.connect(self.default_annotate_table)
+        self.video_table.cellClicked.connect(self.artwork_display)
+        # Hide buttons
+        self.revert_annotate.hide()
         # Get the desktop path, set folder name, full download path, set label.
         self.download_dir = os.path.dirname(
             os.path.abspath(__file__)
@@ -107,76 +112,86 @@ class MainPage(QMainWindow, UiMainWindow):
         self.calc.start()
 
     def url_loading_finished(self, videos_dict, executed):
+        # First entry of self.videos_dict in MainPage class
+        self.videos_dict = videos_dict
         """ Retrieves data from thread at the end, updates the list"""
         self.url_fetching_data_label.hide()  # Hide the loading label as it has finished loading
         if executed:  # If it was executed successfully
-            self.default_annotate_table(videos_dict)
+            self.default_annotate_table()
         else:
             self.url_error_label.show()  # Show the error label
 
-    def prep_itunes_annotate(self):
-        for row_index, key_value in enumerate(self.videos_dict.items()):
-            song = self.get_row_text(self.video_table.item(row_index, 0))
-            album = self.get_row_text(self.video_table.item(row_index, 1))
-            artist = self.get_row_text(self.video_table.item(row_index, 2))
-            genre = self.get_row_text(self.video_table.item(row_index, 3))
-
-            query_title = song
-            if album:
-                query_title += f", {album}"
-            if artist:
-                query_title += f", {artist}"
-            if genre:
-                query_title += f", {genre}"
-
-            if query_title == song:
-                # get url from value of self.videos_dict
-                url_id = key_value[1]["id"]
-                print('url_hit', url_id)
-                self.get_itunes_url(url_id, row_index)  # key_value is a key, value tuple
-            else:
-                print('itunes_text hit', query_title)
-                self.itunes_annotate_table(query_title, row_index)
-
-    @staticmethod
-    def get_row_text(cell_item):
+    def artwork_display(self, row, column):
+        """Display selected artwork and self.video_info_input on Qpixmap widget."""
+        # artwork
         try:
-            cell_item = cell_item.text()
-            return cell_item
-        except AttributeError:
-            cell_item = ""
-            return cell_item      
-    
-    def get_itunes_url(self, url_id, row_index):
-        """Provide iTunes annotation guess based on video title"""
-        yt_link_starter = "https://www.youtube.com/watch?v="
-        vid_url = yt_link_starter + url_id
-        self.itunes_annotate_table(vid_url, row_index)
-            
+            artwork_file = self.video_table.item(row, 4).text()
+            response = requests.get(artwork_file)
+            artwork_img = response.content
+            qt_artwork_img = QtGui.QImage()
+            qt_artwork_img.loadFromData(artwork_img)
+            self.album_artwork.setPixmap(QtGui.QPixmap.fromImage(qt_artwork_img))
+        except (
+            AttributeError,
+            requests.exceptions.MissingSchema,
+        ):  # i.e. selected empty cell or cell has non-url str
+            self.album_artwork.setPixmap(QtGui.QPixmap("default_artwork.png"))
 
-    def itunes_annotate_table(self, vid_property, row_index):
-        ITUNES_META_JSON = get_itunes_metadata(vid_property)
+        # self.video_info_input
+        try:
+            self.video_info_input.setText(self.video_table.item(row, column).text())
+        except AttributeError:
+            self.video_info_input.setText("")
+
+        self.album_artwork.setScaledContents(True)
+        self.album_artwork.setAlignment(QtCore.Qt.AlignCenter)
+
+    def itunes_annotate_table(self):
+        """Get YouTube video url."""
+        yt_link_starter = "https://www.youtube.com/watch?v="
+        for row_index, key_value in enumerate(self.videos_dict.items()):
+            url_id = key_value[1]["id"]
+            vid_url = yt_link_starter + url_id
+            self.set_itunes_meta(vid_url, row_index)
+        self.itunes_annotate.hide()
+        self.revert_annotate.show()
+
+    def set_itunes_meta(self, vid_url, row_index):
+        """Provide iTunes annotation guess based on video title"""
+        ITUNES_META_JSON = get_itunes_metadata(vid_url)
         try:
             song_name, song_index = ITUNES_META_JSON["track_name"], 0
             album_name, album_index = ITUNES_META_JSON["album_name"], 1
             artist_name, artist_index = ITUNES_META_JSON["artist_name"], 2
             genre_name, genre_index = ITUNES_META_JSON["primary_genre_name"], 3
+            artwork_name, artwork_index = ITUNES_META_JSON["artwork_url_fullres"], 4
         except TypeError:
-            song_name, song_index = self.video_table.item(row_index, 0).text(), 0  # get video title
+            song_name, song_index = (
+                self.video_table.item(row_index, 0).text(),
+                0,
+            )  # get video title
             album_name, album_index = "Unknown", 1
             artist_name, artist_index = "Unknown", 2
             genre_name, genre_index = "Unknown", 3
-
+            artwork_name, artwork_index = "default_artwork.png", 4
         self.video_table.setItem(row_index, song_index, QTableWidgetItem(song_name))
         self.video_table.setItem(row_index, album_index, QTableWidgetItem(album_name))
         self.video_table.setItem(row_index, artist_index, QTableWidgetItem(artist_name))
         self.video_table.setItem(row_index, genre_index, QTableWidgetItem(genre_name))
+        self.video_table.setItem(
+            row_index, artwork_index, QTableWidgetItem(artwork_name)
+        )
 
-    def default_annotate_table(self, videos_dict):
+    def default_annotate_table(self):
         """Default table annotation to video title in song columns"""
-        for index, key in enumerate(videos_dict):
+        for index, key in enumerate(self.videos_dict):
             self.video_table.setItem(index, 0, QTableWidgetItem(key))  # part of QWidget
-        self.videos_dict = videos_dict
+            self.video_table.setItem(index, 1, QTableWidgetItem("Unknown"))
+            self.video_table.setItem(index, 2, QTableWidgetItem("Unknown"))
+            self.video_table.setItem(index, 3, QTableWidgetItem("Unknown"))
+            self.video_table.setItem(index, 4, QTableWidgetItem("default_artwork.png"))
+        self.revert_annotate.hide()
+        self.itunes_annotate.show()
 
     def get_file_dir(self):
         """Fetch download file path"""
@@ -190,14 +205,23 @@ class MainPage(QMainWindow, UiMainWindow):
             )
         )
 
-    # Downloading videos threading
-
     def set_column_val(self, column_index):
+        """Set cell content in album, artist, genre, and artwork
+        columns based on cell selection or selected cell content."""
         rows = self.video_table.rowCount()
-        for row_index in range(rows):
-            item = self.video_table.item(row_index, 0)  # get value from col 0 ('song')
-            if item and item.text():
-                self.video_table.setItem(row_index, column_index, QTableWidgetItem(self.video_info_input.text()))  # part of QWidget
+        try:
+            for row_index in range(rows):
+                item = self.video_table.item(
+                    row_index, 0
+                )  # get value from col 0 ('song')
+                if item and item.text():
+                    self.video_table.setItem(
+                        row_index,
+                        column_index,
+                        QTableWidgetItem(self.video_info_input.text()),
+                    )  # part of QWidget
+        except AttributeError:  # i.e. empty self.video_info_input
+            pass
 
     def download_button_click(self):
         """ Executes when the button is clicked """
@@ -210,7 +234,6 @@ class MainPage(QMainWindow, UiMainWindow):
         # TODO: Fix this below -- be able to reflect emission
         self.downloaded_label = self.down.downloadCount
 
-
     def remove_selected_items(self):
         """Removes the selected items from self.videos_table and self.videos_dict.
         Table widget updates -- multiple row deletion capable."""
@@ -222,7 +245,7 @@ class MainPage(QMainWindow, UiMainWindow):
             index_list.append(index)
             current_key = video_list[row][0]
             del self.videos_dict[current_key]  # remove row item from self.videos_dict
-        
+
         for index in index_list:
             self.video_table.removeRow(index.row())
 
@@ -250,9 +273,7 @@ class DownloadingVideos(QThread):
             for key, value in self.videos_dict.items()
         )
         streams = download_threads(video_download, video_properties)
-        shutil.rmtree(
-            os.path.join(self.download_path, "mp4")
-        )  # remove mp4 from dir
+        shutil.rmtree(os.path.join(self.download_path, "mp4"))  # remove mp4 from dir
 
         time1 = time.time()
 
@@ -315,7 +336,7 @@ def set_song_properties(directory, vid_url, vid_name):
             mime="image/jpeg",  # image/jpeg or image/png
             type=3,  # 3 is for the cover image
             desc="Cover",
-            data=ITUNES_META_JSON["artwork_url_fullres"],
+            data=ITUNES_META_JSON["artwork_bytes_fullres"],
         )
     )
     audio["TALB"] = TALB(encoding=3, text=ITUNES_META_JSON["album_name"])
