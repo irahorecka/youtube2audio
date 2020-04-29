@@ -1,6 +1,6 @@
 import os
 from mutagen.mp3 import MP3
-from mutagen.id3 import ID3, APIC, error
+from mutagen.id3 import ID3, APIC, TALB, TPE1, TIT2, TCON, error
 import requests
 import shutil
 import subprocess
@@ -14,7 +14,7 @@ from PyQt5.QtCore import QThread, QPersistentModelIndex, pyqtSignal
 from PyQt5 import QtGui
 from PyQt5.QtWidgets import *
 from ytpd_beta_refactor import Ui_MainWindow as UiMainWindow
-from song_property import *
+from itunes_annotate import get_itunes_metadata
 
 
 def seconds_to_mmss(seconds):
@@ -83,6 +83,7 @@ class MainPage(QMainWindow, UiMainWindow):
         self.url_load_button.clicked.connect(self.url_loading_button_click)
         self.download_button.clicked.connect(self.download_button_click)
         self.download_path.clicked.connect(self.get_file_dir)
+        self.itunes_annotate.clicked.connect(self.prep_itunes_annotate)
         # Get the desktop path, set folder name, full download path, set label.
         self.download_dir = os.path.dirname(
             os.path.abspath(__file__)
@@ -109,14 +110,76 @@ class MainPage(QMainWindow, UiMainWindow):
         """ Retrieves data from thread at the end, updates the list"""
         self.url_fetching_data_label.hide()  # Hide the loading label as it has finished loading
         if executed:  # If it was executed successfully
-            for index, key in enumerate(videos_dict):
-                print(index, key)
-                self.video_table.setItem(index, 0, QTableWidgetItem(key))  # part of QWidget
-            self.videos_dict = videos_dict
+            self.default_annotate_table(videos_dict)
         else:
             self.url_error_label.show()  # Show the error label
 
+    def prep_itunes_annotate(self):
+        for row_index, key_value in enumerate(self.videos_dict.items()):
+            song = self.get_row_text(self.video_table.item(row_index, 0))
+            album = self.get_row_text(self.video_table.item(row_index, 1))
+            artist = self.get_row_text(self.video_table.item(row_index, 2))
+            genre = self.get_row_text(self.video_table.item(row_index, 3))
+
+            query_title = song
+            if album:
+                query_title += f", {album}"
+            if artist:
+                query_title += f", {artist}"
+            if genre:
+                query_title += f", {genre}"
+
+            if query_title == song:
+                # get url from value of self.videos_dict
+                url_id = key_value[1]["id"]
+                print('url_hit', url_id)
+                self.get_itunes_url(url_id, row_index)  # key_value is a key, value tuple
+            else:
+                print('itunes_text hit', query_title)
+                self.itunes_annotate_table(query_title, row_index)
+
+    @staticmethod
+    def get_row_text(cell_item):
+        try:
+            cell_item = cell_item.text()
+            return cell_item
+        except AttributeError:
+            cell_item = ""
+            return cell_item      
+    
+    def get_itunes_url(self, url_id, row_index):
+        """Provide iTunes annotation guess based on video title"""
+        yt_link_starter = "https://www.youtube.com/watch?v="
+        vid_url = yt_link_starter + url_id
+        self.itunes_annotate_table(vid_url, row_index)
+            
+
+    def itunes_annotate_table(self, vid_property, row_index):
+        ITUNES_META_JSON = get_itunes_metadata(vid_property)
+        try:
+            song_name, song_index = ITUNES_META_JSON["track_name"], 0
+            album_name, album_index = ITUNES_META_JSON["album_name"], 1
+            artist_name, artist_index = ITUNES_META_JSON["artist_name"], 2
+            genre_name, genre_index = ITUNES_META_JSON["primary_genre_name"], 3
+        except TypeError:
+            song_name, song_index = self.video_table.item(row_index, 0).text(), 0  # get video title
+            album_name, album_index = "Unknown", 1
+            artist_name, artist_index = "Unknown", 2
+            genre_name, genre_index = "Unknown", 3
+
+        self.video_table.setItem(row_index, song_index, QTableWidgetItem(song_name))
+        self.video_table.setItem(row_index, album_index, QTableWidgetItem(album_name))
+        self.video_table.setItem(row_index, artist_index, QTableWidgetItem(artist_name))
+        self.video_table.setItem(row_index, genre_index, QTableWidgetItem(genre_name))
+
+    def default_annotate_table(self, videos_dict):
+        """Default table annotation to video title in song columns"""
+        for index, key in enumerate(videos_dict):
+            self.video_table.setItem(index, 0, QTableWidgetItem(key))  # part of QWidget
+        self.videos_dict = videos_dict
+
     def get_file_dir(self):
+        """Fetch download file path"""
         self.download_dir = QFileDialog.getExistingDirectory(
             self, "Open folder", os.path.dirname(os.path.abspath(__file__))
         )
@@ -147,15 +210,18 @@ class MainPage(QMainWindow, UiMainWindow):
         # TODO: Fix this below -- be able to reflect emission
         self.downloaded_label = self.down.downloadCount
 
+
     def remove_selected_items(self):
         """Removes the selected items from self.videos_table and self.videos_dict.
         Table widget updates -- multiple row deletion capable."""
         index_list = []
+        video_list = [key_value for key_value in self.videos_dict.items()]
         for model_index in self.video_table.selectionModel().selectedRows():
             row = model_index.row()
             index = QPersistentModelIndex(model_index)
-            index_list.append(index)    
-            del self.videos_dict[self.video_table.item(row, 0).text()]  # remove row item from self.videos_dict
+            index_list.append(index)
+            current_key = video_list[row][0]
+            del self.videos_dict[current_key]  # remove row item from self.videos_dict
         
         for index in index_list:
             self.video_table.removeRow(index.row())
@@ -169,7 +235,6 @@ class DownloadingVideos(QThread):
     def __init__(self, videos_dict, download_path, parent=None):
         QThread.__init__(self, parent)
         self.videos_dict = videos_dict
-        self.yt_link_starter = "https://www.youtube.com/watch?v="
         self.download_path = download_path
 
     def run(self):
@@ -181,7 +246,7 @@ class DownloadingVideos(QThread):
         time0 = time.time()
 
         video_properties = (
-            ((key, value), self.yt_link_starter, self.download_path)
+            ((key, value), self.download_path)
             for key, value in self.videos_dict.items()
         )
         streams = download_threads(video_download, video_properties)
@@ -197,16 +262,17 @@ class DownloadingVideos(QThread):
 
 
 def download_threads(transform, iterable):
+    # TODO: look into partial issue with deadlock
     with concurrent.futures.ThreadPoolExecutor() as executor:
         streams = executor.map(transform, iterable, timeout=1)
     return streams
 
 
 def video_download(args):
+    yt_link_starter = "https://www.youtube.com/watch?v="
     # NOTE: this must have no relation to any self obj
     key_value, videos_dict = args[0]
-    yt_link_starter = args[1]
-    download_path = args[2]
+    download_path = args[1]
     full_link = yt_link_starter + videos_dict["id"]
 
     try:
@@ -229,16 +295,16 @@ def video_download(args):
                 os.path.join(download_path, mp3_filename),
             ]
         )
-
-        album_artwork_download(download_path, full_link, filename)
+        set_song_properties(download_path, full_link, filename)
 
         return
     except:
         pass
 
 
-def album_artwork_download(directory, vid_url, vid_name):
-    """Download album artwork and add to mp3 file"""
+def set_song_properties(directory, vid_url, vid_name):
+    # TODO: look at table for annotated information to query to iTunes for appropriate metadatas
+    """Set song properties to MP3 file."""
     file_mp3 = f"{vid_name}.mp3"
     ITUNES_META_JSON = get_itunes_metadata(vid_url)
 
