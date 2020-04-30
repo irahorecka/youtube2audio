@@ -44,7 +44,7 @@ class UrlLoading(QThread):
 
     def run(self):
         """ Main function, gets all the playlist videos data, emits the info dict"""
-        ydl_opts = {"ignoreerrors": True, "quiet": True, "nocheckcertificate": True}
+        ydl_opts = {"ignoreerrors": True, "quiet": True}
         videos_dict = dict()
         try:
             with youtube_dl.YoutubeDL(ydl_opts) as ydl:
@@ -253,7 +253,8 @@ class MainPage(QMainWindow, UiMainWindow):
             song_properties = {}
             song_properties["song"] = self.get_row_text(
                 self.video_table.item(row_index, 0)
-            )
+            ).replace('/', '-')
+            
             song_properties["album"] = self.get_row_text(
                 self.video_table.item(row_index, 1)
             )

@@ -166,7 +166,10 @@ class Ui_MainWindow(object):
         self.revert_annotate.setObjectName("revert_annotate")
         self.album_artwork = QtWidgets.QLabel(self.centralwidget)
         self.album_artwork.setGeometry(QtCore.QRect(630, 310, 171, 171))
-        self.album_artwork.setStyleSheet("background-color: rgb(255, 255, 255)")
+        self.album_artwork.setStyleSheet("background-color: rgb(255, 255, 255);\n"
+"")
+        self.album_artwork.setFrameShape(QtWidgets.QFrame.Panel)
+        self.album_artwork.setFrameShadow(QtWidgets.QFrame.Plain)
         self.album_artwork.setText("")
         self.album_artwork.setPixmap(QtGui.QPixmap("default_artwork.png"))
         self.album_artwork.setScaledContents(True)
