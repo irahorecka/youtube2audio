@@ -224,4 +224,4 @@ class Ui_MainWindow(object):
         self.itunes_annotate.setText(_translate("MainWindow", "iTunes annotate"))
         self.revert_annotate.setText(_translate("MainWindow", "Revert"))
         self.set_artwork.setText(_translate("MainWindow", "Set artwork"))
-        self.change_video_info_input.setText(_translate("MainWindow", "Change"))
+        self.change_video_info_input.setText(_translate("MainWindow", "Replace"))

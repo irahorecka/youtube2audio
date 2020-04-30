@@ -127,10 +127,13 @@ class MainPage(QMainWindow, UiMainWindow):
 
     def itunes_annotate_click(self):
         """Get YouTube video url."""
-        query_iter = (
-            (row_index, key_value)
-            for row_index, key_value in enumerate(self.videos_dict.items())
-        )
+        try:
+            query_iter = (
+                (row_index, key_value)
+                for row_index, key_value in enumerate(self.videos_dict.items())
+            )
+        except AttributeError:  # i.e. no content in table
+            return
         itunes_query = map_threads(thread_query_itunes, query_iter)
         itunes_query_tuple = tuple(itunes_query)
 
@@ -259,16 +262,23 @@ class MainPage(QMainWindow, UiMainWindow):
         """Removes the selected items from self.videos_table and self.videos_dict.
         Table widget updates -- multiple row deletion capable."""
         index_list = []
-        video_list = [key_value for key_value in self.videos_dict.items()]
-        for model_index in self.video_table.selectionModel().selectedRows():
-            row = model_index.row()
-            index = QPersistentModelIndex(model_index)
-            index_list.append(index)
-            current_key = video_list[row][0]
-            del self.videos_dict[current_key]  # remove row item from self.videos_dict
+        try:
+            video_list = [key_value for key_value in self.videos_dict.items()]
+        except AttributeError:  # i.e. no cells populated
+            return
+        try:
+            for model_index in self.video_table.selectionModel().selectedRows():
+                row = model_index.row()
+                index = QPersistentModelIndex(model_index)
+                index_list.append(index)
+                current_key = video_list[row][0]
+                del self.videos_dict[current_key]  # remove row item from self.videos_dict
 
-        for index in index_list:
-            self.video_table.removeRow(index.row())
+            for index in index_list:
+                self.video_table.removeRow(index.row())
+        except IndexError:  # no items in self.videos_dict nor video_list
+            # TODO: remove from table button should delete cell content regardless of self.videos_dict content
+            return
 
 
 class DownloadingVideos(QThread):

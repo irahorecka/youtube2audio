@@ -737,7 +737,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Change</string>
+     <string>Replace</string>
     </property>
    </widget>
   </widget>
