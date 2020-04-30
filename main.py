@@ -84,7 +84,7 @@ class MainPage(QMainWindow, UiMainWindow):
         self.url_load_button.clicked.connect(self.url_loading_button_click)
         self.download_button.clicked.connect(self.download_button_click)
         self.download_path.clicked.connect(self.get_file_dir)
-        self.itunes_annotate.clicked.connect(self.itunes_annotate_table)
+        self.itunes_annotate.clicked.connect(self.itunes_annotate_click)
         self.revert_annotate.clicked.connect(self.default_annotate_table)
         self.change_video_info_input.clicked.connect(
             self.change_cell
@@ -151,17 +151,17 @@ class MainPage(QMainWindow, UiMainWindow):
         self.album_artwork.setScaledContents(True)
         self.album_artwork.setAlignment(QtCore.Qt.AlignCenter)
 
-    def itunes_annotate_table(self):
+    def itunes_annotate_click(self):
         """Get YouTube video url."""
         yt_link_starter = "https://www.youtube.com/watch?v="
         for row_index, key_value in enumerate(self.videos_dict.items()):
             url_id = key_value[1]["id"]
             vid_url = yt_link_starter + url_id
-            self.set_itunes_meta(vid_url, row_index)
+            self.populate_itunes_meta(vid_url, row_index)
         self.itunes_annotate.hide()
         self.revert_annotate.show()
 
-    def set_itunes_meta(self, vid_url, row_index):
+    def populate_itunes_meta(self, vid_url, row_index):
         """Provide iTunes annotation guess based on video title"""
         ITUNES_META_JSON = get_itunes_metadata(vid_url)
         try:
@@ -253,7 +253,8 @@ class MainPage(QMainWindow, UiMainWindow):
             song_properties = {}
             song_properties["song"] = self.get_row_text(
                 self.video_table.item(row_index, 0)
-            )
+            ).replace("/", "-")
+
             song_properties["album"] = self.get_row_text(
                 self.video_table.item(row_index, 1)
             )

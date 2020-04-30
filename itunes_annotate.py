@@ -1,5 +1,5 @@
-import requests
 import json
+import requests
 import itunespy
 
 
@@ -7,7 +7,7 @@ def get_itunes_metadata(vid_url):
     """Get iTunes metadata to add to mp3 file."""
     vid_title = oembed_title(vid_url)
     try:
-        ITUNES_META = get_from_itunes(vid_title)[0]
+        ITUNES_META = query_itunes(vid_title)[0]
         ITUNES_META_JSON = {
             "track_name": ITUNES_META.track_name,
             "album_name": ITUNES_META.collection_name,
@@ -17,7 +17,7 @@ def get_itunes_metadata(vid_url):
                 "60", "600"
             ),  # manually replace album artwork to 600x600
         }
-    except TypeError:  # i.e. no information fetched from get_from_itunes
+    except TypeError:  # i.e. no information fetched from query_itunes
         return
 
     def get_album_artwork():
@@ -29,18 +29,6 @@ def get_itunes_metadata(vid_url):
         return ITUNES_META_JSON
 
     return get_album_artwork()
-
-
-def get_from_itunes(song_properties):
-    """Download video metadata using itunespy."""
-    try:
-        song_itunes = itunespy.search_track(song_properties)
-        # Before returning convert all the track_time values to minutes.
-        for song in song_itunes:
-            song.track_time = round(song.track_time / 60000, 2)
-        return song_itunes
-    except Exception:
-        return
 
 
 def oembed_title(vid_url):
@@ -57,3 +45,15 @@ def oembed_title(vid_url):
         return vid_title
     else:
         raise TypeError("vid_url must be a URL string.")
+
+
+def query_itunes(song_properties):
+    """Download video metadata using itunespy."""
+    try:
+        song_itunes = itunespy.search_track(song_properties)
+        # Before returning convert all the track_time values to minutes.
+        for song in song_itunes:
+            song.track_time = round(song.track_time / 60000, 2)
+        return song_itunes
+    except Exception:
+        return
