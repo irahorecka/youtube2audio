@@ -714,6 +714,19 @@
      <string>Set artwork</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="change_video_info_input">
+    <property name="geometry">
+     <rect>
+      <x>529</x>
+      <y>270</y>
+      <width>71</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Change</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
