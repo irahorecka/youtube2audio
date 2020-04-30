@@ -1,6 +1,17 @@
-import json
 import requests
 import itunespy
+
+
+def thread_query_itunes(args):
+    yt_link_starter = "https://www.youtube.com/watch?v="
+    row_index = args[0]
+    key_value = args[1]
+
+    url_id = key_value[1]["id"]
+    vid_url = yt_link_starter + url_id
+    ITUNES_META_JSON = get_itunes_metadata(vid_url)
+
+    return (row_index, ITUNES_META_JSON)
 
 
 def get_itunes_metadata(vid_url):
@@ -8,6 +19,7 @@ def get_itunes_metadata(vid_url):
     vid_title = oembed_title(vid_url)
     try:
         ITUNES_META = query_itunes(vid_title)[0]
+
         ITUNES_META_JSON = {
             "track_name": ITUNES_META.track_name,
             "album_name": ITUNES_META.collection_name,
@@ -43,8 +55,8 @@ def oembed_title(vid_url):
         vid_json = vid_content.json()
         vid_title = vid_json["title"]
         return vid_title
-    else:
-        raise TypeError("vid_url must be a URL string.")
+
+    raise TypeError("vid_url must be a URL string.")
 
 
 def query_itunes(song_properties):
@@ -55,5 +67,6 @@ def query_itunes(song_properties):
         for song in song_itunes:
             song.track_time = round(song.track_time / 60000, 2)
         return song_itunes
-    except Exception:
+    except Exception as error:
+        print(error)
         return

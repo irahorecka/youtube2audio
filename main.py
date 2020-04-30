@@ -1,36 +1,16 @@
 import os
-from mutagen.mp3 import MP3
-from mutagen.id3 import ID3, APIC, TALB, TPE1, TIT2, TCON, error
-import requests
 import shutil
-import subprocess
 import sys
 import time
-import concurrent.futures
 from functools import partial
-import youtube_dl
-from pytube import YouTube
+import requests
 from PyQt5.QtCore import QThread, QPersistentModelIndex, pyqtSignal
 from PyQt5 import QtGui, QtCore
 from PyQt5.QtWidgets import QApplication, QFileDialog, QMainWindow, QTableWidgetItem
 from ytpd_beta import Ui_MainWindow as UiMainWindow
-from itunes_annotate import get_itunes_metadata
-
-
-def seconds_to_mmss(seconds):
-    """Function:
-    Returns a string in the format of mm:ss"""
-    min = seconds // 60
-    sec = seconds % 60
-    if min < 10:
-        min_str = "0" + str(min)
-    else:
-        min_str = str(min)
-    if sec < 10:
-        sec_str = "0" + str(sec)
-    else:
-        sec_str = str(sec)
-    return min_str + ":" + sec_str
+from _threading import map_threads
+from query_itunes import thread_query_itunes
+from query_youtube import thread_query_youtube, get_playlist_videos
 
 
 class UrlLoading(QThread):
@@ -44,25 +24,11 @@ class UrlLoading(QThread):
 
     def run(self):
         """ Main function, gets all the playlist videos data, emits the info dict"""
-        ydl_opts = {"ignoreerrors": True, "quiet": True}
-        videos_dict = dict()
         try:
-            with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-                playlist_dict = ydl.extract_info(
-                    self.playlist_link, download=False
-                )  # time consuming spot -- cannot thread
-                for video in playlist_dict["entries"]:
-                    try:
-                        title = video.get("title")
-                    except:  # If video title is unavailable don't add it to the dict
-                        continue
-                    videos_dict[title] = dict()
-                    videos_dict[title]["id"] = video.get("id")
-                    videos_dict[title]["duration"] = seconds_to_mmss(
-                        video.get("duration")
-                    )
-                self.countChanged.emit(videos_dict, True)
-        except:
+            videos_dict = get_playlist_videos(self.playlist_link)
+            self.countChanged.emit(videos_dict, True)
+        except Exception as error:
+            print(error)
             self.countChanged.emit({}, False)
 
 
@@ -70,46 +36,43 @@ class MainPage(QMainWindow, UiMainWindow):
     def __init__(self, parent=None):
         super(MainPage, self).__init__(parent)
         self.setupUi(self)
-        # Hide the fetching data label and the error label, shows up when its loading, invalid url
+        # Hide the fetching data label, error label, and revert button
         self.url_fetching_data_label.hide()
         self.url_error_label.hide()
-        # Seting the videos dict. and connecting the delete video button with the remove_selected_items fn.
+        self.revert_annotate.hide()
+        # Connect the delete video button with the remove_selected_items fn.
         self.remove_from_table_button.clicked.connect(self.remove_selected_items)
+        # Connect song property setter buttons.
         self.set_album.clicked.connect(partial(self.set_column_val, column_index=1))
         self.set_artist.clicked.connect(partial(self.set_column_val, column_index=2))
         self.set_genre.clicked.connect(partial(self.set_column_val, column_index=3))
         self.set_artwork.clicked.connect(partial(self.set_column_val, column_index=4))
-        self.videos_dict = dict()
-        # Buttons Connection with the appropriate functions
+        # Buttons connection with the appropriate functions
         self.url_load_button.clicked.connect(self.url_loading_button_click)
         self.download_button.clicked.connect(self.download_button_click)
         self.download_path.clicked.connect(self.get_file_dir)
         self.itunes_annotate.clicked.connect(self.itunes_annotate_click)
         self.revert_annotate.clicked.connect(self.default_annotate_table)
-        self.change_video_info_input.clicked.connect(
-            self.change_cell
-        )  # attempt to get current row col value
-        self.cancel_button.clicked.connect(self.close)
         self.video_table.cellClicked.connect(self.artwork_display)
-
-        # Hide buttons
-        self.revert_annotate.hide()
+        # Input changes in video property text box to appropriate cell.
+        self.change_video_info_input.clicked.connect(self.change_cell)
+        # Exit application
+        self.cancel_button.clicked.connect(self.close)
         # Get the desktop path, set folder name, full download path, set label.
         self.download_dir = os.path.dirname(
             os.path.abspath(__file__)
-        )  # base no-selection download dir
+        )  # base :: no-selection download dir
         self.download_folder_select.setText(
             "Folder: ../{}".format([i for i in self.download_dir.split("/")][-1])
         )
 
-    # Input url threading
-
     def url_loading_button_click(self):
         """ Reads input data from url_input and creates an instance of the UrlLoading thread """
-        self.videos_dict = dict()  # Clear the dict
+        self.videos_dict = dict()  # Clear videos_dict upon reloading new playlist.
+        playlist_url = self.url_input.text()  # Get the input text
+
         self.url_fetching_data_label.show()  # Show the loading label
         self.url_error_label.hide()  # Hide the error label if the input is a retry
-        playlist_url = self.url_input.text()  # Get the input text
         self.calc = UrlLoading(playlist_url)  # Pass in the input text
         self.calc.countChanged.connect(
             self.url_loading_finished
@@ -151,19 +114,34 @@ class MainPage(QMainWindow, UiMainWindow):
         self.album_artwork.setScaledContents(True)
         self.album_artwork.setAlignment(QtCore.Qt.AlignCenter)
 
+    def default_annotate_table(self):
+        """Default table annotation to video title in song columns"""
+        for index, key in enumerate(self.videos_dict):
+            self.video_table.setItem(index, 0, QTableWidgetItem(key))  # part of QWidget
+            self.video_table.setItem(index, 1, QTableWidgetItem("Unknown"))
+            self.video_table.setItem(index, 2, QTableWidgetItem("Unknown"))
+            self.video_table.setItem(index, 3, QTableWidgetItem("Unknown"))
+            self.video_table.setItem(index, 4, QTableWidgetItem(""))
+        self.revert_annotate.hide()
+        self.itunes_annotate.show()
+
     def itunes_annotate_click(self):
         """Get YouTube video url."""
-        yt_link_starter = "https://www.youtube.com/watch?v="
-        for row_index, key_value in enumerate(self.videos_dict.items()):
-            url_id = key_value[1]["id"]
-            vid_url = yt_link_starter + url_id
-            self.populate_itunes_meta(vid_url, row_index)
+        query_iter = (
+            (row_index, key_value)
+            for row_index, key_value in enumerate(self.videos_dict.items())
+        )
+        itunes_query = map_threads(thread_query_itunes, query_iter)
+        itunes_query_tuple = tuple(itunes_query)
+
+        for row_index, ITUNES_META_JSON in itunes_query_tuple:
+            self.populate_itunes_meta(row_index, ITUNES_META_JSON)
+
         self.itunes_annotate.hide()
         self.revert_annotate.show()
 
-    def populate_itunes_meta(self, vid_url, row_index):
+    def populate_itunes_meta(self, row_index, ITUNES_META_JSON):
         """Provide iTunes annotation guess based on video title"""
-        ITUNES_META_JSON = get_itunes_metadata(vid_url)
         try:
             song_name, song_index = ITUNES_META_JSON["track_name"], 0
             album_name, album_index = ITUNES_META_JSON["album_name"], 1
@@ -186,17 +164,6 @@ class MainPage(QMainWindow, UiMainWindow):
         self.video_table.setItem(
             row_index, artwork_index, QTableWidgetItem(artwork_name)
         )
-
-    def default_annotate_table(self):
-        """Default table annotation to video title in song columns"""
-        for index, key in enumerate(self.videos_dict):
-            self.video_table.setItem(index, 0, QTableWidgetItem(key))  # part of QWidget
-            self.video_table.setItem(index, 1, QTableWidgetItem("Unknown"))
-            self.video_table.setItem(index, 2, QTableWidgetItem("Unknown"))
-            self.video_table.setItem(index, 3, QTableWidgetItem("Unknown"))
-            self.video_table.setItem(index, 4, QTableWidgetItem(""))
-        self.revert_annotate.hide()
-        self.itunes_annotate.show()
 
     def get_file_dir(self):
         """Fetch download file path"""
@@ -236,25 +203,29 @@ class MainPage(QMainWindow, UiMainWindow):
         self.downloaded_label.setText("Downloading...")
         self.down = DownloadingVideos(
             self.videos_dict, self.download_dir, playlist_properties
-        )  # Pass in the dict
+        )
         self.down.start()
         # TODO: Fix this below -- be able to reflect emission
         self.downloaded_label = self.down.downloadCount
 
     def change_cell(self):
+        """Change selected cell value to value in self.video_info_input."""
         row = self.video_table.currentIndex().row()
         column = self.video_table.currentIndex().column()
         video_info_input_value = self.video_info_input.text()
         self.video_table.setItem(row, column, QTableWidgetItem(video_info_input_value))
 
     def get_playlist_properties(self):
+        """Get video information from self.video_table
+        to reflect to downloaded MP3 metadata."""
         playlist_properties = []
         for row_index, key_value in enumerate(self.videos_dict.items()):
             song_properties = {}
             song_properties["song"] = self.get_row_text(
                 self.video_table.item(row_index, 0)
-            ).replace("/", "-")
-
+            ).replace(
+                "/", "-"
+            )  # will be filename -- change illegal char to legal - make func
             song_properties["album"] = self.get_row_text(
                 self.video_table.item(row_index, 1)
             )
@@ -276,6 +247,7 @@ class MainPage(QMainWindow, UiMainWindow):
 
     @staticmethod
     def get_row_text(cell_item):
+        """Get text of cell value, if empty return empty str."""
         try:
             cell_item = cell_item.text()
             return cell_item
@@ -312,11 +284,7 @@ class DownloadingVideos(QThread):
 
     def run(self):
         """ Main function, downloads videos by their id while emitting progress data"""
-
         # Download
-        number_of_videos = len(self.videos_dict)
-        failed_download = list()
-
         mp4_path = os.path.join(self.download_path, "mp4")
         try:
             os.mkdir(mp4_path)
@@ -324,90 +292,20 @@ class DownloadingVideos(QThread):
             pass
 
         time0 = time.time()
-
         video_properties = (
             (key_value, (self.download_path, mp4_path), self.playlist_properties[index])
             for index, key_value in enumerate(
                 self.videos_dict.items()
             )  # dict is naturally sorted in iteration
         )
-        streams = pool_threads(video_download, video_properties)
+        map_threads(thread_query_youtube, video_properties)
         shutil.rmtree(mp4_path)  # remove mp4 dir
-
         time1 = time.time()
+
         delta_t = time1 - time0
         print(delta_t)
+        # TODO: allow proper emission of below func
         self.downloadCount.emit(f"Download time: {'%.2f' % delta_t} seconds")
-
-
-def pool_threads(transform, iterable):
-    """Set up multithread."""
-    # TODO: look into partial issue with deadlock
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        streams = executor.map(transform, iterable, timeout=1)
-    return streams
-
-
-def video_download(args):
-    """Download video to mp4 then mp3 -- triggered
-    by pool_threads"""
-    yt_link_starter = "https://www.youtube.com/watch?v="
-    # NOTE: this must have no relation to any self obj
-    key_value, videos_dict = args[0]
-    download_path, mp4_path = args[1]
-    song_properties = args[2]
-    full_link = yt_link_starter + videos_dict["id"]
-
-    try:
-        # TODO: could be strange to create new folder/path in multithread - no collision yet but maybe a source of a bug
-        video = YouTube(full_link)
-        stream = video.streams.filter(only_audio=True, audio_codec="mp4a.40.2").first()
-        stream.download(mp4_path)
-
-        # convert generated mp4 files to mp3 -- problem with MacOS where mp4 is twice length of video
-        mp4_filename = stream.default_filename  # mp4 full extension
-        filename = mp4_filename[:-4]
-        mp3_filename = "{}.mp3".format(song_properties["song"])
-
-        subprocess.call(
-            [
-                "ffmpeg",
-                "-i",
-                os.path.join(mp4_path, mp4_filename),
-                os.path.join(download_path, mp3_filename),
-            ]
-        )
-        set_song_properties(download_path, song_properties, filename)
-
-        return
-    except:
-        pass
-
-
-def set_song_properties(directory, song_properties, vid_name):
-    """Set song properties to MP3 file."""
-    # TODO: look at table for annotated information to query to iTunes for appropriate metadatas
-    file_mp3 = f"{song_properties['song']}.mp3"
-
-    # get byte format for album artwork url
-    response = requests.get(song_properties["artwork"])
-    artwork_img = response.content
-
-    audio = MP3(os.path.join(directory, file_mp3), ID3=ID3)
-    audio.tags.add(
-        APIC(
-            encoding=3,  # 3 is for utf-8
-            mime="image/jpeg",  # image/jpeg or image/png
-            type=3,  # 3 is for the cover image
-            desc="Cover",
-            data=artwork_img,
-        )
-    )
-    audio["TALB"] = TALB(encoding=3, text=song_properties["album"])
-    audio["TPE1"] = TPE1(encoding=3, text=song_properties["artist"])
-    audio["TIT2"] = TIT2(encoding=3, text=song_properties["song"])
-    audio["TCON"] = TCON(encoding=3, text=song_properties["genre"])
-    audio.save()
 
 
 if __name__ == "__main__":
