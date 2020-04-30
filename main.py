@@ -12,7 +12,7 @@ import youtube_dl
 from pytube import YouTube
 from PyQt5.QtCore import QThread, QPersistentModelIndex, pyqtSignal
 from PyQt5 import QtGui, QtCore
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QApplication, QFileDialog, QMainWindow, QTableWidgetItem
 from ytpd_beta import Ui_MainWindow as UiMainWindow
 from itunes_annotate import get_itunes_metadata
 
@@ -86,7 +86,12 @@ class MainPage(QMainWindow, UiMainWindow):
         self.download_path.clicked.connect(self.get_file_dir)
         self.itunes_annotate.clicked.connect(self.itunes_annotate_table)
         self.revert_annotate.clicked.connect(self.default_annotate_table)
+        self.change_video_info_input.clicked.connect(
+            self.change_cell
+        )  # attempt to get current row col value
+        self.cancel_button.clicked.connect(self.close)
         self.video_table.cellClicked.connect(self.artwork_display)
+
         # Hide buttons
         self.revert_annotate.hide()
         # Get the desktop path, set folder name, full download path, set label.
@@ -236,6 +241,12 @@ class MainPage(QMainWindow, UiMainWindow):
         # TODO: Fix this below -- be able to reflect emission
         self.downloaded_label = self.down.downloadCount
 
+    def change_cell(self):
+        row = self.video_table.currentIndex().row()
+        column = self.video_table.currentIndex().column()
+        video_info_input_value = self.video_info_input.text()
+        self.video_table.setItem(row, column, QTableWidgetItem(video_info_input_value))
+
     def get_playlist_properties(self):
         playlist_properties = []
         for row_index, key_value in enumerate(self.videos_dict.items()):
@@ -304,19 +315,25 @@ class DownloadingVideos(QThread):
         # Download
         number_of_videos = len(self.videos_dict)
         failed_download = list()
+
+        mp4_path = os.path.join(self.download_path, "mp4")
+        try:
+            os.mkdir(mp4_path)
+        except FileExistsError:
+            pass
+
         time0 = time.time()
 
         video_properties = (
-            (key_value, self.download_path, self.playlist_properties[index])
+            (key_value, (self.download_path, mp4_path), self.playlist_properties[index])
             for index, key_value in enumerate(
                 self.videos_dict.items()
             )  # dict is naturally sorted in iteration
         )
         streams = pool_threads(video_download, video_properties)
-        shutil.rmtree(os.path.join(self.download_path, "mp4"))  # remove mp4 from dir
+        shutil.rmtree(mp4_path)  # remove mp4 dir
 
         time1 = time.time()
-
         delta_t = time1 - time0
         print(delta_t)
         self.downloadCount.emit(f"Download time: {'%.2f' % delta_t} seconds")
@@ -336,13 +353,12 @@ def video_download(args):
     yt_link_starter = "https://www.youtube.com/watch?v="
     # NOTE: this must have no relation to any self obj
     key_value, videos_dict = args[0]
-    download_path = args[1]
+    download_path, mp4_path = args[1]
     song_properties = args[2]
     full_link = yt_link_starter + videos_dict["id"]
 
     try:
         # TODO: could be strange to create new folder/path in multithread - no collision yet but maybe a source of a bug
-        mp4_path = os.path.join(download_path, "mp4")
         video = YouTube(full_link)
         stream = video.streams.filter(only_audio=True, audio_codec="mp4a.40.2").first()
         stream.download(mp4_path)
