@@ -44,7 +44,7 @@ class UrlLoading(QThread):
 
     def run(self):
         """ Main function, gets all the playlist videos data, emits the info dict"""
-        ydl_opts = {"ignoreerrors": True, "quiet": True}
+        ydl_opts = {"ignoreerrors": True, "quiet": True, "nocheckcertificate": True}
         videos_dict = dict()
         try:
             with youtube_dl.YoutubeDL(ydl_opts) as ydl:
