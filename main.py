@@ -40,43 +40,51 @@ class MainPage(QMainWindow, UiMainWindow):
         self.change_video_info_input.clicked.connect(self.change_cell)
         # Exit application
         self.cancel_button.clicked.connect(self.close)
-        # Get the desktop path, set folder name, full download path, set label.
-        self.download_dir = os.path.dirname(
-            os.path.abspath(__file__)
-        )  # base :: no-selection download dir
+        # Get download directory
+        self.download_dir = os.path.dirname(os.path.abspath(__file__))
         self.download_folder_select.setText(
             f"../{os.path.split(self.download_dir)[-1]}"  # get directory tail
         )
 
     def url_loading_button_click(self):
-        """ Reads input data from url_input and creates an instance of the UrlLoading thread """
+        """Reads input data from self.url_input and creates an instance
+        of the UrlLoading thread."""
         self.videos_dict = dict()  # Clear videos_dict upon reloading new playlist.
-        playlist_url = self.url_input.text()  # Get the input text
+        playlist_url = self.url_input.text()
+        if not playlist_url:  # i.e. empty playlist_url
+            self.url_error_label.show()
+            self.default_annotate_table()
+            return
 
-        self.url_fetching_data_label.show()  # Show the loading label
-        self.url_error_label.hide()  # Hide the error label if the input is a retry
-        self.calc = UrlLoading(playlist_url)  # Pass in the input text
-        self.calc.countChanged.connect(
-            self.url_loading_finished
-        )  # connect with the changing variables
+        self.url_fetching_data_label.show()
+        self.url_error_label.hide()
+        self.calc = UrlLoading(playlist_url)
+        self.calc.countChanged.connect(self.url_loading_finished)
         self.calc.start()
 
     def url_loading_finished(self, videos_dict, executed):
-        """ Retrieves data from thread at the end, updates the list"""
+        """Retrieves data from thread when complete, updates GUI table."""
         # First entry of self.videos_dict in MainPage class
         self.videos_dict = videos_dict
-        self.url_fetching_data_label.hide()  # Hide the loading label as it has finished loading
-        if executed:  # If it was executed successfully
-            self.default_annotate_table()
+        self.url_fetching_data_label.hide()
+        if executed:
+            self.default_annotate_table()  # set table content
         else:
-            self.url_error_label.show()  # Show the error label
+            self.url_error_label.show()
 
     def itunes_annotate_click(self):
+        """Load iTunes annotation info on different thread."""
+        try:
+            assert self.videos_dict  # i.e. click annotate button with empty table
+        except (AttributeError, AssertionError):
+            return
         self.annotate = iTunesLoading(self.videos_dict)
         self.annotate.loadFinished.connect(self.itunes_annotate_finished)
         self.annotate.start()
 
     def itunes_annotate_finished(self, itunes_query_tuple):
+        """Populate GUI table with iTunes meta information once
+        iTunes annotation query complete."""
         for row_index, ITUNES_META_JSON in itunes_query_tuple:
             self.populate_itunes_meta(row_index, ITUNES_META_JSON)
 
@@ -89,17 +97,24 @@ class MainPage(QMainWindow, UiMainWindow):
         try:
             artwork_file = self.video_table.item(row, 4).text()
             response = requests.get(artwork_file)
-            artwork_img = response.content
-            qt_artwork_img = QtGui.QImage()
-            qt_artwork_img.loadFromData(artwork_img)
-            self.album_artwork.setPixmap(QtGui.QPixmap.fromImage(qt_artwork_img))
+
+            if response.status_code != 200:  # invalid image url
+                qt_artwork_img = "default_artwork.png"
+            else:
+                artwork_img = response.content
+                qt_artwork_img = QtGui.QImage()
+                qt_artwork_img.loadFromData(artwork_img)
+                self.album_artwork.setPixmap(QtGui.QPixmap.fromImage(qt_artwork_img))
+
         except (
             AttributeError,
             requests.exceptions.MissingSchema,
         ):  # i.e. selected empty cell or cell has non-url str
-            self.album_artwork.setPixmap(QtGui.QPixmap("default_artwork.png"))
+            qt_artwork_img = "default_artwork.png"
 
-        # self.video_info_input
+        self.album_artwork.setPixmap(QtGui.QPixmap(qt_artwork_img))
+
+        # TODO: below try except should be a separate method
         try:
             self.video_info_input.setText(self.video_table.item(row, column).text())
         except AttributeError:
@@ -110,6 +125,10 @@ class MainPage(QMainWindow, UiMainWindow):
 
     def default_annotate_table(self):
         """Default table annotation to video title in song columns"""
+        if not self.videos_dict:  # i.e. an invalid playlist input
+            self.video_table.clearContents()
+            return
+
         for index, key in enumerate(self.videos_dict):
             self.video_table.setItem(index, 0, QTableWidgetItem(key))  # part of QWidget
             self.video_table.setItem(index, 1, QTableWidgetItem("Unknown"))
@@ -192,6 +211,7 @@ class MainPage(QMainWindow, UiMainWindow):
         self.down.start()
 
     def download_finished(self, download_time):
+        """Emit changes to MainPage once dowload is complete."""
         _min = int(download_time // 60)
         sec = int(download_time % 60)
         self.download_time.setText(f"Download time: {_min} min. {sec} sec.")
@@ -253,7 +273,16 @@ class MainPage(QMainWindow, UiMainWindow):
         try:
             video_list = [key_value for key_value in self.videos_dict.items()]
         except AttributeError:  # i.e. no cells populated
+            # TODO: repeated code below - see if you can bunch to one.
+            for model_index in self.video_table.selectionModel().selectedRows():
+                index = QPersistentModelIndex(model_index)
+                index_list.append(index)
+
+            for index in index_list:
+                # TODO: this deletes the row, i.e. removes row rather than clears
+                self.video_table.removeRow(index.row())
             return
+
         try:
             for model_index in self.video_table.selectionModel().selectedRows():
                 row = model_index.row()
@@ -266,8 +295,8 @@ class MainPage(QMainWindow, UiMainWindow):
 
             for index in index_list:
                 self.video_table.removeRow(index.row())
+            return
         except IndexError:  # no items in self.videos_dict nor video_list
-            # TODO: remove from table button should delete cell content regardless of self.videos_dict content
             return
 
 
