@@ -14,25 +14,6 @@ from query_youtube import get_youtube_content
 from download_youtube import thread_query_youtube
 
 
-class UrlLoading(QThread):
-    """ Loads the videos data from playlist in another thread."""
-
-    countChanged = pyqtSignal(dict, bool)
-
-    def __init__(self, playlist_link, parent=None):
-        QThread.__init__(self, parent)
-        self.playlist_link = playlist_link
-
-    def run(self):
-        """ Main function, gets all the playlist videos data, emits the info dict"""
-        try:
-            videos_dict = get_youtube_content(self.playlist_link)
-            self.countChanged.emit(videos_dict, True)
-        except Exception as error:
-            print(error)
-            self.countChanged.emit({}, False)
-
-
 class MainPage(QMainWindow, UiMainWindow):
     def __init__(self, parent=None):
         super(MainPage, self).__init__(parent)
@@ -64,7 +45,7 @@ class MainPage(QMainWindow, UiMainWindow):
             os.path.abspath(__file__)
         )  # base :: no-selection download dir
         self.download_folder_select.setText(
-            "Folder: ../{}".format([i for i in self.download_dir.split("/")][-1])
+            f"../{os.path.split(self.download_dir)[-1]}"  # get directory tail
         )
 
     def url_loading_button_click(self):
@@ -89,6 +70,18 @@ class MainPage(QMainWindow, UiMainWindow):
             self.default_annotate_table()
         else:
             self.url_error_label.show()  # Show the error label
+
+    def itunes_annotate_click(self):
+        self.annotate = iTunesLoading(self.videos_dict)
+        self.annotate.loadFinished.connect(self.itunes_annotate_finished)
+        self.annotate.start()
+
+    def itunes_annotate_finished(self, itunes_query_tuple):
+        for row_index, ITUNES_META_JSON in itunes_query_tuple:
+            self.populate_itunes_meta(row_index, ITUNES_META_JSON)
+
+        self.itunes_annotate.hide()
+        self.revert_annotate.show()
 
     def artwork_display(self, row, column):
         """Display selected artwork and self.video_info_input on Qpixmap widget."""
@@ -126,24 +119,6 @@ class MainPage(QMainWindow, UiMainWindow):
         self.revert_annotate.hide()
         self.itunes_annotate.show()
 
-    def itunes_annotate_click(self):
-        """Get YouTube video url."""
-        try:
-            query_iter = (
-                (row_index, key_value)
-                for row_index, key_value in enumerate(self.videos_dict.items())
-            )
-        except AttributeError:  # i.e. no content in table
-            return
-        itunes_query = map_threads(thread_query_itunes, query_iter)
-        itunes_query_tuple = tuple(itunes_query)
-
-        for row_index, ITUNES_META_JSON in itunes_query_tuple:
-            self.populate_itunes_meta(row_index, ITUNES_META_JSON)
-
-        self.itunes_annotate.hide()
-        self.revert_annotate.show()
-
     def populate_itunes_meta(self, row_index, ITUNES_META_JSON):
         """Provide iTunes annotation guess based on video title"""
         try:
@@ -174,11 +149,11 @@ class MainPage(QMainWindow, UiMainWindow):
         self.download_dir = QFileDialog.getExistingDirectory(
             self, "Open folder", os.path.dirname(os.path.abspath(__file__))
         )
-        # set nearby names
+        if not self.download_dir:
+            self.download_dir = os.path.dirname(os.path.abspath(__file__))
+
         self.download_folder_select.setText(
-            "Folder: ../{}".format(
-                "/".join([i for i in self.download_dir.split("/")][-2:])
-            )
+            "../{}".format(os.path.split(self.download_dir)[-1])
         )
 
     def set_column_val(self, column_index):
@@ -201,6 +176,11 @@ class MainPage(QMainWindow, UiMainWindow):
 
     def download_button_click(self):
         """ Executes when the button is clicked """
+        try:
+            assert self.videos_dict  # assert self.videos_dict exists
+        except AttributeError:
+            return
+
         playlist_properties = self.get_playlist_properties()
 
         self.download_button.setEnabled(False)
@@ -208,9 +188,15 @@ class MainPage(QMainWindow, UiMainWindow):
         self.down = DownloadingVideos(
             self.videos_dict, self.download_dir, playlist_properties
         )
+        self.down.downloadCount.connect(self.download_finished)
         self.down.start()
-        # TODO: Fix this below -- be able to reflect emission
-        self.downloaded_label = self.down.downloadCount
+
+    def download_finished(self, download_time):
+        _min = int(download_time // 60)
+        sec = int(download_time % 60)
+        self.download_time.setText(f"Download time: {_min} min. {sec} sec.")
+        self.downloaded_label.setText("")
+        self.download_button.setEnabled(True)
 
     def change_cell(self):
         """Change selected cell value to value in self.video_info_input."""
@@ -223,6 +209,7 @@ class MainPage(QMainWindow, UiMainWindow):
         """Get video information from self.video_table
         to reflect to downloaded MP3 metadata."""
         playlist_properties = []
+
         for row_index, key_value in enumerate(self.videos_dict.items()):
             song_properties = {}
             song_properties["song"] = self.get_row_text(
@@ -284,10 +271,53 @@ class MainPage(QMainWindow, UiMainWindow):
             return
 
 
-class DownloadingVideos(QThread):
-    """ Download all videos from the videos_dict using the id, todo fix some bugs"""
+class UrlLoading(QThread):
+    """ Loads the videos data from playlist in another thread."""
 
-    downloadCount = pyqtSignal(str)  # downloaded, number_of_videos, finished
+    countChanged = pyqtSignal(dict, bool)
+
+    def __init__(self, playlist_link, parent=None):
+        QThread.__init__(self, parent)
+        self.playlist_link = playlist_link
+
+    def run(self):
+        """ Main function, gets all the playlist videos data, emits the info dict"""
+        try:
+            videos_dict = get_youtube_content(self.playlist_link)
+            self.countChanged.emit(videos_dict, True)
+        except Exception as error:
+            print(error)
+            self.countChanged.emit({}, False)
+
+
+class iTunesLoading(QThread):
+    """Get video data properties from iTunes."""
+
+    loadFinished = pyqtSignal(tuple)
+
+    def __init__(self, videos_dict, parent=None):
+        QThread.__init__(self, parent)
+        self.videos_dict = videos_dict
+
+    def run(self):
+        """Multithread query to iTunes - return tuple."""
+        try:
+            query_iter = (
+                (row_index, key_value)
+                for row_index, key_value in enumerate(self.videos_dict.items())
+            )
+        except AttributeError:  # i.e. no content in table
+            return
+        itunes_query = map_threads(thread_query_itunes, query_iter)
+        itunes_query_tuple = tuple(itunes_query)
+
+        self.loadFinished.emit(itunes_query_tuple)
+
+
+class DownloadingVideos(QThread):
+    """Download all videos from the videos_dict using the id."""
+
+    downloadCount = pyqtSignal(float)  # attempt to emit delta_t
 
     def __init__(self, videos_dict, download_path, playlist_properties, parent=None):
         QThread.__init__(self, parent)
@@ -316,9 +346,7 @@ class DownloadingVideos(QThread):
         time1 = time.time()
 
         delta_t = time1 - time0
-        print(delta_t)
-        # TODO: allow proper emission of below func
-        self.downloadCount.emit(f"Download time: {'%.2f' % delta_t} seconds")
+        self.downloadCount.emit(delta_t)
 
 
 if __name__ == "__main__":

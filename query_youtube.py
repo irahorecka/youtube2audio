@@ -57,12 +57,12 @@ def video_content_to_dict(vid_info_list):
 
 def seconds_to_mmss(seconds):
     """Returns a string in the format of mm:ss."""
-    min = seconds // 60
+    _min = seconds // 60
     sec = seconds % 60
-    if min < 10:
-        min_str = "0" + str(min)
+    if _min < 10:
+        min_str = "0" + str(_min)
     else:
-        min_str = str(min)
+        min_str = str(_min)
     if sec < 10:
         sec_str = "0" + str(sec)
     else:

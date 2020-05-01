@@ -148,9 +148,9 @@
    <widget class="QLabel" name="url_fetching_data_label">
     <property name="geometry">
      <rect>
-      <x>520</x>
+      <x>560</x>
       <y>330</y>
-      <width>91</width>
+      <width>51</width>
       <height>21</height>
      </rect>
     </property>
@@ -164,7 +164,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Loading playlist...</string>
+     <string>Loading...</string>
     </property>
    </widget>
    <widget class="QLabel" name="listWidget_label">
@@ -588,7 +588,7 @@
     <property name="geometry">
      <rect>
       <x>120</x>
-      <y>380</y>
+      <y>379</y>
       <width>91</width>
       <height>21</height>
      </rect>
@@ -739,6 +739,27 @@
     </property>
     <property name="text">
      <string>Replace</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="download_time">
+    <property name="geometry">
+     <rect>
+      <x>250</x>
+      <y>450</y>
+      <width>171</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+      <underline>false</underline>
+     </font>
+    </property>
+    <property name="text">
+     <string>Download time: </string>
     </property>
    </widget>
   </widget>
