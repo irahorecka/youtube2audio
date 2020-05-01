@@ -7,11 +7,14 @@ import requests
 from PyQt5.QtCore import QThread, QPersistentModelIndex, pyqtSignal
 from PyQt5 import QtGui, QtCore
 from PyQt5.QtWidgets import QApplication, QFileDialog, QMainWindow, QTableWidgetItem
-from ytpd_beta import Ui_MainWindow as UiMainWindow
-from _threading import map_threads
-from query_itunes import thread_query_itunes
-from query_youtube import get_youtube_content
-from download_youtube import thread_query_youtube
+from ui.yt2mp3 import Ui_MainWindow as UiMainWindow
+from utils._threading import map_threads
+from utils.query_itunes import thread_query_itunes
+from utils.query_youtube import get_youtube_content
+from utils.download_youtube import thread_query_youtube
+BASE_PATH = os.path.dirname(os.path.abspath(__file__))
+IMG_PATH = os.path.join(BASE_PATH, 'img')
+UTILS_PATH = os.path.join(BASE_PATH, 'utils')
 
 
 class MainPage(QMainWindow, UiMainWindow):
@@ -41,7 +44,7 @@ class MainPage(QMainWindow, UiMainWindow):
         # Exit application
         self.cancel_button.clicked.connect(self.close)
         # Get download directory
-        self.download_dir = os.path.dirname(os.path.abspath(__file__))
+        self.download_dir = BASE_PATH
         self.download_folder_select.setText(
             f"../{os.path.split(self.download_dir)[-1]}"  # get directory tail
         )
@@ -50,6 +53,7 @@ class MainPage(QMainWindow, UiMainWindow):
         """Reads input data from self.url_input and creates an instance
         of the UrlLoading thread."""
         self.videos_dict = dict()  # Clear videos_dict upon reloading new playlist.
+
         playlist_url = self.url_input.text()
         if not playlist_url:  # i.e. empty playlist_url
             self.url_error_label.show()
@@ -67,6 +71,7 @@ class MainPage(QMainWindow, UiMainWindow):
         # First entry of self.videos_dict in MainPage class
         self.videos_dict = videos_dict
         self.url_fetching_data_label.hide()
+        self.video_table.clearContents()  # clear table for new loaded content
         if executed:
             self.default_annotate_table()  # set table content
         else:
@@ -99,7 +104,7 @@ class MainPage(QMainWindow, UiMainWindow):
             response = requests.get(artwork_file)
 
             if response.status_code != 200:  # invalid image url
-                qt_artwork_img = "default_artwork.png"
+                qt_artwork_img = os.path.join(IMG_PATH, "default_artwork.png")
             else:
                 artwork_img = response.content
                 qt_artwork_img = QtGui.QImage()
@@ -110,7 +115,7 @@ class MainPage(QMainWindow, UiMainWindow):
             AttributeError,
             requests.exceptions.MissingSchema,
         ):  # i.e. selected empty cell or cell has non-url str
-            qt_artwork_img = "default_artwork.png"
+            qt_artwork_img = os.path.join(IMG_PATH, "default_artwork.png")
 
         self.album_artwork.setPixmap(QtGui.QPixmap(qt_artwork_img))
 
@@ -166,10 +171,10 @@ class MainPage(QMainWindow, UiMainWindow):
     def get_file_dir(self):
         """Fetch download file path"""
         self.download_dir = QFileDialog.getExistingDirectory(
-            self, "Open folder", os.path.dirname(os.path.abspath(__file__))
+            self, "Open folder", BASE_PATH
         )
         if not self.download_dir:
-            self.download_dir = os.path.dirname(os.path.abspath(__file__))
+            self.download_dir = BASE_PATH
 
         self.download_folder_select.setText(
             "../{}".format(os.path.split(self.download_dir)[-1])
@@ -204,6 +209,7 @@ class MainPage(QMainWindow, UiMainWindow):
 
         self.download_button.setEnabled(False)
         self.downloaded_label.setText("Downloading...")
+        self.download_time.setText("Download time:")
         self.down = DownloadingVideos(
             self.videos_dict, self.download_dir, playlist_properties
         )

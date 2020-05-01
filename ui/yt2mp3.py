@@ -172,7 +172,7 @@ class Ui_MainWindow(object):
         self.album_artwork.setFrameShape(QtWidgets.QFrame.Panel)
         self.album_artwork.setFrameShadow(QtWidgets.QFrame.Plain)
         self.album_artwork.setText("")
-        self.album_artwork.setPixmap(QtGui.QPixmap("default_artwork.png"))
+        self.album_artwork.setPixmap(QtGui.QPixmap("img/default_artwork.png"))
         self.album_artwork.setScaledContents(True)
         self.album_artwork.setAlignment(QtCore.Qt.AlignCenter)
         self.album_artwork.setObjectName("album_artwork")

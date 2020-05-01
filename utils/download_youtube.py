@@ -4,7 +4,7 @@ import requests
 from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, APIC, TALB, TPE1, TIT2, TCON
 from pytube import YouTube
-from _threading import map_threads
+from ._threading import map_threads
 
 
 def thread_query_youtube(args):

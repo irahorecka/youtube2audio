@@ -23,6 +23,7 @@ There are several options to install ```ffmpeg``` depending on your OS.
     - <a href="https://www.ffmpeg.org/download.html#build-linux">Linux</a>,
     <a href="https://www.ffmpeg.org/download.html#build-mac">macOS</a>,
     <a href="https://www.ffmpeg.org/download.html#build-windows">Windows</a>
+    
 <hr>
 
 ### Troubleshooting
