@@ -10,7 +10,8 @@ from PyQt5.QtWidgets import QApplication, QFileDialog, QMainWindow, QTableWidget
 from ytpd_beta import Ui_MainWindow as UiMainWindow
 from _threading import map_threads
 from query_itunes import thread_query_itunes
-from query_youtube import thread_query_youtube, get_playlist_videos
+from query_youtube import get_youtube_content
+from download_youtube import thread_query_youtube
 
 
 class UrlLoading(QThread):
@@ -25,7 +26,7 @@ class UrlLoading(QThread):
     def run(self):
         """ Main function, gets all the playlist videos data, emits the info dict"""
         try:
-            videos_dict = get_playlist_videos(self.playlist_link)
+            videos_dict = get_youtube_content(self.playlist_link)
             self.countChanged.emit(videos_dict, True)
         except Exception as error:
             print(error)
@@ -272,7 +273,9 @@ class MainPage(QMainWindow, UiMainWindow):
                 index = QPersistentModelIndex(model_index)
                 index_list.append(index)
                 current_key = video_list[row][0]
-                del self.videos_dict[current_key]  # remove row item from self.videos_dict
+                del self.videos_dict[
+                    current_key
+                ]  # remove row item from self.videos_dict
 
             for index in index_list:
                 self.video_table.removeRow(index.row())
