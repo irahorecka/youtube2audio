@@ -65,7 +65,7 @@
      <rect>
       <x>120</x>
       <y>330</y>
-      <width>61</width>
+      <width>111</width>
       <height>21</height>
      </rect>
     </property>
@@ -78,7 +78,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Playlist URL</string>
+     <string>Playlist or Video URL</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="url_input">
@@ -126,8 +126,8 @@
    <widget class="QLabel" name="url_error_label">
     <property name="geometry">
      <rect>
-      <x>200</x>
-      <y>330</y>
+      <x>440</x>
+      <y>332</y>
       <width>171</width>
       <height>16</height>
      </rect>
@@ -136,6 +136,7 @@
      <font>
       <pointsize>10</pointsize>
       <weight>50</weight>
+      <italic>false</italic>
       <bold>false</bold>
       <underline>false</underline>
      </font>
@@ -183,7 +184,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Playlist videos:</string>
+     <string>Loaded videos:</string>
     </property>
    </widget>
    <widget class="QPushButton" name="download_button">
@@ -737,7 +738,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Change</string>
+     <string>Replace</string>
     </property>
    </widget>
   </widget>
