@@ -27,6 +27,10 @@ class MainPage(QMainWindow, UiMainWindow):
         self.url_fetching_data_label.hide()
         self.url_error_label.hide()
         self.revert_annotate.hide()
+        self.credit_url.linkActivated.connect(self.set_credit_url)
+        self.credit_url.setText(
+            '<a href="https://github.com/irahorecka/YouTube2Mp3">Source code</a>'
+        )
         # Connect the delete video button with the remove_selected_items fn.
         self.remove_from_table_button.clicked.connect(self.remove_selected_items)
         # Connect song property setter buttons.
@@ -179,7 +183,7 @@ class MainPage(QMainWindow, UiMainWindow):
             album_name, album_index = "Unknown", 1
             artist_name, artist_index = "Unknown", 2
             genre_name, genre_index = "Unknown", 3
-            artwork_name, artwork_index = "", 4
+            artwork_name, artwork_index = "default_artwork.png", 4
         self.video_table.setItem(row_index, song_index, QTableWidgetItem(song_name))
         self.video_table.setItem(row_index, album_index, QTableWidgetItem(album_name))
         self.video_table.setItem(row_index, artist_index, QTableWidgetItem(artist_name))
@@ -301,6 +305,10 @@ class MainPage(QMainWindow, UiMainWindow):
             )  # this assumes that dict will be ordered like list
 
         return playlist_properties
+
+    def set_credit_url(self, url_str):
+        """Set source code url on upper right of table."""
+        QtGui.QDesktopServices.openUrl(QtCore.QUrl(url_str))
 
     @staticmethod
     def get_row_text(cell_item):

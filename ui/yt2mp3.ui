@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>951</width>
-    <height>573</height>
+    <height>589</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -889,6 +889,28 @@
     </property>
     <property name="text">
      <string>Replace all</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="credit_url">
+    <property name="geometry">
+     <rect>
+      <x>820</x>
+      <y>50</y>
+      <width>91</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Courier</family>
+      <pointsize>12</pointsize>
+      <weight>50</weight>
+      <bold>false</bold>
+      <underline>false</underline>
+     </font>
+    </property>
+    <property name="text">
+     <string>Source code</string>
     </property>
    </widget>
   </widget>

@@ -14,7 +14,9 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(951, 573)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(MainWindow.sizePolicy().hasHeightForWidth())
@@ -29,7 +31,7 @@ class Ui_MainWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.title_label = QtWidgets.QLabel(self.centralwidget)
-        self.title_label.setGeometry(QtCore.QRect(378, 10, 241, 41))
+        self.title_label.setGeometry(QtCore.QRect(352, 10, 241, 41))
         font = QtGui.QFont()
         font.setFamily("Copperplate")
         font.setPointSize(28)
@@ -40,7 +42,7 @@ class Ui_MainWindow(object):
         font.setKerning(True)
         self.title_label.setFont(font)
         self.title_label.setStyleSheet("")
-        self.title_label.setText("Lorem Ipsum")
+        self.title_label.setText("YouTube to MP3")
         self.title_label.setObjectName("title_label")
         self.enter_playlist_url_label = QtWidgets.QLabel(self.centralwidget)
         self.enter_playlist_url_label.setGeometry(QtCore.QRect(150, 380, 171, 21))
@@ -58,8 +60,10 @@ class Ui_MainWindow(object):
         font.setFamily("Courier New")
         self.url_input.setFont(font)
         self.url_input.setStyleSheet("color: rgb(240, 240, 240)")
-        self.url_input.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
-        self.url_input.mousePressEvent = lambda _ : self.url_input.selectAll()
+        self.url_input.setAlignment(
+            QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter
+        )
+        self.url_input.mousePressEvent = lambda _: self.url_input.selectAll()
         self.url_input.setObjectName("url_input")
         self.url_load_button = QtWidgets.QPushButton(self.centralwidget)
         self.url_load_button.setGeometry(QtCore.QRect(40, 400, 80, 23))
@@ -269,6 +273,16 @@ class Ui_MainWindow(object):
         self.change_video_info_input_all.setFont(font)
         self.change_video_info_input_all.setFocusPolicy(QtCore.Qt.StrongFocus)
         self.change_video_info_input_all.setObjectName("change_video_info_input_all")
+        self.credit_url = QtWidgets.QLabel(self.centralwidget)
+        self.credit_url.setGeometry(QtCore.QRect(820, 48, 91, 21))
+        font = QtGui.QFont()
+        font.setFamily("Courier")
+        font.setPointSize(12)
+        font.setBold(False)
+        font.setUnderline(False)
+        font.setWeight(50)
+        self.credit_url.setFont(font)
+        self.credit_url.setObjectName("credit_url")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 951, 22))
@@ -283,11 +297,17 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.enter_playlist_url_label.setText(_translate("MainWindow", "Playlist or video URL"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "YouTube to MP3"))
+        self.enter_playlist_url_label.setText(
+            _translate("MainWindow", "Playlist or video URL")
+        )
         self.url_load_button.setText(_translate("MainWindow", "Load"))
-        self.remove_from_table_button.setText(_translate("MainWindow", "Remove from table"))
-        self.url_error_label.setText(_translate("MainWindow", "Could not get URL. Try again."))
+        self.remove_from_table_button.setText(
+            _translate("MainWindow", "Remove from table")
+        )
+        self.url_error_label.setText(
+            _translate("MainWindow", "Could not get URL. Try again.")
+        )
         self.url_fetching_data_label.setText(_translate("MainWindow", "Loading..."))
         self.listWidget_label.setText(_translate("MainWindow", "Loaded videos:"))
         self.download_button.setText(_translate("MainWindow", "Download"))
@@ -305,7 +325,9 @@ class Ui_MainWindow(object):
         item = self.video_table.horizontalHeaderItem(4)
         item.setText(_translate("MainWindow", "artwork"))
         self.cancel_button.setText(_translate("MainWindow", "Cancel"))
-        self.enter_playlist_url_label_2.setText(_translate("MainWindow", "Download folder"))
+        self.enter_playlist_url_label_2.setText(
+            _translate("MainWindow", "Download folder")
+        )
         self.set_artist.setText(_translate("MainWindow", "Set artist"))
         self.set_album.setText(_translate("MainWindow", "Set album"))
         self.set_genre.setText(_translate("MainWindow", "Set genre"))
@@ -313,4 +335,7 @@ class Ui_MainWindow(object):
         self.revert_annotate.setText(_translate("MainWindow", "Revert"))
         self.set_artwork.setText(_translate("MainWindow", "Set artwork"))
         self.change_video_info_input.setText(_translate("MainWindow", "Replace"))
-        self.change_video_info_input_all.setText(_translate("MainWindow", "Replace all"))
+        self.change_video_info_input_all.setText(
+            _translate("MainWindow", "Replace all")
+        )
+        self.credit_url.setText(_translate("MainWindow", "Source code"))
