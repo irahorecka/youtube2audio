@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>825</width>
-    <height>517</height>
+    <width>951</width>
+    <height>573</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -30,22 +30,22 @@
    <bool>false</bool>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color:rgb(180, 182, 182)</string>
+   <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QLabel" name="title_label">
     <property name="geometry">
      <rect>
-      <x>340</x>
+      <x>360</x>
       <y>10</y>
-      <width>131</width>
+      <width>241</width>
       <height>41</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>Menlo</family>
-      <pointsize>17</pointsize>
+      <family>Copperplate</family>
+      <pointsize>28</pointsize>
       <weight>50</weight>
       <italic>false</italic>
       <bold>false</bold>
@@ -54,7 +54,7 @@
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true">color: rgb(252, 1, 7)</string>
+     <string notr="true"/>
     </property>
     <property name="text">
      <string notr="true">TurboTubeMp3</string>
@@ -63,35 +63,41 @@
    <widget class="QLabel" name="enter_playlist_url_label">
     <property name="geometry">
      <rect>
-      <x>120</x>
-      <y>330</y>
-      <width>111</width>
+      <x>150</x>
+      <y>380</y>
+      <width>171</width>
       <height>21</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>10</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
+      <family>Courier</family>
+      <pointsize>12</pointsize>
+      <weight>50</weight>
+      <bold>false</bold>
       <underline>false</underline>
      </font>
     </property>
     <property name="text">
-     <string>Playlist or Video URL</string>
+     <string>Playlist or video URL</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="url_input">
     <property name="geometry">
      <rect>
-      <x>120</x>
-      <y>350</y>
-      <width>480</width>
+      <x>150</x>
+      <y>401</y>
+      <width>540</width>
       <height>21</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Courier New</family>
+     </font>
+    </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(255, 255, 255)</string>
+     <string notr="true">color: rgb(240, 240, 240)</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -100,11 +106,16 @@
    <widget class="QPushButton" name="url_load_button">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>350</y>
-      <width>71</width>
+      <x>40</x>
+      <y>400</y>
+      <width>80</width>
       <height>23</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Courier</family>
+     </font>
     </property>
     <property name="text">
      <string>Load</string>
@@ -113,11 +124,16 @@
    <widget class="QPushButton" name="remove_from_table_button">
     <property name="geometry">
      <rect>
-      <x>660</x>
-      <y>260</y>
-      <width>131</width>
+      <x>760</x>
+      <y>290</y>
+      <width>150</width>
       <height>23</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Courier</family>
+     </font>
     </property>
     <property name="text">
      <string>Remove from table</string>
@@ -126,15 +142,16 @@
    <widget class="QLabel" name="url_error_label">
     <property name="geometry">
      <rect>
-      <x>440</x>
-      <y>332</y>
-      <width>171</width>
+      <x>476</x>
+      <y>382</y>
+      <width>221</width>
       <height>16</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>10</pointsize>
+      <family>Courier</family>
+      <pointsize>12</pointsize>
       <weight>50</weight>
       <italic>false</italic>
       <bold>false</bold>
@@ -142,23 +159,24 @@
      </font>
     </property>
     <property name="text">
-     <string>Could not retrieve URL. Try again.</string>
+     <string>Could not get URL. Try again.</string>
     </property>
    </widget>
    <widget class="QLabel" name="url_fetching_data_label">
     <property name="geometry">
      <rect>
-      <x>560</x>
-      <y>330</y>
-      <width>51</width>
+      <x>616</x>
+      <y>380</y>
+      <width>81</width>
       <height>21</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>10</pointsize>
+      <family>Courier</family>
+      <pointsize>12</pointsize>
       <weight>50</weight>
-      <italic>true</italic>
+      <italic>false</italic>
       <bold>false</bold>
       <underline>false</underline>
      </font>
@@ -170,14 +188,16 @@
    <widget class="QLabel" name="listWidget_label">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>40</y>
-      <width>101</width>
+      <x>40</x>
+      <y>50</y>
+      <width>141</width>
       <height>16</height>
      </rect>
     </property>
     <property name="font">
      <font>
+      <family>Courier</family>
+      <pointsize>14</pointsize>
       <weight>50</weight>
       <bold>false</bold>
       <underline>false</underline>
@@ -190,48 +210,37 @@
    <widget class="QPushButton" name="download_button">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>450</y>
-      <width>91</width>
+      <x>40</x>
+      <y>508</y>
+      <width>89</width>
       <height>23</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Courier</family>
+     </font>
     </property>
     <property name="text">
      <string>Download</string>
     </property>
    </widget>
-   <widget class="QLabel" name="downloaded_label">
+   <widget class="QPushButton" name="download_path">
     <property name="geometry">
      <rect>
-      <x>230</x>
-      <y>380</y>
-      <width>151</width>
-      <height>20</height>
+      <x>40</x>
+      <y>452</y>
+      <width>80</width>
+      <height>23</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>10</pointsize>
-      <weight>50</weight>
-      <bold>false</bold>
-      <underline>false</underline>
+      <family>Courier</family>
      </font>
     </property>
     <property name="text">
-     <string/>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="download_path">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>400</y>
-      <width>71</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Folder</string>
+     <string>Select</string>
     </property>
     <property name="autoDefault">
      <bool>false</bool>
@@ -240,14 +249,19 @@
    <widget class="QLabel" name="download_folder_select">
     <property name="geometry">
      <rect>
-      <x>120</x>
-      <y>400</y>
-      <width>480</width>
+      <x>150</x>
+      <y>456</y>
+      <width>540</width>
       <height>21</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Courier</family>
+     </font>
+    </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(255, 255, 255)</string>
+     <string notr="true">border-color: rgb(255, 255, 255)</string>
     </property>
     <property name="frameShape">
      <enum>QFrame::StyledPanel</enum>
@@ -262,14 +276,23 @@
    <widget class="QTableWidget" name="video_table">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>60</y>
-      <width>761</width>
-      <height>192</height>
+      <x>40</x>
+      <y>70</y>
+      <width>871</width>
+      <height>211</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Courier New</family>
+      <pointsize>13</pointsize>
+     </font>
+    </property>
+    <property name="focusPolicy">
+     <enum>Qt::StrongFocus</enum>
+    </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(255, 255, 255)</string>
+     <string notr="true">color: rgb(240, 240, 240)</string>
     </property>
     <property name="midLineWidth">
      <number>0</number>
@@ -290,7 +313,7 @@
      <bool>false</bool>
     </attribute>
     <attribute name="horizontalHeaderDefaultSectionSize">
-     <number>143</number>
+     <number>164</number>
     </attribute>
     <attribute name="verticalHeaderDefaultSectionSize">
      <number>25</number>
@@ -549,36 +572,71 @@
      <property name="text">
       <string>song</string>
      </property>
+     <property name="font">
+      <font>
+       <family>Courier</family>
+       <pointsize>13</pointsize>
+      </font>
+     </property>
     </column>
     <column>
      <property name="text">
       <string>album</string>
+     </property>
+     <property name="font">
+      <font>
+       <family>Courier</family>
+       <pointsize>13</pointsize>
+      </font>
      </property>
     </column>
     <column>
      <property name="text">
       <string>artist</string>
      </property>
+     <property name="font">
+      <font>
+       <family>Courier</family>
+       <pointsize>13</pointsize>
+      </font>
+     </property>
     </column>
     <column>
      <property name="text">
       <string>genre</string>
+     </property>
+     <property name="font">
+      <font>
+       <family>Courier</family>
+       <pointsize>13</pointsize>
+      </font>
      </property>
     </column>
     <column>
      <property name="text">
       <string>artwork</string>
      </property>
+     <property name="font">
+      <font>
+       <family>Courier</family>
+       <pointsize>13</pointsize>
+      </font>
+     </property>
     </column>
    </widget>
    <widget class="QPushButton" name="cancel_button">
     <property name="geometry">
      <rect>
-      <x>140</x>
-      <y>450</y>
-      <width>91</width>
+      <x>150</x>
+      <y>508</y>
+      <width>89</width>
       <height>23</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Courier</family>
+     </font>
     </property>
     <property name="text">
      <string>Cancel</string>
@@ -587,32 +645,38 @@
    <widget class="QLabel" name="enter_playlist_url_label_2">
     <property name="geometry">
      <rect>
-      <x>120</x>
-      <y>379</y>
-      <width>91</width>
+      <x>150</x>
+      <y>435</y>
+      <width>121</width>
       <height>21</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>10</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
+      <family>Courier</family>
+      <pointsize>12</pointsize>
+      <weight>50</weight>
+      <bold>false</bold>
       <underline>false</underline>
      </font>
     </property>
     <property name="text">
-     <string>Download Folder</string>
+     <string>Download folder</string>
     </property>
    </widget>
    <widget class="QPushButton" name="set_artist">
     <property name="geometry">
      <rect>
-      <x>100</x>
-      <y>260</y>
-      <width>71</width>
+      <x>130</x>
+      <y>290</y>
+      <width>80</width>
       <height>21</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Courier</family>
+     </font>
     </property>
     <property name="text">
      <string>Set artist</string>
@@ -621,11 +685,16 @@
    <widget class="QPushButton" name="set_album">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>260</y>
-      <width>71</width>
+      <x>40</x>
+      <y>290</y>
+      <width>80</width>
       <height>21</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Courier</family>
+     </font>
     </property>
     <property name="text">
      <string>Set album</string>
@@ -634,11 +703,16 @@
    <widget class="QPushButton" name="set_genre">
     <property name="geometry">
      <rect>
-      <x>171</x>
-      <y>260</y>
-      <width>71</width>
+      <x>220</x>
+      <y>290</y>
+      <width>80</width>
       <height>21</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Courier</family>
+     </font>
     </property>
     <property name="text">
      <string>Set genre</string>
@@ -647,24 +721,40 @@
    <widget class="QLineEdit" name="video_info_input">
     <property name="geometry">
      <rect>
-      <x>340</x>
-      <y>260</y>
-      <width>260</width>
+      <x>420</x>
+      <y>290</y>
+      <width>270</width>
       <height>21</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Courier New</family>
+     </font>
+    </property>
+    <property name="focusPolicy">
+     <enum>Qt::StrongFocus</enum>
+    </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(255, 255, 255)</string>
+     <string notr="true">color: rgb(240, 240, 240)</string>
+    </property>
+    <property name="cursorMoveStyle">
+     <enum>Qt::LogicalMoveStyle</enum>
     </property>
    </widget>
    <widget class="QPushButton" name="itunes_annotate">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>290</y>
-      <width>111</width>
+      <x>40</x>
+      <y>320</y>
+      <width>140</width>
       <height>21</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Courier</family>
+     </font>
     </property>
     <property name="text">
      <string>iTunes annotate</string>
@@ -673,11 +763,16 @@
    <widget class="QPushButton" name="revert_annotate">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>290</y>
-      <width>111</width>
+      <x>40</x>
+      <y>320</y>
+      <width>140</width>
       <height>21</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Courier</family>
+     </font>
     </property>
     <property name="text">
      <string>Revert</string>
@@ -686,15 +781,14 @@
    <widget class="QLabel" name="album_artwork">
     <property name="geometry">
      <rect>
-      <x>630</x>
-      <y>310</y>
-      <width>171</width>
-      <height>171</height>
+      <x>710</x>
+      <y>330</y>
+      <width>201</width>
+      <height>201</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(255, 255, 255);
-</string>
+     <string notr="true">background-color: rgb(82, 95, 106)</string>
     </property>
     <property name="frameShape">
      <enum>QFrame::Panel</enum>
@@ -706,7 +800,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap>img/default_artwork.png</pixmap>
+     <pixmap>../img/default_artwork.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -718,11 +812,16 @@
    <widget class="QPushButton" name="set_artwork">
     <property name="geometry">
      <rect>
-      <x>242</x>
-      <y>260</y>
-      <width>81</width>
+      <x>310</x>
+      <y>290</y>
+      <width>100</width>
       <height>21</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Courier</family>
+     </font>
     </property>
     <property name="text">
      <string>Set artwork</string>
@@ -731,35 +830,44 @@
    <widget class="QPushButton" name="change_video_info_input">
     <property name="geometry">
      <rect>
-      <x>529</x>
-      <y>290</y>
-      <width>71</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Replace</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="download_time">
-    <property name="geometry">
-     <rect>
-      <x>250</x>
-      <y>450</y>
-      <width>171</width>
+      <x>601</x>
+      <y>320</y>
+      <width>80</width>
       <height>21</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>10</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
+      <family>Courier</family>
+     </font>
+    </property>
+    <property name="focusPolicy">
+     <enum>Qt::StrongFocus</enum>
+    </property>
+    <property name="text">
+     <string>Replace</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="download_status">
+    <property name="geometry">
+     <rect>
+      <x>260</x>
+      <y>508</y>
+      <width>361</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Courier</family>
+      <pointsize>12</pointsize>
+      <weight>50</weight>
+      <bold>false</bold>
       <underline>false</underline>
      </font>
     </property>
     <property name="text">
-     <string>Download time: </string>
+     <string/>
     </property>
    </widget>
   </widget>
@@ -768,7 +876,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>825</width>
+     <width>951</width>
      <height>22</height>
     </rect>
    </property>

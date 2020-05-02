@@ -4,6 +4,7 @@ import sys
 import time
 from functools import partial
 import requests
+import qdarkstyle
 from PyQt5.QtCore import QThread, QPersistentModelIndex, pyqtSignal
 from PyQt5 import QtGui, QtCore
 from PyQt5.QtWidgets import QApplication, QFileDialog, QMainWindow, QTableWidgetItem
@@ -46,7 +47,7 @@ class MainPage(QMainWindow, UiMainWindow):
         # Get download directory
         self.download_dir = BASE_PATH
         self.download_folder_select.setText(
-            f"../{os.path.split(self.download_dir)[-1]}"  # get directory tail
+              self.get_parent_current_dir(self.download_dir)# get directory tail
         )
 
     def url_loading_button_click(self):
@@ -177,7 +178,7 @@ class MainPage(QMainWindow, UiMainWindow):
             self.download_dir = BASE_PATH
 
         self.download_folder_select.setText(
-            "../{}".format(os.path.split(self.download_dir)[-1])
+            self.get_parent_current_dir(self.download_dir)
         )
 
     def set_column_val(self, column_index):
@@ -202,14 +203,14 @@ class MainPage(QMainWindow, UiMainWindow):
         """ Executes when the button is clicked """
         try:
             assert self.videos_dict  # assert self.videos_dict exists
-        except AttributeError:
+        except (AttributeError, AssertionError):
+            self.download_status.setText("No video to download.")
             return
 
         playlist_properties = self.get_playlist_properties()
 
         self.download_button.setEnabled(False)
-        self.downloaded_label.setText("Downloading...")
-        self.download_time.setText("Download time:")
+        self.download_status.setText("Download...")
         self.down = DownloadingVideos(
             self.videos_dict, self.download_dir, playlist_properties
         )
@@ -220,8 +221,7 @@ class MainPage(QMainWindow, UiMainWindow):
         """Emit changes to MainPage once dowload is complete."""
         _min = int(download_time // 60)
         sec = int(download_time % 60)
-        self.download_time.setText(f"Download time: {_min} min. {sec} sec.")
-        self.downloaded_label.setText("")
+        self.download_status.setText(f"Download time: {_min} min. {sec} sec.")
         self.download_button.setEnabled(True)
 
     def change_cell(self):
@@ -262,16 +262,6 @@ class MainPage(QMainWindow, UiMainWindow):
 
         return playlist_properties
 
-    @staticmethod
-    def get_row_text(cell_item):
-        """Get text of cell value, if empty return empty str."""
-        try:
-            cell_item = cell_item.text()
-            return cell_item
-        except AttributeError:
-            cell_item = ""
-            return cell_item
-
     def remove_selected_items(self):
         """Removes the selected items from self.videos_table and self.videos_dict.
         Table widget updates -- multiple row deletion capable."""
@@ -305,6 +295,26 @@ class MainPage(QMainWindow, UiMainWindow):
         except IndexError:  # no items in self.videos_dict nor video_list
             return
 
+    @staticmethod
+    def get_row_text(cell_item):
+        """Get text of cell value, if empty return empty str."""
+        try:
+            cell_item = cell_item.text()
+            return cell_item
+        except AttributeError:
+            cell_item = ""
+            return cell_item
+
+    @staticmethod
+    def get_parent_current_dir(current_path):
+        """Get current and parent directory as str."""
+        parent_dir, current_dir = os.path.split(current_path)
+        parent_dir = os.path.split(parent_dir)[1]  # get tail of parent_dir
+        parent_current_dir = f"../{parent_dir}/{current_dir}"
+
+        return parent_current_dir
+
+        
 
 class UrlLoading(QThread):
     """ Loads the videos data from playlist in another thread."""
@@ -387,5 +397,7 @@ class DownloadingVideos(QThread):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     widget = MainPage()
+
+    app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
     widget.show()
     sys.exit(app.exec_())
