@@ -830,9 +830,9 @@
    <widget class="QPushButton" name="change_video_info_input">
     <property name="geometry">
      <rect>
-      <x>601</x>
+      <x>490</x>
       <y>320</y>
-      <width>80</width>
+      <width>70</width>
       <height>21</height>
      </rect>
     </property>
@@ -868,6 +868,27 @@
     </property>
     <property name="text">
      <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="change_video_info_input_all">
+    <property name="geometry">
+     <rect>
+      <x>580</x>
+      <y>320</y>
+      <width>110</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Courier</family>
+     </font>
+    </property>
+    <property name="focusPolicy">
+     <enum>Qt::StrongFocus</enum>
+    </property>
+    <property name="text">
+     <string>Replace all</string>
     </property>
    </widget>
   </widget>
