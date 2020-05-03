@@ -6,14 +6,8 @@ from functools import partial
 import requests
 import qdarkstyle
 from PyQt5.QtCore import QThread, QPersistentModelIndex, pyqtSignal
-from PyQt5 import QtGui, QtCore
-from PyQt5.QtWidgets import (
-    QApplication,
-    QFileDialog,
-    QMainWindow,
-    QWidget,
-    QTableWidgetItem,
-)
+from PyQt5 import QtGui, QtCore, QtWidgets
+from PyQt5.QtWidgets import QApplication, QFileDialog, QMainWindow, QTableWidgetItem
 import utils
 from ui import UiMainWindow
 
@@ -55,11 +49,14 @@ class MainPage(QMainWindow, UiMainWindow):
         # Buttons connection with the appropriate functions
         self.url_load_button.clicked.connect(self.url_loading_button_click)
         self.url_input.returnPressed.connect(self.url_load_button.click)
+        self.url_input.mousePressEvent = lambda _: self.url_input.selectAll()
         self.download_button.clicked.connect(self.download_button_click)
         self.download_path.clicked.connect(self.get_download_path)
         self.itunes_annotate.clicked.connect(self.itunes_annotate_click)
         self.revert_annotate.clicked.connect(self.default_annotate_table)
-        self.video_table.cellClicked.connect(self.artwork_info_display)
+        self.video_table.cellPressed.connect(self.display_artwork_videoinfo)
+        # edit table cell with single click
+        self.video_table.setEditTriggers(QtWidgets.QAbstractItemView.CurrentChanged)
         # Input changes in video property text box to appropriate cell.
         self.change_video_info_input.clicked.connect(self.replace_cell_item)
         self.change_video_info_input_all.clicked.connect(self.replace_cell_column)
@@ -119,6 +116,18 @@ class MainPage(QMainWindow, UiMainWindow):
         self.itunes_annotate.hide()
         self.revert_annotate.show()
 
+    def get_download_path(self):
+        """Fetch download file path"""
+        self.download_dir = QFileDialog.getExistingDirectory(
+            self, "Open folder", BASE_PATH
+        )
+        if not self.download_dir:
+            self.download_dir = BASE_PATH
+
+        self.download_folder_select.setText(
+            self.get_parent_current_dir(self.download_dir)
+        )
+
     def download_button_click(self):
         """ Executes when the button is clicked """
         try:
@@ -144,18 +153,6 @@ class MainPage(QMainWindow, UiMainWindow):
         self.download_status.setText(f"Download time: {_min} min. {sec} sec.")
         self.download_button.setEnabled(True)
 
-    def get_download_path(self):
-        """Fetch download file path"""
-        self.download_dir = QFileDialog.getExistingDirectory(
-            self, "Open folder", BASE_PATH
-        )
-        if not self.download_dir:
-            self.download_dir = BASE_PATH
-
-        self.download_folder_select.setText(
-            self.get_parent_current_dir(self.download_dir)
-        )
-
     def default_annotate_table(self):
         """Default table annotation to video title in song columns"""
         if not self.videos_dict:  # i.e. an invalid playlist input
@@ -167,7 +164,7 @@ class MainPage(QMainWindow, UiMainWindow):
             self.video_table.setItem(index, 1, QTableWidgetItem("Unknown"))
             self.video_table.setItem(index, 2, QTableWidgetItem("Unknown"))
             self.video_table.setItem(index, 3, QTableWidgetItem("Unknown"))
-            self.video_table.setItem(index, 4, QTableWidgetItem(""))
+            self.video_table.setItem(index, 4, QTableWidgetItem("Unknown"))
         self.revert_annotate.hide()
         self.itunes_annotate.show()
 
@@ -200,7 +197,7 @@ class MainPage(QMainWindow, UiMainWindow):
             row_index, artwork_index, QTableWidgetItem(artwork_name)
         )
 
-    def artwork_info_display(self, row, column):
+    def display_artwork_videoinfo(self, row, column):
         """Display selected artwork and self.video_info_input on Qpixmap widget."""
         # artwork
         try:

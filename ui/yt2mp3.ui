@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>951</width>
-    <height>589</height>
+    <height>586</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -24,7 +24,7 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>YouTube to MP3</string>
   </property>
   <property name="autoFillBackground">
    <bool>false</bool>
@@ -36,7 +36,7 @@
    <widget class="QLabel" name="title_label">
     <property name="geometry">
      <rect>
-      <x>360</x>
+      <x>352</x>
       <y>10</y>
       <width>241</width>
       <height>41</height>
@@ -57,7 +57,7 @@
      <string notr="true"/>
     </property>
     <property name="text">
-     <string notr="true">TurboTubeMp3</string>
+     <string notr="true">YouTube to MP3</string>
     </property>
    </widget>
    <widget class="QLabel" name="enter_playlist_url_label">
@@ -125,7 +125,7 @@
     <property name="geometry">
      <rect>
       <x>760</x>
-      <y>290</y>
+      <y>300</y>
       <width>150</width>
       <height>23</height>
      </rect>
@@ -211,7 +211,7 @@
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>508</y>
+      <y>516</y>
       <width>89</width>
       <height>23</height>
      </rect>
@@ -279,7 +279,7 @@
       <x>40</x>
       <y>70</y>
       <width>871</width>
-      <height>211</height>
+      <height>214</height>
      </rect>
     </property>
     <property name="font">
@@ -316,7 +316,7 @@
      <number>164</number>
     </attribute>
     <attribute name="verticalHeaderDefaultSectionSize">
-     <number>25</number>
+     <number>26</number>
     </attribute>
     <row/>
     <row/>
@@ -628,7 +628,7 @@
     <property name="geometry">
      <rect>
       <x>150</x>
-      <y>508</y>
+      <y>516</y>
       <width>89</width>
       <height>23</height>
      </rect>
@@ -668,7 +668,7 @@
     <property name="geometry">
      <rect>
       <x>130</x>
-      <y>290</y>
+      <y>330</y>
       <width>80</width>
       <height>21</height>
      </rect>
@@ -686,7 +686,7 @@
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>290</y>
+      <y>330</y>
       <width>80</width>
       <height>21</height>
      </rect>
@@ -704,7 +704,7 @@
     <property name="geometry">
      <rect>
       <x>220</x>
-      <y>290</y>
+      <y>330</y>
       <width>80</width>
       <height>21</height>
      </rect>
@@ -721,9 +721,9 @@
    <widget class="QLineEdit" name="video_info_input">
     <property name="geometry">
      <rect>
-      <x>420</x>
-      <y>290</y>
-      <width>270</width>
+      <x>190</x>
+      <y>300</y>
+      <width>500</width>
       <height>21</height>
      </rect>
     </property>
@@ -746,7 +746,7 @@
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>320</y>
+      <y>300</y>
       <width>140</width>
       <height>21</height>
      </rect>
@@ -764,7 +764,7 @@
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>320</y>
+      <y>300</y>
       <width>140</width>
       <height>21</height>
      </rect>
@@ -782,7 +782,7 @@
     <property name="geometry">
      <rect>
       <x>710</x>
-      <y>330</y>
+      <y>338</y>
       <width>201</width>
       <height>201</height>
      </rect>
@@ -813,7 +813,7 @@
     <property name="geometry">
      <rect>
       <x>310</x>
-      <y>290</y>
+      <y>330</y>
       <width>100</width>
       <height>21</height>
      </rect>
@@ -831,7 +831,7 @@
     <property name="geometry">
      <rect>
       <x>490</x>
-      <y>320</y>
+      <y>330</y>
       <width>70</width>
       <height>21</height>
      </rect>
@@ -852,7 +852,7 @@
     <property name="geometry">
      <rect>
       <x>260</x>
-      <y>508</y>
+      <y>516</y>
       <width>361</width>
       <height>21</height>
      </rect>
@@ -874,7 +874,7 @@
     <property name="geometry">
      <rect>
       <x>580</x>
-      <y>320</y>
+      <y>330</y>
       <width>110</width>
       <height>21</height>
      </rect>
@@ -895,7 +895,7 @@
     <property name="geometry">
      <rect>
       <x>820</x>
-      <y>50</y>
+      <y>48</y>
       <width>91</width>
       <height>21</height>
      </rect>
