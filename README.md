@@ -10,7 +10,7 @@ A desktop application to download YouTube videos as annotated MP3 files.
 ## Using the application
 Paste a YouTube playlist or video URL and load its content. Make edits to the table as you need, and click "iTunes annotate" to provide annotation hints to your videos. Choose a download folder, download your videos, and just like that, you have nicely annotated MP3 files.
 
-This application uses PyQT5 to provide the user interface and multithreading to execute calls asynchronously. The backend uses the iTunes API to suggest song annotations, the YouTube API to download the video content as MP4 audio files, and FFMPEG to convert MP4 to MP3.
+This application uses PyQt5 to provide the user interface and multithreading to execute calls asynchronously. The backend uses ```itunespy``` to suggest song annotations, ```pytube``` to download the YouTube video as an MP4 audio file, and FFmpeg to convert the MP4 file to MP3.
 
 Watch the <a href="https://www.youtube.com/watch?v=z_aymV1H1Ro&feature=youtu.be">video demo</a> for more information.
 <hr>
@@ -22,7 +22,7 @@ Watch the <a href="https://www.youtube.com/watch?v=z_aymV1H1Ro&feature=youtu.be"
 3) ```pip install -r requirements.txt```
 4) ```python main.py```
 
-Check <b>Troubleshooting</b> if you encounter any trouble running / using the application or downloading MP3 files. If undocumented exceptions occur, please file issue in <a href="https://github.com/irahorecka/YouTube2Mp3/issues">issues</a>.
+Check <b>Troubleshooting</b> if you encounter any trouble running / using the application or downloading MP3 files. If undocumented exceptions occur, please file the issue in <a href="https://github.com/irahorecka/YouTube2Mp3/issues">issues</a>.
 <hr>
 
 ## Download ```ffmpeg```
@@ -45,4 +45,4 @@ There are several options to install ```ffmpeg``` depending on your OS.
 
 1) If the script completes instantly without downloading your video(s), you are probably experiencing an ```SSL: CERTIFICATE_VERIFY_FAIL``` exception. This fails to instantiate ```pytube.Youtube```, thus failing the download prematurely.
 
-    To troubleshoot this (if you're using macOS), go to Macintosh HD > Applications > Python3.6 folder (or whatever version of python you're using) > double click on ```Install Certificates.command``` file. This should do the trick.
+    To troubleshoot this (if you're using macOS), go to Macintosh HD > Applications > Python3.7 folder (or whatever version of python you're using) > double click on ```Install Certificates.command``` file. This should do the trick.

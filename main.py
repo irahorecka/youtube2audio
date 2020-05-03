@@ -7,7 +7,13 @@ import requests
 import qdarkstyle
 from PyQt5.QtCore import QThread, QPersistentModelIndex, pyqtSignal
 from PyQt5 import QtGui, QtCore
-from PyQt5.QtWidgets import QApplication, QFileDialog, QMainWindow, QTableWidgetItem
+from PyQt5.QtWidgets import (
+    QApplication,
+    QFileDialog,
+    QMainWindow,
+    QWidget,
+    QTableWidgetItem,
+)
 import utils
 from ui import UiMainWindow
 
@@ -48,6 +54,7 @@ class MainPage(QMainWindow, UiMainWindow):
         )
         # Buttons connection with the appropriate functions
         self.url_load_button.clicked.connect(self.url_loading_button_click)
+        self.url_input.returnPressed.connect(self.url_load_button.click)
         self.download_button.clicked.connect(self.download_button_click)
         self.download_path.clicked.connect(self.get_download_path)
         self.itunes_annotate.clicked.connect(self.itunes_annotate_click)
@@ -56,6 +63,7 @@ class MainPage(QMainWindow, UiMainWindow):
         # Input changes in video property text box to appropriate cell.
         self.change_video_info_input.clicked.connect(self.replace_cell_item)
         self.change_video_info_input_all.clicked.connect(self.replace_cell_column)
+        self.video_info_input.returnPressed.connect(self.change_video_info_input.click)
         # Exit application
         self.cancel_button.clicked.connect(self.close)
         # Get download directory
@@ -411,7 +419,6 @@ class DownloadingVideos(QThread):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     widget = MainPage()
-
     app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
     widget.show()
     sys.exit(app.exec_())
