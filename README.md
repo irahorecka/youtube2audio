@@ -2,7 +2,7 @@
 A desktop application to download YouTube videos as annotated MP3 files.
 <br>
 <p align="left">
-<img src=https://i.imgur.com/wUwfptG.png alt="YouTube to MP3"
+<img src=https://i.imgur.com/3wUZVE7.png alt="YouTube to MP3"
     width=800>
 </p>
 <hr>
@@ -12,7 +12,7 @@ Paste a YouTube playlist or video URL and load its content. Make edits to the ta
 
 This application uses PyQt5 to provide the user interface and multithreading to execute calls asynchronously. The backend uses ```itunespy``` to suggest song annotations, ```pytube``` to download the YouTube video as an MP4 audio file, and FFmpeg to convert the MP4 file to MP3.
 
-Watch the <a href="https://www.youtube.com/watch?v=z_aymV1H1Ro&feature=youtu.be">video demo</a> for more information.
+Watch the <a href="https://i.imgur.com/z88uqal.mp4">video demo</a> for more information.
 <hr>
 
 ## Running the application
