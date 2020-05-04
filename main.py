@@ -99,6 +99,7 @@ class MainPage(QMainWindow, UiMainWindow):
 
     def itunes_annotate_click(self):
         """Load iTunes annotation info on different thread."""
+        self.video_info_input.setText("")
         try:
             assert self.videos_dict  # i.e. click annotate button with empty table
         except (AttributeError, AssertionError):
@@ -107,14 +108,18 @@ class MainPage(QMainWindow, UiMainWindow):
         self.annotate.loadFinished.connect(self.itunes_annotate_finished)
         self.annotate.start()
 
-    def itunes_annotate_finished(self, itunes_query_tuple):
+    def itunes_annotate_finished(self, itunes_query_tuple, query_status):
         """Populate GUI table with iTunes meta information once
         iTunes annotation query complete."""
         for row_index, ITUNES_META_JSON in itunes_query_tuple:
             self.itunes_annotate_table(row_index, ITUNES_META_JSON)
 
-        self.itunes_annotate.hide()
-        self.revert_annotate.show()
+        if not query_status:  # No iTunes metadata available or poor connection
+            self.video_info_input.setText("Could not get iTunes data.")
+        else:
+            # show revert button if iTunes annotation loaded successfully
+            self.itunes_annotate.hide()
+            self.revert_annotate.show()
 
     def get_download_path(self):
         """Fetch download file path"""
@@ -159,6 +164,8 @@ class MainPage(QMainWindow, UiMainWindow):
             self.video_table.clearContents()
             return
 
+        self.video_info_input.setText("")
+
         for index, key in enumerate(self.videos_dict):
             self.video_table.setItem(index, 0, QTableWidgetItem(key))  # part of QWidget
             self.video_table.setItem(index, 1, QTableWidgetItem("Unknown"))
@@ -188,7 +195,7 @@ class MainPage(QMainWindow, UiMainWindow):
             album_name, album_index = "Unknown", 1
             artist_name, artist_index = "Unknown", 2
             genre_name, genre_index = "Unknown", 3
-            artwork_name, artwork_index = "default_artwork.png", 4
+            artwork_name, artwork_index = "Unknown", 4
         self.video_table.setItem(row_index, song_index, QTableWidgetItem(song_name))
         self.video_table.setItem(row_index, album_index, QTableWidgetItem(album_name))
         self.video_table.setItem(row_index, artist_index, QTableWidgetItem(artist_name))
@@ -357,7 +364,7 @@ class UrlLoading(QThread):
 class iTunesLoading(QThread):
     """Get video data properties from iTunes."""
 
-    loadFinished = pyqtSignal(tuple)
+    loadFinished = pyqtSignal(tuple, bool)
 
     def __init__(self, videos_dict, parent=None):
         QThread.__init__(self, parent)
@@ -370,12 +377,27 @@ class iTunesLoading(QThread):
                 (row_index, key_value)
                 for row_index, key_value in enumerate(self.videos_dict.items())
             )
-        except AttributeError:  # i.e. no content in table
+        except AttributeError:  # i.e. no content in table -- exit early
             return
         itunes_query = utils.map_threads(utils.thread_query_itunes, query_iter)
         itunes_query_tuple = tuple(itunes_query)
+        if not self.check_itunes_nonetype(itunes_query_tuple):
+            query_status = False
+        else:
+            query_status = True
 
-        self.loadFinished.emit(itunes_query_tuple)
+        self.loadFinished.emit(itunes_query_tuple, query_status)
+
+    @staticmethod
+    def check_itunes_nonetype(query_tuple):
+        """Check if none of the queries were successful"""
+        index, itunes_query = tuple(zip(*query_tuple))
+        try:
+            # successful queries return a dict obj, which is unhashable
+            unique_queries = set(itunes_query)
+            return
+        except TypeError:
+            return True
 
 
 class DownloadingVideos(QThread):
