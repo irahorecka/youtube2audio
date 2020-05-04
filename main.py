@@ -33,19 +33,6 @@ class MainPage(QMainWindow, UiMainWindow):
         )
         # Connect the delete video button with the remove_selected_items fn.
         self.remove_from_table_button.clicked.connect(self.remove_selected_items)
-        # Connect song property setter buttons.
-        self.set_album.clicked.connect(
-            partial(self.set_albm_artst_genr_artwrk, column_index=1)
-        )
-        self.set_artist.clicked.connect(
-            partial(self.set_albm_artst_genr_artwrk, column_index=2)
-        )
-        self.set_genre.clicked.connect(
-            partial(self.set_albm_artst_genr_artwrk, column_index=3)
-        )
-        self.set_artwork.clicked.connect(
-            partial(self.set_albm_artst_genr_artwrk, column_index=4)
-        )
         # Buttons connection with the appropriate functions
         self.url_load_button.clicked.connect(self.url_loading_button_click)
         self.url_input.returnPressed.connect(self.url_load_button.click)
@@ -103,6 +90,7 @@ class MainPage(QMainWindow, UiMainWindow):
         try:
             assert self.videos_dict  # i.e. click annotate button with empty table
         except (AttributeError, AssertionError):
+            self.video_info_input.setText("Could not get information.")
             return
         self.annotate = iTunesLoading(self.videos_dict)
         self.annotate.loadFinished.connect(self.itunes_annotate_finished)
@@ -115,7 +103,7 @@ class MainPage(QMainWindow, UiMainWindow):
             self.itunes_annotate_table(row_index, ITUNES_META_JSON)
 
         if not query_status:  # No iTunes metadata available or poor connection
-            self.video_info_input.setText("Could not get iTunes data.")
+            self.video_info_input.setText("Could not get information.")
         else:
             # show revert button if iTunes annotation loaded successfully
             self.itunes_annotate.hide()
@@ -235,8 +223,8 @@ class MainPage(QMainWindow, UiMainWindow):
         self.album_artwork.setAlignment(QtCore.Qt.AlignCenter)
 
     def set_albm_artst_genr_artwrk(self, column_index):
-        """Set cell content in album, artist, genre, and artwork
-        columns based on cell selection or selected cell content."""
+        """Set cell content in song, album, artist, genre, or artwork
+        column based on video info input or selected cell content."""
         rows = self.video_table.rowCount()
         try:
             for row_index in range(rows):

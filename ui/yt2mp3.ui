@@ -63,7 +63,7 @@
    <widget class="QLabel" name="enter_playlist_url_label">
     <property name="geometry">
      <rect>
-      <x>150</x>
+      <x>140</x>
       <y>450</y>
       <width>171</width>
       <height>21</height>
@@ -85,9 +85,9 @@
    <widget class="QLineEdit" name="url_input">
     <property name="geometry">
      <rect>
-      <x>150</x>
+      <x>140</x>
       <y>471</y>
-      <width>540</width>
+      <width>550</width>
       <height>21</height>
      </rect>
     </property>
@@ -108,7 +108,7 @@
      <rect>
       <x>40</x>
       <y>470</y>
-      <width>80</width>
+      <width>90</width>
       <height>23</height>
      </rect>
     </property>
@@ -136,7 +136,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Remove from table</string>
+     <string>Remove video</string>
     </property>
    </widget>
    <widget class="QLabel" name="url_error_label">
@@ -185,34 +185,12 @@
      <string>Loading...</string>
     </property>
    </widget>
-   <widget class="QLabel" name="listWidget_label">
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>50</y>
-      <width>141</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Courier</family>
-      <pointsize>14</pointsize>
-      <weight>50</weight>
-      <bold>false</bold>
-      <underline>false</underline>
-     </font>
-    </property>
-    <property name="text">
-     <string>Loaded videos:</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="download_button">
     <property name="geometry">
      <rect>
       <x>40</x>
       <y>586</y>
-      <width>89</width>
+      <width>110</width>
       <height>23</height>
      </rect>
     </property>
@@ -230,7 +208,7 @@
      <rect>
       <x>40</x>
       <y>522</y>
-      <width>80</width>
+      <width>90</width>
       <height>23</height>
      </rect>
     </property>
@@ -249,9 +227,9 @@
    <widget class="QLabel" name="download_folder_select">
     <property name="geometry">
      <rect>
-      <x>150</x>
+      <x>140</x>
       <y>526</y>
-      <width>540</width>
+      <width>550</width>
       <height>21</height>
      </rect>
     </property>
@@ -630,9 +608,9 @@
    <widget class="QPushButton" name="cancel_button">
     <property name="geometry">
      <rect>
-      <x>150</x>
+      <x>160</x>
       <y>586</y>
-      <width>89</width>
+      <width>110</width>
       <height>23</height>
      </rect>
     </property>
@@ -648,7 +626,7 @@
    <widget class="QLabel" name="enter_playlist_url_label_2">
     <property name="geometry">
      <rect>
-      <x>150</x>
+      <x>140</x>
       <y>505</y>
       <width>121</width>
       <height>21</height>
@@ -667,66 +645,12 @@
      <string>Download folder</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="set_artist">
-    <property name="geometry">
-     <rect>
-      <x>130</x>
-      <y>400</y>
-      <width>80</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Courier</family>
-     </font>
-    </property>
-    <property name="text">
-     <string>Set artist</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="set_album">
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>400</y>
-      <width>80</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Courier</family>
-     </font>
-    </property>
-    <property name="text">
-     <string>Set album</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="set_genre">
-    <property name="geometry">
-     <rect>
-      <x>220</x>
-      <y>400</y>
-      <width>80</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Courier</family>
-     </font>
-    </property>
-    <property name="text">
-     <string>Set genre</string>
-    </property>
-   </widget>
    <widget class="QLineEdit" name="video_info_input">
     <property name="geometry">
      <rect>
-      <x>190</x>
+      <x>180</x>
       <y>370</y>
-      <width>500</width>
+      <width>510</width>
       <height>21</height>
      </rect>
     </property>
@@ -750,7 +674,7 @@
      <rect>
       <x>40</x>
       <y>370</y>
-      <width>140</width>
+      <width>130</width>
       <height>21</height>
      </rect>
     </property>
@@ -768,7 +692,7 @@
      <rect>
       <x>40</x>
       <y>370</y>
-      <width>140</width>
+      <width>130</width>
       <height>21</height>
      </rect>
     </property>
@@ -812,24 +736,6 @@
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QPushButton" name="set_artwork">
-    <property name="geometry">
-     <rect>
-      <x>310</x>
-      <y>400</y>
-      <width>100</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Courier</family>
-     </font>
-    </property>
-    <property name="text">
-     <string>Set artwork</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="change_video_info_input">
     <property name="geometry">
      <rect>
@@ -854,7 +760,7 @@
    <widget class="QLabel" name="download_status">
     <property name="geometry">
      <rect>
-      <x>260</x>
+      <x>330</x>
       <y>586</y>
       <width>361</width>
       <height>21</height>
