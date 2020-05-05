@@ -8,9 +8,9 @@ A desktop application to download YouTube videos as annotated MP3 files.
 <hr>
 
 ## Using the application
-Paste a YouTube playlist or video URL and load its content. Make edits to the table as you need, and click "iTunes annotate" to provide annotation hints to your videos. Choose a download folder, download your videos, and just like that, you have nicely annotated MP3 files.
+Paste a YouTube playlist or video URL and load its content. Make edits to the table as you need, and click "Ask butler" (not shown in image above) to provide annotation hints to your videos. Choose a download folder, download your videos, and just like that, you have nicely annotated MP3 files.
 
-This application uses PyQt5 to provide the user interface and multithreading to execute calls asynchronously. The backend uses ```itunespy``` to suggest song annotations, ```pytube``` to download the YouTube video as an MP4 audio file, and FFmpeg to convert the MP4 file to MP3.
+This application uses PyQt5 to provide the user interface and multithreading to execute calls asynchronously. The backend uses ```itunespy``` to suggest song annotations (i.e. "Ask butler"), ```pytube``` to download the YouTube video as an MP4 audio file, and FFmpeg to convert the MP4 file to MP3.
 
 Watch the <a href="https://i.imgur.com/z88uqal.mp4">video demo</a> for more information.
 <hr>

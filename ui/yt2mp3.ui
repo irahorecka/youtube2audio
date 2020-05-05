@@ -760,7 +760,7 @@
    <widget class="QLabel" name="download_status">
     <property name="geometry">
      <rect>
-      <x>330</x>
+      <x>300</x>
       <y>586</y>
       <width>361</width>
       <height>21</height>

@@ -218,7 +218,7 @@ class Ui_MainWindow(object):
         self.change_video_info_input.setFocusPolicy(QtCore.Qt.StrongFocus)
         self.change_video_info_input.setObjectName("change_video_info_input")
         self.download_status = QtWidgets.QLabel(self.centralwidget)
-        self.download_status.setGeometry(QtCore.QRect(330, 586, 361, 21))
+        self.download_status.setGeometry(QtCore.QRect(300, 586, 361, 21))
         font = QtGui.QFont()
         font.setFamily("Courier")
         font.setPointSize(12)
