@@ -38,7 +38,7 @@
      <rect>
       <x>352</x>
       <y>10</y>
-      <width>241</width>
+      <width>291</width>
       <height>41</height>
      </rect>
     </property>
@@ -290,14 +290,14 @@
     <attribute name="horizontalHeaderCascadingSectionResizes">
      <bool>false</bool>
     </attribute>
-    <attribute name="horizontalHeaderDefaultSectionSize">
-     <number>164</number>
-    </attribute>
     <attribute name="horizontalHeaderMinimumSectionSize">
      <number>19</number>
     </attribute>
+    <attribute name="horizontalHeaderDefaultSectionSize">
+     <number>164</number>
+    </attribute>
     <attribute name="verticalHeaderDefaultSectionSize">
-     <number>25</number>
+     <number>33</number>
     </attribute>
     <row/>
     <row/>
@@ -803,9 +803,9 @@
    <widget class="QLabel" name="credit_url">
     <property name="geometry">
      <rect>
-      <x>820</x>
+      <x>800</x>
       <y>48</y>
-      <width>91</width>
+      <width>111</width>
       <height>21</height>
      </rect>
     </property>
@@ -822,6 +822,19 @@
      <string>Source code</string>
     </property>
    </widget>
+   <widget class="QCheckBox" name="save_as_mp4_box">
+    <property name="geometry">
+     <rect>
+      <x>580</x>
+      <y>520</y>
+      <width>101</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Save as MP4</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -829,7 +842,7 @@
      <x>0</x>
      <y>0</y>
      <width>951</width>
-     <height>22</height>
+     <height>30</height>
     </rect>
    </property>
   </widget>

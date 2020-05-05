@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'ui/yt2mp3.ui'
+# Form implementation generated from reading ui file 'yt2mp3_new.ui'
 #
 # Created by: PyQt5 UI code generator 5.14.2
 #
@@ -29,7 +29,7 @@ class Ui_MainWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.title_label = QtWidgets.QLabel(self.centralwidget)
-        self.title_label.setGeometry(QtCore.QRect(352, 10, 241, 41))
+        self.title_label.setGeometry(QtCore.QRect(352, 10, 291, 41))
         font = QtGui.QFont()
         font.setFamily("Copperplate")
         font.setPointSize(28)
@@ -162,7 +162,7 @@ class Ui_MainWindow(object):
         self.video_table.horizontalHeader().setCascadingSectionResizes(False)
         self.video_table.horizontalHeader().setDefaultSectionSize(164)
         self.video_table.horizontalHeader().setMinimumSectionSize(19)
-        self.video_table.verticalHeader().setDefaultSectionSize(25)
+        self.video_table.verticalHeader().setDefaultSectionSize(33)
         self.cancel_button = QtWidgets.QPushButton(self.centralwidget)
         self.cancel_button.setGeometry(QtCore.QRect(160, 586, 110, 23))
         font = QtGui.QFont()
@@ -206,7 +206,7 @@ class Ui_MainWindow(object):
         self.album_artwork.setFrameShape(QtWidgets.QFrame.Panel)
         self.album_artwork.setFrameShadow(QtWidgets.QFrame.Plain)
         self.album_artwork.setText("")
-        self.album_artwork.setPixmap(QtGui.QPixmap("ui/../img/default_artwork.png"))
+        self.album_artwork.setPixmap(QtGui.QPixmap("../img/default_artwork.png"))
         self.album_artwork.setScaledContents(True)
         self.album_artwork.setAlignment(QtCore.Qt.AlignCenter)
         self.album_artwork.setObjectName("album_artwork")
@@ -236,7 +236,7 @@ class Ui_MainWindow(object):
         self.change_video_info_input_all.setFocusPolicy(QtCore.Qt.StrongFocus)
         self.change_video_info_input_all.setObjectName("change_video_info_input_all")
         self.credit_url = QtWidgets.QLabel(self.centralwidget)
-        self.credit_url.setGeometry(QtCore.QRect(820, 48, 91, 21))
+        self.credit_url.setGeometry(QtCore.QRect(800, 48, 111, 21))
         font = QtGui.QFont()
         font.setFamily("Courier")
         font.setPointSize(12)
@@ -245,9 +245,12 @@ class Ui_MainWindow(object):
         font.setWeight(50)
         self.credit_url.setFont(font)
         self.credit_url.setObjectName("credit_url")
+        self.save_as_mp4_box = QtWidgets.QCheckBox(self.centralwidget)
+        self.save_as_mp4_box.setGeometry(QtCore.QRect(580, 520, 101, 22))
+        self.save_as_mp4_box.setObjectName("save_as_mp4_box")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 951, 22))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 951, 30))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
@@ -286,3 +289,4 @@ class Ui_MainWindow(object):
         self.change_video_info_input.setText(_translate("MainWindow", "Replace"))
         self.change_video_info_input_all.setText(_translate("MainWindow", "Replace all"))
         self.credit_url.setText(_translate("MainWindow", "Source code"))
+        self.save_as_mp4_box.setText(_translate("MainWindow", "Save as MP4"))
