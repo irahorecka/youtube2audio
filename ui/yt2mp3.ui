@@ -38,7 +38,7 @@
      <rect>
       <x>352</x>
       <y>10</y>
-      <width>291</width>
+      <width>311</width>
       <height>41</height>
      </rect>
     </property>
@@ -628,7 +628,7 @@
      <rect>
       <x>140</x>
       <y>505</y>
-      <width>121</width>
+      <width>151</width>
       <height>21</height>
      </rect>
     </property>
@@ -803,9 +803,9 @@
    <widget class="QLabel" name="credit_url">
     <property name="geometry">
      <rect>
-      <x>800</x>
+      <x>790</x>
       <y>48</y>
-      <width>111</width>
+      <width>121</width>
       <height>21</height>
      </rect>
     </property>

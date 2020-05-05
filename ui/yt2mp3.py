@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'yt2mp3_new.ui'
+# Form implementation generated from reading ui file 'yt2mp3.ui'
 #
 # Created by: PyQt5 UI code generator 5.14.2
 #
@@ -29,7 +29,7 @@ class Ui_MainWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.title_label = QtWidgets.QLabel(self.centralwidget)
-        self.title_label.setGeometry(QtCore.QRect(352, 10, 291, 41))
+        self.title_label.setGeometry(QtCore.QRect(352, 10, 311, 41))
         font = QtGui.QFont()
         font.setFamily("Copperplate")
         font.setPointSize(28)
@@ -170,7 +170,7 @@ class Ui_MainWindow(object):
         self.cancel_button.setFont(font)
         self.cancel_button.setObjectName("cancel_button")
         self.enter_playlist_url_label_2 = QtWidgets.QLabel(self.centralwidget)
-        self.enter_playlist_url_label_2.setGeometry(QtCore.QRect(140, 505, 121, 21))
+        self.enter_playlist_url_label_2.setGeometry(QtCore.QRect(140, 505, 151, 21))
         font = QtGui.QFont()
         font.setFamily("Courier")
         font.setPointSize(12)
@@ -236,7 +236,7 @@ class Ui_MainWindow(object):
         self.change_video_info_input_all.setFocusPolicy(QtCore.Qt.StrongFocus)
         self.change_video_info_input_all.setObjectName("change_video_info_input_all")
         self.credit_url = QtWidgets.QLabel(self.centralwidget)
-        self.credit_url.setGeometry(QtCore.QRect(800, 48, 111, 21))
+        self.credit_url.setGeometry(QtCore.QRect(790, 48, 121, 21))
         font = QtGui.QFont()
         font.setFamily("Courier")
         font.setPointSize(12)
