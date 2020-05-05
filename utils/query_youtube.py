@@ -50,22 +50,6 @@ def video_content_to_dict(vid_info_list):
         title = video["title"]
         video_dict[title] = {}
         video_dict[title]["id"] = video["id"]
-        video_dict[title]["duration"] = seconds_to_mmss(video["duration"])
+        video_dict[title]["duration"] = video["duration"]
 
     return video_dict
-
-
-def seconds_to_mmss(seconds):
-    """Returns a string in the format of mm:ss."""
-    _min = seconds // 60
-    sec = seconds % 60
-    if _min < 10:
-        min_str = "0" + str(_min)
-    else:
-        min_str = str(_min)
-    if sec < 10:
-        sec_str = "0" + str(sec)
-    else:
-        sec_str = str(sec)
-
-    return min_str + ":" + sec_str
