@@ -39,12 +39,12 @@ def thread_query_youtube(args):
                     os.path.join(download_path, mp4_filename),
                 )
 
-                # TODO Finish adding artwork
-                # response = requests.get(song_properties["artwork"])
+                # TODO Finish adding artwork and debugging artwork download
+                # hangup
+                # response = requests.get(song_properties["artwork"], timeout=0.001)
                 # artwork_img = response.content
 
                 # Add metadata to song
-                # NOTE Adding the metadata in a function did not work
                 audio = MP4(os.path.join(download_path, mp4_filename))
                 audio.add_tags()
                 audio.tags["\xa9alb"] = song_properties["album"]
@@ -84,6 +84,7 @@ def thread_query_youtube(args):
 def set_mp3_metadata(directory, song_properties, mp3_filename):
     """Set song metadata to MP3 file."""
     # get byte format for album artwork url
+    # NOTE Metadata will fail to write if artwork download hangs
     response = requests.get(song_properties["artwork"])
     artwork_img = response.content
 
