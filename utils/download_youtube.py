@@ -3,7 +3,7 @@ import subprocess
 import requests
 from shutil import copy2
 from mutagen.mp3 import MP3
-from mutagen.mp4 import MP4
+from mutagen.mp4 import MP4, MP4Cover
 from mutagen.id3 import ID3, APIC, TALB, TPE1, TIT2, TCON
 from pytube import YouTube
 from ._threading import map_threads
@@ -30,19 +30,37 @@ def thread_query_youtube(args):
             stream.download(mp4_path)
 
             if save_as_mp4:
+                # Use the extension m4a instead of mp4
                 mp4_filename = "{}.m4a".format(song_properties["song"])
+
+                # Copy song from temporary folder to destination
                 copy2(
                     os.path.join(mp4_path, stream.default_filename),
                     os.path.join(download_path, mp4_filename),
                 )
-                return set_song_metadata(
-                    download_path, song_properties, mp4_filename, True
-                )     
+
+                # TODO Finish adding artwork
+                # response = requests.get(song_properties["artwork"])
+                # artwork_img = response.content
+
+                # Add metadata to song
+                # NOTE Adding the metadata in a function did not work
+                audio = MP4(os.path.join(download_path, mp4_filename))
+                audio.add_tags()
+                audio.tags["\xa9alb"] = song_properties["album"]
+                audio.tags["\xa9ART"] = song_properties["artist"]
+                audio.tags["\xa9nam"] = song_properties["song"]
+                audio.tags["\xa9gen"] = song_properties["genre"]
+                # audio.tags["covr"] = MP4Cover(
+                #     artwork_img
+                # )
+                audio.save()
+
+                return
             else:
                 return get_youtube_mp3(stream)
-
         except Exception as error:
-            print(error)  # poor man's logging
+            print("Error: " + error)  # poor man's logging
             raise Exception
 
     def get_youtube_mp3(stream):
@@ -58,25 +76,18 @@ def thread_query_youtube(args):
                 os.path.join(download_path, mp3_filename),
             ]
         )
-        set_song_metadata(
-            download_path, song_properties, mp3_filename, False
-        )
+        set_mp3_metadata(download_path, song_properties, mp3_filename)
 
     return get_youtube_mp4()
 
 
-def set_song_metadata(directory, song_properties, song_filename, save_as_mp4):
-    """Set song metadata."""
+def set_mp3_metadata(directory, song_properties, mp3_filename):
+    """Set song metadata to MP3 file."""
     # get byte format for album artwork url
     response = requests.get(song_properties["artwork"])
     artwork_img = response.content
 
-    # TODO Figure out the correct way to set MP4 metadata
-    if save_as_mp4:
-        audio = MP4(os.path.join(directory, song_filename), ID3=ID3)
-    else:
-        audio = MP3(os.path.join(directory, song_filename), ID3=ID3)
-
+    audio = MP3(os.path.join(directory, mp3_filename), ID3=ID3)
     audio.tags.add(
         APIC(
             encoding=3,  # 3 is for utf-8
