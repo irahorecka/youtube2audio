@@ -39,24 +39,9 @@ def thread_query_youtube(args):
                     os.path.join(download_path, mp4_filename),
                 )
 
-                # TODO Finish adding artwork and debugging artwork download
-                # hangup
-                # response = requests.get(song_properties["artwork"], timeout=0.001)
-                # artwork_img = response.content
-
-                # Add metadata to song
-                audio = MP4(os.path.join(download_path, mp4_filename))
-                audio.add_tags()
-                audio.tags["\xa9alb"] = song_properties["album"]
-                audio.tags["\xa9ART"] = song_properties["artist"]
-                audio.tags["\xa9nam"] = song_properties["song"]
-                audio.tags["\xa9gen"] = song_properties["genre"]
-                # audio.tags["covr"] = MP4Cover(
-                #     artwork_img
-                # )
-                audio.save()
-
-                return
+                return set_song_metadata(
+                    download_path, song_properties, mp4_filename, True
+                )
             else:
                 return get_youtube_mp3(stream)
         except Exception as error:
@@ -76,31 +61,52 @@ def thread_query_youtube(args):
                 os.path.join(download_path, mp3_filename),
             ]
         )
-        set_mp3_metadata(download_path, song_properties, mp3_filename)
+        set_song_metadata(download_path, song_properties, mp3_filename, False)
 
     return get_youtube_mp4()
 
 
-def set_mp3_metadata(directory, song_properties, mp3_filename):
-    """Set song metadata to MP3 file."""
-    # get byte format for album artwork url
-    # NOTE Metadata will fail to write if artwork download hangs
-    response = requests.get(song_properties["artwork"])
-    artwork_img = response.content
+def set_song_metadata(directory, song_properties, song_filename, save_as_mp4):
+    """Set song metadata."""
+    if save_as_mp4:
+        # TODO Debug artwork download hangup
+        response = requests.get(song_properties["artwork"], timeout=1)
 
-    audio = MP3(os.path.join(directory, mp3_filename), ID3=ID3)
-    audio.tags.add(
-        APIC(
-            encoding=3,  # 3 is for utf-8
-            mime="image/jpeg",  # image/jpeg or image/png
-            type=3,  # 3 is for the cover image
-            desc="Cover",
-            data=artwork_img,
-        )
-    )
-    audio["TALB"] = TALB(encoding=3, text=song_properties["album"])
-    audio["TPE1"] = TPE1(encoding=3, text=song_properties["artist"])
-    audio["TIT2"] = TIT2(encoding=3, text=song_properties["song"])
-    audio["TCON"] = TCON(encoding=3, text=song_properties["genre"])
+        # Add metadata to song
+        audio = MP4(os.path.join(directory, song_filename))
+        audio.add_tags()
+        audio.tags["\xa9alb"] = song_properties["album"]
+        audio.tags["\xa9ART"] = song_properties["artist"]
+        audio.tags["\xa9nam"] = song_properties["song"]
+        audio.tags["\xa9gen"] = song_properties["genre"]
+        # Only add a cover if the response was ok (this could still mean that
+        # the downloaded data is invalid)
+        # TODO Check for invalid artwork data
+        if response.status_code == 200:
+            audio.tags["covr"] = [
+                MP4Cover(response.content, imageformat=MP4Cover.FORMAT_JPEG)
+            ]
+    else:
+        # get byte format for album artwork url
+        response = requests.get(song_properties["artwork"], timeout=1)
 
+        audio = MP3(os.path.join(directory, song_filename), ID3=ID3)
+        if response.status_code == 200:
+            audio.tags.add(
+                APIC(
+                    encoding=3,  # 3 is for utf-8
+                    mime="image/jpeg",  # image/jpeg or image/png
+                    type=3,  # 3 is for the cover image
+                    desc="Cover",
+                    data=response.content,
+                )
+            )
+        audio["TALB"] = TALB(encoding=3, text=song_properties["album"])
+        audio["TPE1"] = TPE1(encoding=3, text=song_properties["artist"])
+        audio["TIT2"] = TIT2(encoding=3, text=song_properties["song"])
+        audio["TCON"] = TCON(encoding=3, text=song_properties["genre"])
+
+
+    # NOTE Metadata will fail to write if an any any error (esp. with artwork)
+    # occurs before this save command
     audio.save()
