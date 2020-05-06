@@ -79,10 +79,13 @@ def set_song_metadata(directory, song_properties, song_filename, save_as_mp4):
         audio.tags["\xa9ART"] = song_properties["artist"]
         audio.tags["\xa9nam"] = song_properties["song"]
         audio.tags["\xa9gen"] = song_properties["genre"]
-        # Only add a cover if the response was ok (this could still mean that
-        # the downloaded data is invalid)
-        # TODO Check for invalid artwork data
-        if response.status_code == 200:
+        # Only add a cover if the response was ok and the header of the
+        # response content is that of a JPEG image. Source:
+        # https://www.file-recovery.com/jpg-signature-format.htm.
+        if (
+            response.status_code == 200
+            and response.content[:3] == b"\xff\xd8\xff"
+        ):
             audio.tags["covr"] = [
                 MP4Cover(response.content, imageformat=MP4Cover.FORMAT_JPEG)
             ]
@@ -91,7 +94,10 @@ def set_song_metadata(directory, song_properties, song_filename, save_as_mp4):
         response = requests.get(song_properties["artwork"], timeout=1)
 
         audio = MP3(os.path.join(directory, song_filename), ID3=ID3)
-        if response.status_code == 200:
+        if (
+            response.status_code == 200
+            and response.content[:3] == b"\xff\xd8\xff"
+        ):
             audio.tags.add(
                 APIC(
                     encoding=3,  # 3 is for utf-8
@@ -106,7 +112,6 @@ def set_song_metadata(directory, song_properties, song_filename, save_as_mp4):
         audio["TIT2"] = TIT2(encoding=3, text=song_properties["song"])
         audio["TCON"] = TCON(encoding=3, text=song_properties["genre"])
 
-
-    # NOTE Metadata will fail to write if an any any error (esp. with artwork)
-    # occurs before this save command
+    # NOTE Metadata will fail to write if any error (esp. with artwork) occurs
+    # before this save command
     audio.save()
