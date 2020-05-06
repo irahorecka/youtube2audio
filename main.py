@@ -34,6 +34,9 @@ class MainPage(QMainWindow, UiMainWindow):
         # Connect the delete video button with the remove_selected_items fn.
         self.remove_from_table_button.clicked.connect(self.remove_selected_items)
         # Buttons connection with the appropriate functions
+        self.save_as_mp3_box.setChecked(True)
+        self.save_as_mp3_box.clicked.connect(self.set_check_mp3_box)
+        self.save_as_mp4_box.clicked.connect(self.set_check_mp4_box)
         self.url_load_button.clicked.connect(self.url_loading_button_click)
         self.url_input.returnPressed.connect(self.url_load_button.click)
         self.url_input.mousePressEvent = lambda _: self.url_input.selectAll()
@@ -41,7 +44,7 @@ class MainPage(QMainWindow, UiMainWindow):
         self.download_path.clicked.connect(self.get_download_path)
         self.itunes_annotate.clicked.connect(self.itunes_annotate_click)
         self.revert_annotate.clicked.connect(self.default_annotate_table)
-        self.video_table.cellPressed.connect(self.display_artwork_videoinfo)
+        self.video_table.cellPressed.connect(self.load_table_content)
         # edit table cell with single click
         self.video_table.setEditTriggers(QtWidgets.QAbstractItemView.CurrentChanged)
         # Input changes in video property text box to appropriate cell.
@@ -61,7 +64,7 @@ class MainPage(QMainWindow, UiMainWindow):
         of the UrlLoading thread."""
         self.videos_dict = dict()  # Clear videos_dict upon reloading new playlist.
 
-        playlist_url = self.url_input.text()
+        playlist_url = self.get_cell_text(self.url_input)
         if not playlist_url:  # i.e. empty playlist_url
             self.url_error_label.show()
             self.default_annotate_table()
@@ -137,7 +140,7 @@ class MainPage(QMainWindow, UiMainWindow):
             self.videos_dict,
             self.download_dir,
             playlist_properties,
-            self.save_as_mp4_box.isChecked()
+            self.save_as_mp4_box.isChecked(),
         )
         self.down.downloadCount.connect(self.download_finished)
         self.down.start()
@@ -175,18 +178,18 @@ class MainPage(QMainWindow, UiMainWindow):
             genre_name, genre_index = ITUNES_META_JSON["primary_genre_name"], 3
             artwork_name, artwork_index = ITUNES_META_JSON["artwork_url_fullres"], 4
         except TypeError:  # ITUNES_META_JSON was never called.
-            try:
-                song_name, song_index = (
-                    self.video_table.item(row_index, 0).text(),
-                    0,
-                )  # get video title
-            except AttributeError:  # nothing populated on table
-                song_name, song_index = "Unknown", 0
+            song_name, song_index = (
+                self.get_cell_text(self.video_table.item(row_index, 0)),
+                0,
+            )  # get video title
+            if not song_name:
+                song_name = "Unknown"
 
             album_name, album_index = "Unknown", 1
             artist_name, artist_index = "Unknown", 2
             genre_name, genre_index = "Unknown", 3
             artwork_name, artwork_index = "Unknown", 4
+
         self.video_table.setItem(row_index, song_index, QTableWidgetItem(song_name))
         self.video_table.setItem(row_index, album_index, QTableWidgetItem(album_name))
         self.video_table.setItem(row_index, artist_index, QTableWidgetItem(artist_name))
@@ -195,33 +198,36 @@ class MainPage(QMainWindow, UiMainWindow):
             row_index, artwork_index, QTableWidgetItem(artwork_name)
         )
 
-    def display_artwork_videoinfo(self, row, column):
-        """Display selected artwork and self.video_info_input on Qpixmap widget."""
-        # artwork
-        try:
-            artwork_file = self.video_table.item(row, 4).text()
-            response = requests.get(artwork_file)
-            if response.status_code != 200:  # invalid image url
-                qt_artwork_img = os.path.join(IMG_PATH, "default_artwork.png")
-            else:
-                artwork_img = response.content
-                qt_artwork_img = QtGui.QImage()
-                qt_artwork_img.loadFromData(artwork_img)
-                self.album_artwork.setPixmap(QtGui.QPixmap.fromImage(qt_artwork_img))
-        except (
-            AttributeError,
-            requests.exceptions.MissingSchema,
-        ):  # i.e. selected empty cell or cell has non-url str
-            qt_artwork_img = os.path.join(IMG_PATH, "default_artwork.png")
+    def load_table_content(self, row, column):
+        """Display selected cell content into self.video_info_input
+        and display selected artwork on Qpixmap widget."""
+        # display video info in self.video_info_input
+        self.display_video_info(row, column)
 
-        # set self.video_info_iput properties
-        try:
-            self.video_info_input.setText(self.video_table.item(row, column).text())
-        except AttributeError:
-            self.video_info_input.setText("")
+        # load and display video artwork
+        artwork_file = self.get_cell_text(self.video_table.item(row, 4))
+        self.loaded_artwork = ArtworkLoading(
+            artwork_file
+        )  # supposedly a url if populated
+        self.loaded_artwork.loadFinished.connect(self.display_artwork)
+        self.loaded_artwork.start()
 
-        # set artwork properties
-        self.album_artwork.setPixmap(QtGui.QPixmap(qt_artwork_img))
+    def display_video_info(self, row, column):
+        """Display selected cell content in self.video_info_input"""
+        self.video_info_input.setText(
+            self.get_cell_text(self.video_table.item(row, column))
+        )
+
+    def display_artwork(self, artwork_content):
+        """Display selected artwork on Qpixmap widget."""
+        if not artwork_content:
+            qt_artwork_content = os.path.join(IMG_PATH, "default_artwork.png")
+            self.album_artwork.setPixmap(QtGui.QPixmap(qt_artwork_content))
+        else:
+            qt_artwork_content = QtGui.QImage()
+            qt_artwork_content.loadFromData(artwork_content)
+            self.album_artwork.setPixmap(QtGui.QPixmap.fromImage(qt_artwork_content))
+
         self.album_artwork.setScaledContents(True)
         self.album_artwork.setAlignment(QtCore.Qt.AlignCenter)
 
@@ -229,23 +235,20 @@ class MainPage(QMainWindow, UiMainWindow):
         """Set cell content in song, album, artist, genre, or artwork
         column based on video info input or selected cell content."""
         rows = self.video_table.rowCount()
-        try:
-            for row_index in range(rows):
-                item = self.video_table.item(row_index, column_index)  # get cell value
-                if item and item.text():
-                    self.video_table.setItem(
-                        row_index,
-                        column_index,
-                        QTableWidgetItem(self.video_info_input.text()),
-                    )  # part of QWidget
-        except AttributeError:  # i.e. empty self.video_info_input
-            pass
+        for row_index in range(rows):
+            item = self.video_table.item(row_index, column_index)  # get cell value
+            if item and self.get_cell_text(item):
+                self.video_table.setItem(
+                    row_index,
+                    column_index,
+                    QTableWidgetItem(self.get_cell_text(self.video_info_input)),
+                )  # part of QWidget
 
     def replace_cell_item(self):
         """Change selected cell value to value in self.video_info_input."""
         row = self.video_table.currentIndex().row()
         column = self.video_table.currentIndex().column()
-        video_info_input_value = self.video_info_input.text()
+        video_info_input_value = self.get_cell_text(self.video_info_input)
         self.video_table.setItem(row, column, QTableWidgetItem(video_info_input_value))
 
     def replace_cell_column(self):
@@ -285,21 +288,21 @@ class MainPage(QMainWindow, UiMainWindow):
 
         for row_index, key_value in enumerate(self.videos_dict.items()):
             song_properties = {}
-            song_properties["song"] = self.get_row_text(
+            song_properties["song"] = self.get_cell_text(
                 self.video_table.item(row_index, 0)
             ).replace(
                 "/", "-"
             )  # will be filename -- change illegal char to legal - make func
-            song_properties["album"] = self.get_row_text(
+            song_properties["album"] = self.get_cell_text(
                 self.video_table.item(row_index, 1)
             )
-            song_properties["artist"] = self.get_row_text(
+            song_properties["artist"] = self.get_cell_text(
                 self.video_table.item(row_index, 2)
             )
-            song_properties["genre"] = self.get_row_text(
+            song_properties["genre"] = self.get_cell_text(
                 self.video_table.item(row_index, 3)
             )
-            song_properties["artwork"] = self.get_row_text(
+            song_properties["artwork"] = self.get_cell_text(
                 self.video_table.item(row_index, 4)
             )
 
@@ -313,8 +316,20 @@ class MainPage(QMainWindow, UiMainWindow):
         """Set source code url on upper right of table."""
         QtGui.QDesktopServices.openUrl(QtCore.QUrl(url_str))
 
+    def set_check_mp3_box(self):
+        """if self.save_as_mp3_box is checked, uncheck
+        self.save_as_mp4_box."""
+        self.save_as_mp3_box.setChecked(True)
+        self.save_as_mp4_box.setChecked(False)
+
+    def set_check_mp4_box(self):
+        """if self.save_as_mp4_box is checked, uncheck
+        self.save_as_mp3_box."""
+        self.save_as_mp3_box.setChecked(False)
+        self.save_as_mp4_box.setChecked(True)
+
     @staticmethod
-    def get_row_text(cell_item):
+    def get_cell_text(cell_item):
         """Get text of cell value, if empty return empty str."""
         try:
             cell_item = cell_item.text()
@@ -334,7 +349,7 @@ class MainPage(QMainWindow, UiMainWindow):
 
 
 class UrlLoading(QThread):
-    """ Loads the videos data from playlist in another thread."""
+    """Load video data from YouTube url."""
 
     countChanged = pyqtSignal(dict, bool)
 
@@ -343,7 +358,7 @@ class UrlLoading(QThread):
         self.playlist_link = playlist_link
 
     def run(self):
-        """ Main function, gets all the playlist videos data, emits the info dict"""
+        """Main function, gets all the playlist videos data, emits the info dict"""
         try:
             videos_dict = utils.get_youtube_content(self.playlist_link)
             self.countChanged.emit(videos_dict, True)
@@ -381,7 +396,7 @@ class iTunesLoading(QThread):
 
     @staticmethod
     def check_itunes_nonetype(query_tuple):
-        """Check if none of the queries were successful"""
+        """Check if none of the queries were successful."""
         index, itunes_query = tuple(zip(*query_tuple))
         try:
             # successful queries return a dict obj, which is unhashable
@@ -391,12 +406,40 @@ class iTunesLoading(QThread):
             return True
 
 
+class ArtworkLoading(QThread):
+    """Load artwork bytecode for display on GUI."""
+
+    loadFinished = pyqtSignal(bytes)
+
+    def __init__(self, artwork_url, parent=None):
+        QThread.__init__(self, parent)
+        self.artwork_url = artwork_url
+
+    def run(self):
+        artwork_img = bytes()
+        # get url response - if not url, return empty bytes
+        try:
+            response = requests.get(self.artwork_url)
+        except requests.exceptions.MissingSchema:
+            self.loadFinished.emit(artwork_img)
+            return
+
+        # check validity of url response - if ok return img byte content
+        if response.status_code != 200:  # invalid image url
+            return
+        else:
+            artwork_img = response.content
+            self.loadFinished.emit(artwork_img)
+
+
 class DownloadingVideos(QThread):
     """Download all videos from the videos_dict using the id."""
 
     downloadCount = pyqtSignal(float)  # attempt to emit delta_t
 
-    def __init__(self, videos_dict, download_path, playlist_properties, save_as_mp4, parent=None):
+    def __init__(
+        self, videos_dict, download_path, playlist_properties, save_as_mp4, parent=None
+    ):
         QThread.__init__(self, parent)
         self.videos_dict = videos_dict
         self.download_path = download_path
@@ -414,7 +457,12 @@ class DownloadingVideos(QThread):
 
         time0 = time.time()
         video_properties = (
-            (key_value, (self.download_path, mp4_path), self.playlist_properties[index], self.save_as_mp4)
+            (
+                key_value,
+                (self.download_path, mp4_path),
+                self.playlist_properties[index],
+                self.save_as_mp4,
+            )
             for index, key_value in enumerate(
                 self.videos_dict.items()
             )  # dict is naturally sorted in iteration
