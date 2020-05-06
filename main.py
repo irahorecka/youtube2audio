@@ -134,7 +134,10 @@ class MainPage(QMainWindow, UiMainWindow):
         self.download_button.setEnabled(False)
         self.download_status.setText("Downloading...")
         self.down = DownloadingVideos(
-            self.videos_dict, self.download_dir, playlist_properties
+            self.videos_dict,
+            self.download_dir,
+            playlist_properties,
+            self.save_as_mp4_box.isChecked()
         )
         self.down.downloadCount.connect(self.download_finished)
         self.down.start()
@@ -393,11 +396,12 @@ class DownloadingVideos(QThread):
 
     downloadCount = pyqtSignal(float)  # attempt to emit delta_t
 
-    def __init__(self, videos_dict, download_path, playlist_properties, parent=None):
+    def __init__(self, videos_dict, download_path, playlist_properties, save_as_mp4, parent=None):
         QThread.__init__(self, parent)
         self.videos_dict = videos_dict
         self.download_path = download_path
         self.playlist_properties = playlist_properties
+        self.save_as_mp4 = save_as_mp4
 
     def run(self):
         """ Main function, downloads videos by their id while emitting progress data"""
@@ -410,7 +414,7 @@ class DownloadingVideos(QThread):
 
         time0 = time.time()
         video_properties = (
-            (key_value, (self.download_path, mp4_path), self.playlist_properties[index])
+            (key_value, (self.download_path, mp4_path), self.playlist_properties[index], self.save_as_mp4)
             for index, key_value in enumerate(
                 self.videos_dict.items()
             )  # dict is naturally sorted in iteration
