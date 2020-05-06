@@ -34,6 +34,9 @@ class MainPage(QMainWindow, UiMainWindow):
         # Connect the delete video button with the remove_selected_items fn.
         self.remove_from_table_button.clicked.connect(self.remove_selected_items)
         # Buttons connection with the appropriate functions
+        self.save_as_mp3_box.setChecked(True)
+        self.save_as_mp3_box.clicked.connect(self.set_check_mp3_box)
+        self.save_as_mp4_box.clicked.connect(self.set_check_mp4_box)
         self.url_load_button.clicked.connect(self.url_loading_button_click)
         self.url_input.returnPressed.connect(self.url_load_button.click)
         self.url_input.mousePressEvent = lambda _: self.url_input.selectAll()
@@ -137,7 +140,7 @@ class MainPage(QMainWindow, UiMainWindow):
             self.videos_dict,
             self.download_dir,
             playlist_properties,
-            self.save_as_mp4_box.isChecked()
+            self.save_as_mp4_box.isChecked(),
         )
         self.down.downloadCount.connect(self.download_finished)
         self.down.start()
@@ -313,6 +316,18 @@ class MainPage(QMainWindow, UiMainWindow):
         """Set source code url on upper right of table."""
         QtGui.QDesktopServices.openUrl(QtCore.QUrl(url_str))
 
+    def set_check_mp3_box(self):
+        """if self.save_as_mp3_box is checked, uncheck
+        self.save_as_mp4_box."""
+        self.save_as_mp3_box.setChecked(True)
+        self.save_as_mp4_box.setChecked(False)
+
+    def set_check_mp4_box(self):
+        """if self.save_as_mp4_box is checked, uncheck
+        self.save_as_mp3_box."""
+        self.save_as_mp3_box.setChecked(False)
+        self.save_as_mp4_box.setChecked(True)
+
     @staticmethod
     def get_cell_text(cell_item):
         """Get text of cell value, if empty return empty str."""
@@ -422,7 +437,9 @@ class DownloadingVideos(QThread):
 
     downloadCount = pyqtSignal(float)  # attempt to emit delta_t
 
-    def __init__(self, videos_dict, download_path, playlist_properties, save_as_mp4, parent=None):
+    def __init__(
+        self, videos_dict, download_path, playlist_properties, save_as_mp4, parent=None
+    ):
         QThread.__init__(self, parent)
         self.videos_dict = videos_dict
         self.download_path = download_path
@@ -440,7 +457,12 @@ class DownloadingVideos(QThread):
 
         time0 = time.time()
         video_properties = (
-            (key_value, (self.download_path, mp4_path), self.playlist_properties[index], self.save_as_mp4)
+            (
+                key_value,
+                (self.download_path, mp4_path),
+                self.playlist_properties[index],
+                self.save_as_mp4,
+            )
             for index, key_value in enumerate(
                 self.videos_dict.items()
             )  # dict is naturally sorted in iteration

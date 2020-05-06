@@ -12,6 +12,7 @@ from ._threading import map_threads
 def thread_query_youtube(args):
     """Download video to mp4 then mp3 -- triggered
     by map_threads"""
+
     yt_link_starter = "https://www.youtube.com/watch?v="
     # NOTE: this must have no relation to any self obj
     key_value, videos_dict = args[0]
@@ -32,7 +33,6 @@ def thread_query_youtube(args):
             if save_as_mp4:
                 # Use the extension m4a instead of mp4
                 mp4_filename = "{}.m4a".format(song_properties["song"])
-
                 # Copy song from temporary folder to destination
                 copy2(
                     os.path.join(mp4_path, stream.default_filename),
@@ -44,7 +44,7 @@ def thread_query_youtube(args):
                 )
             else:
                 return get_youtube_mp3(stream)
-        except Exception as error:
+        except Exception as error:  # not a good Exceptions catch...
             print("Error: " + error)  # poor man's logging
             raise Exception
 
@@ -68,18 +68,10 @@ def thread_query_youtube(args):
 
 def set_song_metadata(directory, song_properties, song_filename, save_as_mp4):
     """Set song metadata."""
-    # TODO Cache the image until program finishes
-    try:
-        # Get byte data for album artwork url. The first number in the timeout
-        # tuple is for the initial connection to the server. The second number
-        # is for the subsequent response from the server.
-        response = requests.get(song_properties["artwork"], timeout=(1, 5))
-    except requests.exceptions.MissingSchema:
-        response = None
-        pass
 
-    if save_as_mp4:
-        # Add metadata to song
+    def write_to_mp4():
+        """Add metadata to MP4 file."""
+        # NOTE Metadata for MP4 will fail to write if any error (esp. with artwork) occurs
         audio = MP4(os.path.join(directory, song_filename))
         audio.add_tags()
         audio.tags["\xa9alb"] = song_properties["album"]
@@ -89,21 +81,21 @@ def set_song_metadata(directory, song_properties, song_filename, save_as_mp4):
         # Only add a cover if the response was ok and the header of the
         # response content is that of a JPEG image. Source:
         # https://www.file-recovery.com/jpg-signature-format.htm.
-        if (
-            response is not None
-            and response.status_code == 200
-            and response.content[:3] == b"\xff\xd8\xff"
-        ):
+        if valid_artwork():
             audio.tags["covr"] = [
                 MP4Cover(response.content, imageformat=MP4Cover.FORMAT_JPEG)
             ]
-    else:
+
+        audio.save()
+
+    def write_to_mp3():
+        """Add metadata to MP3 file."""
         audio = MP3(os.path.join(directory, song_filename), ID3=ID3)
-        if (
-            response is not None
-            and response.status_code == 200
-            and response.content[:3] == b"\xff\xd8\xff"
-        ):
+        audio["TALB"] = TALB(encoding=3, text=song_properties["album"])
+        audio["TPE1"] = TPE1(encoding=3, text=song_properties["artist"])
+        audio["TIT2"] = TIT2(encoding=3, text=song_properties["song"])
+        audio["TCON"] = TCON(encoding=3, text=song_properties["genre"])
+        if valid_artwork():
             audio.tags.add(
                 APIC(
                     encoding=3,  # 3 is for utf-8
@@ -113,11 +105,29 @@ def set_song_metadata(directory, song_properties, song_filename, save_as_mp4):
                     data=response.content,
                 )
             )
-        audio["TALB"] = TALB(encoding=3, text=song_properties["album"])
-        audio["TPE1"] = TPE1(encoding=3, text=song_properties["artist"])
-        audio["TIT2"] = TIT2(encoding=3, text=song_properties["song"])
-        audio["TCON"] = TCON(encoding=3, text=song_properties["genre"])
 
-    # NOTE Metadata will fail to write if any error (esp. with artwork) occurs
-    # before this save command
-    audio.save()
+        audio.save()
+
+    def valid_artwork():
+        """Validate artwork requests response."""
+        if (
+            response is not None
+            and response.status_code == 200
+            and response.content[:3] == b"\xff\xd8\xff"
+        ):
+            return True
+        return False
+
+    # TODO Cache the image until program finishes
+    try:
+        # Get byte data for album artwork url. The first number in the timeout
+        # tuple is for the initial connection to the server. The second number
+        # is for the subsequent response from the server.
+        response = requests.get(song_properties["artwork"], timeout=(1, 5))
+    except requests.exceptions.MissingSchema:
+        response = None
+
+    if save_as_mp4:
+        write_to_mp4()
+    else:
+        write_to_mp3()

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>951</width>
-    <height>656</height>
+    <height>664</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -24,7 +24,7 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>YouTube to MP3</string>
+   <string>YouTube to Audio</string>
   </property>
   <property name="autoFillBackground">
    <bool>false</bool>
@@ -36,9 +36,9 @@
    <widget class="QLabel" name="title_label">
     <property name="geometry">
      <rect>
-      <x>352</x>
+      <x>340</x>
       <y>10</y>
-      <width>311</width>
+      <width>270</width>
       <height>41</height>
      </rect>
     </property>
@@ -57,7 +57,7 @@
      <string notr="true"/>
     </property>
     <property name="text">
-     <string notr="true">YouTube to MP3</string>
+     <string notr="true">YouTube to Audio</string>
     </property>
    </widget>
    <widget class="QLabel" name="enter_playlist_url_label">
@@ -189,7 +189,7 @@
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>586</y>
+      <y>594</y>
       <width>110</width>
       <height>23</height>
      </rect>
@@ -207,7 +207,7 @@
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>522</y>
+      <y>524</y>
       <width>90</width>
       <height>23</height>
      </rect>
@@ -228,8 +228,8 @@
     <property name="geometry">
      <rect>
       <x>140</x>
-      <y>526</y>
-      <width>550</width>
+      <y>528</y>
+      <width>430</width>
       <height>21</height>
      </rect>
     </property>
@@ -290,11 +290,11 @@
     <attribute name="horizontalHeaderCascadingSectionResizes">
      <bool>false</bool>
     </attribute>
-    <attribute name="horizontalHeaderMinimumSectionSize">
-     <number>19</number>
-    </attribute>
     <attribute name="horizontalHeaderDefaultSectionSize">
      <number>164</number>
+    </attribute>
+    <attribute name="horizontalHeaderMinimumSectionSize">
+     <number>19</number>
     </attribute>
     <attribute name="verticalHeaderDefaultSectionSize">
      <number>33</number>
@@ -609,7 +609,7 @@
     <property name="geometry">
      <rect>
       <x>160</x>
-      <y>586</y>
+      <y>594</y>
       <width>110</width>
       <height>23</height>
      </rect>
@@ -623,11 +623,11 @@
      <string>Cancel</string>
     </property>
    </widget>
-   <widget class="QLabel" name="enter_playlist_url_label_2">
+   <widget class="QLabel" name="download_folder_label">
     <property name="geometry">
      <rect>
       <x>140</x>
-      <y>505</y>
+      <y>507</y>
       <width>151</width>
       <height>21</height>
      </rect>
@@ -709,7 +709,7 @@
     <property name="geometry">
      <rect>
       <x>710</x>
-      <y>408</y>
+      <y>416</y>
       <width>201</width>
       <height>201</height>
      </rect>
@@ -760,8 +760,8 @@
    <widget class="QLabel" name="download_status">
     <property name="geometry">
      <rect>
-      <x>300</x>
-      <y>586</y>
+      <x>290</x>
+      <y>594</y>
       <width>361</width>
       <height>21</height>
      </rect>
@@ -803,9 +803,9 @@
    <widget class="QLabel" name="credit_url">
     <property name="geometry">
      <rect>
-      <x>790</x>
+      <x>820</x>
       <y>48</y>
-      <width>121</width>
+      <width>90</width>
       <height>21</height>
      </rect>
     </property>
@@ -825,14 +825,49 @@
    <widget class="QCheckBox" name="save_as_mp4_box">
     <property name="geometry">
      <rect>
-      <x>580</x>
-      <y>520</y>
-      <width>101</width>
+      <x>638</x>
+      <y>528</y>
+      <width>60</width>
       <height>22</height>
      </rect>
     </property>
     <property name="text">
-     <string>Save as MP4</string>
+     <string>MP4</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="save_as_mp3_box">
+    <property name="geometry">
+     <rect>
+      <x>582</x>
+      <y>528</y>
+      <width>54</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>MP3</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="save_filetype">
+    <property name="geometry">
+     <rect>
+      <x>582</x>
+      <y>507</y>
+      <width>70</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Courier</family>
+      <pointsize>12</pointsize>
+      <weight>50</weight>
+      <bold>false</bold>
+      <underline>false</underline>
+     </font>
+    </property>
+    <property name="text">
+     <string>Save as:</string>
     </property>
    </widget>
   </widget>
@@ -842,7 +877,7 @@
      <x>0</x>
      <y>0</y>
      <width>951</width>
-     <height>30</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>
