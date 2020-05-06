@@ -68,10 +68,17 @@ def thread_query_youtube(args):
 
 def set_song_metadata(directory, song_properties, song_filename, save_as_mp4):
     """Set song metadata."""
-    if save_as_mp4:
-        # TODO Debug artwork download hangup
-        response = requests.get(song_properties["artwork"], timeout=1)
+    # TODO Cache the image until program finishes
+    try:
+        # Get byte data for album artwork url. The first number in the timeout
+        # tuple is for the initial connection to the server. The second number
+        # is for the subsequent response from the server.
+        response = requests.get(song_properties["artwork"], timeout=(1, 5))
+    except requests.exceptions.MissingSchema:
+        response = None
+        pass
 
+    if save_as_mp4:
         # Add metadata to song
         audio = MP4(os.path.join(directory, song_filename))
         audio.add_tags()
@@ -83,19 +90,18 @@ def set_song_metadata(directory, song_properties, song_filename, save_as_mp4):
         # response content is that of a JPEG image. Source:
         # https://www.file-recovery.com/jpg-signature-format.htm.
         if (
-            response.status_code == 200
+            response is not None
+            and response.status_code == 200
             and response.content[:3] == b"\xff\xd8\xff"
         ):
             audio.tags["covr"] = [
                 MP4Cover(response.content, imageformat=MP4Cover.FORMAT_JPEG)
             ]
     else:
-        # get byte format for album artwork url
-        response = requests.get(song_properties["artwork"], timeout=1)
-
         audio = MP3(os.path.join(directory, song_filename), ID3=ID3)
         if (
-            response.status_code == 200
+            response is not None
+            and response.status_code == 200
             and response.content[:3] == b"\xff\xd8\xff"
         ):
             audio.tags.add(
