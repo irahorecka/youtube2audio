@@ -31,16 +31,15 @@ def thread_query_youtube(args):
             stream.download(mp4_path)
 
             if save_as_mp4:
-                # Use the extension m4a instead of mp4
-                mp4_filename = "{}.m4a".format(song_properties["song"])
+                m4a_filename = "{}.m4a".format(song_properties["song"])
                 # Copy song from temporary folder to destination
                 copy2(
                     os.path.join(mp4_path, stream.default_filename),
-                    os.path.join(download_path, mp4_filename),
+                    os.path.join(download_path, m4a_filename),
                 )
 
                 return set_song_metadata(
-                    download_path, song_properties, mp4_filename, True
+                    download_path, song_properties, m4a_filename, True
                 )
             else:
                 return get_youtube_mp3(stream)

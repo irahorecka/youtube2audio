@@ -29,7 +29,7 @@ class MainPage(QMainWindow, UiMainWindow):
         self.revert_annotate.hide()
         self.credit_url.linkActivated.connect(self.set_credit_url)
         self.credit_url.setText(
-            '<a href="https://github.com/irahorecka/YouTube2Mp3">Source code</a>'
+            '<a href="https://github.com/irahorecka/YouTube2Mp3">source code</a>'
         )
         # Connect the delete video button with the remove_selected_items fn.
         self.remove_from_table_button.clicked.connect(self.remove_selected_items)
@@ -426,6 +426,7 @@ class ArtworkLoading(QThread):
 
         # check validity of url response - if ok return img byte content
         if response.status_code != 200:  # invalid image url
+            self.loadFinished.emit(artwork_img)
             return
         else:
             artwork_img = response.content

@@ -18,6 +18,7 @@
   </property>
   <property name="font">
    <font>
+    <family>Arial</family>
     <weight>75</weight>
     <bold>true</bold>
     <underline>false</underline>
@@ -71,7 +72,7 @@
     </property>
     <property name="font">
      <font>
-      <family>Courier</family>
+      <family>Arial</family>
       <pointsize>12</pointsize>
       <weight>50</weight>
       <bold>false</bold>
@@ -93,7 +94,7 @@
     </property>
     <property name="font">
      <font>
-      <family>Courier New</family>
+      <family>Arial</family>
      </font>
     </property>
     <property name="styleSheet">
@@ -114,7 +115,7 @@
     </property>
     <property name="font">
      <font>
-      <family>Courier</family>
+      <family>Arial</family>
      </font>
     </property>
     <property name="text">
@@ -132,7 +133,7 @@
     </property>
     <property name="font">
      <font>
-      <family>Courier</family>
+      <family>Arial</family>
      </font>
     </property>
     <property name="text">
@@ -142,15 +143,15 @@
    <widget class="QLabel" name="url_error_label">
     <property name="geometry">
      <rect>
-      <x>476</x>
+      <x>520</x>
       <y>452</y>
-      <width>221</width>
+      <width>170</width>
       <height>16</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>Courier</family>
+      <family>Arial</family>
       <pointsize>12</pointsize>
       <weight>50</weight>
       <italic>false</italic>
@@ -165,15 +166,15 @@
    <widget class="QLabel" name="url_fetching_data_label">
     <property name="geometry">
      <rect>
-      <x>616</x>
+      <x>620</x>
       <y>450</y>
-      <width>81</width>
+      <width>70</width>
       <height>21</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>Courier</family>
+      <family>Arial</family>
       <pointsize>12</pointsize>
       <weight>50</weight>
       <italic>false</italic>
@@ -196,7 +197,7 @@
     </property>
     <property name="font">
      <font>
-      <family>Courier</family>
+      <family>Arial</family>
      </font>
     </property>
     <property name="text">
@@ -214,7 +215,7 @@
     </property>
     <property name="font">
      <font>
-      <family>Courier</family>
+      <family>Arial</family>
      </font>
     </property>
     <property name="text">
@@ -235,7 +236,7 @@
     </property>
     <property name="font">
      <font>
-      <family>Courier</family>
+      <family>Arial</family>
      </font>
     </property>
     <property name="styleSheet">
@@ -262,7 +263,7 @@
     </property>
     <property name="font">
      <font>
-      <family>Courier New</family>
+      <family>Arial</family>
       <pointsize>13</pointsize>
      </font>
     </property>
@@ -297,7 +298,7 @@
      <number>19</number>
     </attribute>
     <attribute name="verticalHeaderDefaultSectionSize">
-     <number>33</number>
+     <number>34</number>
     </attribute>
     <row/>
     <row/>
@@ -555,7 +556,7 @@
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>13</pointsize>
       </font>
      </property>
@@ -566,7 +567,7 @@
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>13</pointsize>
       </font>
      </property>
@@ -577,7 +578,7 @@
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>13</pointsize>
       </font>
      </property>
@@ -588,7 +589,7 @@
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>13</pointsize>
       </font>
      </property>
@@ -599,7 +600,7 @@
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>13</pointsize>
       </font>
      </property>
@@ -616,7 +617,7 @@
     </property>
     <property name="font">
      <font>
-      <family>Courier</family>
+      <family>Arial</family>
      </font>
     </property>
     <property name="text">
@@ -634,7 +635,7 @@
     </property>
     <property name="font">
      <font>
-      <family>Courier</family>
+      <family>Arial</family>
       <pointsize>12</pointsize>
       <weight>50</weight>
       <bold>false</bold>
@@ -656,7 +657,7 @@
     </property>
     <property name="font">
      <font>
-      <family>Courier New</family>
+      <family>Arial</family>
      </font>
     </property>
     <property name="focusPolicy">
@@ -680,7 +681,7 @@
     </property>
     <property name="font">
      <font>
-      <family>Courier</family>
+      <family>Arial</family>
      </font>
     </property>
     <property name="text">
@@ -698,7 +699,7 @@
     </property>
     <property name="font">
      <font>
-      <family>Courier</family>
+      <family>Arial</family>
      </font>
     </property>
     <property name="text">
@@ -747,7 +748,7 @@
     </property>
     <property name="font">
      <font>
-      <family>Courier</family>
+      <family>Arial</family>
      </font>
     </property>
     <property name="focusPolicy">
@@ -768,7 +769,7 @@
     </property>
     <property name="font">
      <font>
-      <family>Courier</family>
+      <family>Arial</family>
       <pointsize>12</pointsize>
       <weight>50</weight>
       <bold>false</bold>
@@ -790,7 +791,7 @@
     </property>
     <property name="font">
      <font>
-      <family>Courier</family>
+      <family>Arial</family>
      </font>
     </property>
     <property name="focusPolicy">
@@ -803,15 +804,15 @@
    <widget class="QLabel" name="credit_url">
     <property name="geometry">
      <rect>
-      <x>820</x>
+      <x>836</x>
       <y>48</y>
-      <width>90</width>
+      <width>80</width>
       <height>21</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>Courier</family>
+      <family>Arial</family>
       <pointsize>12</pointsize>
       <weight>50</weight>
       <bold>false</bold>
@@ -819,7 +820,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Source code</string>
+     <string>source code</string>
     </property>
    </widget>
    <widget class="QCheckBox" name="save_as_mp4_box">
@@ -830,6 +831,12 @@
       <width>60</width>
       <height>22</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>13</pointsize>
+     </font>
     </property>
     <property name="text">
      <string>MP4</string>
@@ -843,6 +850,12 @@
       <width>54</width>
       <height>22</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>13</pointsize>
+     </font>
     </property>
     <property name="text">
      <string>MP3</string>
@@ -859,7 +872,7 @@
     </property>
     <property name="font">
      <font>
-      <family>Courier</family>
+      <family>Arial</family>
       <pointsize>12</pointsize>
       <weight>50</weight>
       <bold>false</bold>
