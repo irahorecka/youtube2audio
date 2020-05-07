@@ -47,9 +47,9 @@ def oembed_title(vid_url):
     if vid_url.startswith("https://"):
         # oEmbed is a format for allowing an embedded representation
         # of a URL on third party sites.
-        oembed_url = "https://www.youtube.com/oembed?url={}&format=json"
+        oembed_url = f"https://www.youtube.com/oembed?url={vid_url}&format=json"
         try:
-            vid_content = requests.get(oembed_url.format(vid_url))
+            vid_content = requests.get(oembed_url)
         except requests.exceptions.ConnectionError:
             return
         vid_json = vid_content.json()

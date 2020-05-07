@@ -1,3 +1,4 @@
+import urllib
 import youtube_dl
 from pytube import Playlist
 from ._threading import map_threads
@@ -7,7 +8,7 @@ def get_youtube_content(youtube_url):
     """Str parse YouTube url and call appropriate functions
     to execute url content."""
     if ".com/playlist" in youtube_url:
-        url_tuple = get_playlist_video_urls(youtube_url)
+        url_tuple = get_playlist_video_info(youtube_url)
         video_genr = map_threads(get_video_info, url_tuple)
         video_info = list(video_genr)
     else:
@@ -21,9 +22,13 @@ def get_youtube_content(youtube_url):
     return video_dict
 
 
-def get_playlist_video_urls(playlist_url):
+def get_playlist_video_info(playlist_url):
     """Get url of videos in a YouTube playlist."""
-    playlist = Playlist(playlist_url)
+    try:
+        playlist = Playlist(playlist_url)
+    except urllib.error.URLError as error:  # thrown if poor internet connection
+        raise RuntimeError(error)
+
     vid_tuple = tuple(video for video in playlist.video_urls)
 
     return vid_tuple
@@ -35,8 +40,10 @@ def get_video_info(video_url):
     try:
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             video_info = ydl.extract_info(video_url, download=False)
-    except youtube_dl.utils.DownloadError:  # video unavailable
-        return
+    except youtube_dl.utils.DownloadError as error:  # video unavailable
+        # catch exception here and process error:
+        # either load content again or post invalid url error.
+        raise RuntimeError(error)
 
     return video_info
 

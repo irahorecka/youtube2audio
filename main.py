@@ -23,10 +23,13 @@ class MainPage(QMainWindow, UiMainWindow):
     def __init__(self, parent=None):
         super(MainPage, self).__init__(parent)
         self.setupUi(self)
-        # Hide the fetching data label, error label, and revert button
+        # Hide the fetching, reattempt, error label, and revert button
         self.url_fetching_data_label.hide()
         self.url_error_label.hide()
+        self.url_reattempt_load_label.hide()
+        self.url_poor_connection.hide()
         self.revert_annotate.hide()
+        # Activate hyperlink on upper right
         self.credit_url.linkActivated.connect(self.set_credit_url)
         self.credit_url.setText(
             '<a href="https://github.com/irahorecka/YouTube2Mp3">source code</a>'
@@ -63,24 +66,39 @@ class MainPage(QMainWindow, UiMainWindow):
         """Reads input data from self.url_input and creates an instance
         of the UrlLoading thread."""
         self.videos_dict = dict()  # Clear videos_dict upon reloading new playlist.
-
         playlist_url = self.get_cell_text(self.url_input)
-        if not playlist_url:  # i.e. empty playlist_url
-            self.url_error_label.show()
-            self.default_annotate_table()
-            return
 
+        self.reflect_url_loading_status()
         self.url_fetching_data_label.show()
-        self.url_error_label.hide()
         self.calc = UrlLoading(playlist_url)
+        self.calc.loadStatus.connect(self.reflect_url_loading_status)
         self.calc.countChanged.connect(self.url_loading_finished)
         self.calc.start()
+
+    def reflect_url_loading_status(self, status=None):
+        """Reflect YouTube url loading status. If no status is provided,
+        hide all error label and keep table content."""
+        self.url_poor_connection.hide()
+        self.url_fetching_data_label.hide()
+        self.url_reattempt_load_label.hide()
+        self.url_error_label.hide()
+        if status:
+            if status == "success":
+                return
+            elif status == "invalid url":
+                self.url_error_label.show()
+            elif status == "reattempt":
+                self.url_reattempt_load_label.show()
+            elif status == "server error":
+                self.url_poor_connection.show()
+            self.video_table.clearContents()  # clear table content if error
+            self.revert_annotate.hide()
+            self.itunes_annotate.show()  # refresh Ask butler button
 
     def url_loading_finished(self, videos_dict, executed):
         """Retrieves data from thread when complete, updates GUI table."""
         # First entry of self.videos_dict in MainPage class
         self.videos_dict = videos_dict
-        self.url_fetching_data_label.hide()
         self.video_table.clearContents()  # clear table for new loaded content
         if executed:
             self.default_annotate_table()  # set table content
@@ -352,6 +370,7 @@ class UrlLoading(QThread):
     """Load video data from YouTube url."""
 
     countChanged = pyqtSignal(dict, bool)
+    loadStatus = pyqtSignal(str)
 
     def __init__(self, playlist_link, parent=None):
         QThread.__init__(self, parent)
@@ -361,10 +380,17 @@ class UrlLoading(QThread):
         """Main function, gets all the playlist videos data, emits the info dict"""
         try:
             videos_dict = utils.get_youtube_content(self.playlist_link)
+            self.loadStatus.emit("success")
             self.countChanged.emit(videos_dict, True)
-        except Exception as error:
-            print(error)
-            self.countChanged.emit({}, False)
+        except RuntimeError as error:  # reattempt video load if load fails
+            error_message = str(error)
+            if "is not a valid URL." in error_message:
+                self.loadStatus.emit("invalid url")
+            elif "nodename nor servname provided" in error_message:
+                self.loadStatus.emit("server error")
+            else:
+                self.loadStatus.emit("reattempt")
+                self.run()
 
 
 class iTunesLoading(QThread):
