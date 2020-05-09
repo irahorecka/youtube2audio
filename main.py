@@ -78,6 +78,9 @@ class MainPage(QMainWindow, UiMainWindow):
     def reflect_url_loading_status(self, status=None):
         """Reflect YouTube url loading status. If no status is provided,
         hide all error label and keep table content."""
+        self.video_table.clearContents()  # clear table content when loading
+        self.video_info_input.setText("")  # clear video info input cell
+        self.display_artwork(None)  # clear artwork display to default image
         self.url_poor_connection.hide()
         self.url_fetching_data_label.hide()
         self.url_reattempt_load_label.hide()
@@ -91,7 +94,6 @@ class MainPage(QMainWindow, UiMainWindow):
                 self.url_reattempt_load_label.show()
             elif status == "server error":
                 self.url_poor_connection.show()
-            self.video_table.clearContents()  # clear table content if error
             self.revert_annotate.hide()
             self.itunes_annotate.show()  # refresh Ask butler button
 
@@ -375,21 +377,39 @@ class UrlLoading(QThread):
     def __init__(self, playlist_link, parent=None):
         QThread.__init__(self, parent)
         self.playlist_link = playlist_link
+        self.reattempt_count = 0
+        self.override_error = False
 
     def run(self):
         """Main function, gets all the playlist videos data, emits the info dict"""
+        # allow 5 reattempts if error in fetching YouTube videos
+        # else just get loaded videos by overriding error handling
+        if self.reattempt_count > 5:
+            self.override_error = True
+
         try:
-            videos_dict = utils.get_youtube_content(self.playlist_link)
-            self.loadStatus.emit("success")
-            self.countChanged.emit(videos_dict, True)
-        except RuntimeError as error:  # reattempt video load if load fails
+            videos_dict = utils.get_youtube_content(
+                self.playlist_link, self.override_error
+            )
+            if not videos_dict:
+                # if empty videos_dict returns, throw invalid url warning.
+                self.loadStatus.emit("invalid url")
+            else:
+                self.loadStatus.emit("success")
+                self.countChanged.emit(videos_dict, True)
+
+        except RuntimeError as error:  # handle error from video load fail
             error_message = str(error)
-            if "is not a valid URL." in error_message:
+            if any(
+                message in error_message
+                for message in ["not a valid URL", "Unsupported URL", "list"]
+            ):
                 self.loadStatus.emit("invalid url")
             elif "nodename nor servname provided" in error_message:
                 self.loadStatus.emit("server error")
             else:
                 self.loadStatus.emit("reattempt")
+                self.reattempt_count += 1
                 self.run()
 
 
@@ -446,7 +466,7 @@ class ArtworkLoading(QThread):
         # get url response - if not url, return empty bytes
         try:
             response = requests.get(self.artwork_url)
-        except requests.exceptions.MissingSchema:
+        except (requests.exceptions.MissingSchema, requests.exceptions.ConnectionError):
             self.loadFinished.emit(artwork_img)
             return
 

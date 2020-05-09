@@ -4,16 +4,20 @@ from pytube import Playlist
 from ._threading import map_threads
 
 
-def get_youtube_content(youtube_url):
+def get_youtube_content(youtube_url, override_error):
     """Str parse YouTube url and call appropriate functions
     to execute url content."""
     if ".com/playlist" in youtube_url:
         url_tuple = get_playlist_video_info(youtube_url)
+        # concatenate override_error argument to url_tuple
+        url_tuple = tuple((url, override_error) for url in url_tuple)
         video_genr = map_threads(get_video_info, url_tuple)
         video_info = list(video_genr)
     else:
-        adj_youtube_url = youtube_url.split("&")[0]  # trim ascii encoding &
-        video_json = get_video_info(adj_youtube_url)
+        adj_youtube_url = youtube_url.split("&")[0]  # trim ascii encoding "&"
+        # set get_video_info parameter as tuple to comply with multithreading parameter (tuple)
+        url_tuple = (adj_youtube_url, override_error)
+        video_json = get_video_info(url_tuple)
         video_info = []
         video_info.append(video_json)  # append single video to index-able dtype
 
@@ -26,7 +30,8 @@ def get_playlist_video_info(playlist_url):
     """Get url of videos in a YouTube playlist."""
     try:
         playlist = Playlist(playlist_url)
-    except urllib.error.URLError as error:  # thrown if poor internet connection
+    # thrown if poor internet connection or bad playlist url
+    except (urllib.error.URLError, KeyError) as error:
         raise RuntimeError(error)
 
     vid_tuple = tuple(video for video in playlist.video_urls)
@@ -34,18 +39,25 @@ def get_playlist_video_info(playlist_url):
     return vid_tuple
 
 
-def get_video_info(video_url):
+def get_video_info(args):
     """Get YouTube video metadata."""
+    video_url = args[0]
+    override_error = args[1]
+
     ydl_opts = {"ignoreerrors": False, "quiet": True}
+    if override_error:
+        # silence youtube_dl exceptions by ignoring errors
+        ydl_opts = {"ignoreerrors": True, "quiet": True}
+
     try:
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             video_info = ydl.extract_info(video_url, download=False)
-    except youtube_dl.utils.DownloadError as error:  # video unavailable
+        return video_info
+    # video unavailable or bad url format
+    except (youtube_dl.utils.DownloadError, UnicodeError) as error:
         # catch exception here and process error:
-        # either load content again or post invalid url error.
+        # either load content again or post error label.
         raise RuntimeError(error)
-
-    return video_info
 
 
 def video_content_to_dict(vid_info_list):
