@@ -13,13 +13,14 @@ import main
 app = QApplication(sys.argv)
 
 
-class mainTest(unittest.TestCase):
+class testMain(unittest.TestCase):
     """Test the main GUI for default properties."""
 
     def setUp(self):
         self.form = main.MainPage()
 
     def test_video_table_defaults(self):
+        """Test default content of self.video_table -- should be empty"""
         row_count = 250
         column_count = 5
         self.assertEqual(self.form.video_table.rowCount(), row_count)
@@ -31,12 +32,14 @@ class mainTest(unittest.TestCase):
                 self.assertEqual(self.form.video_table.item(row, column), None)
 
     def test_user_input_defaults(self):
+        """Test default inputs for users."""
         default_download_dir = self.form.get_parent_current_dir(self.form.download_dir)
         self.assertEqual(self.form.download_folder_select.text(), default_download_dir)
         self.assertEqual(self.form.url_input.text(), "")
         self.assertEqual(self.form.video_info_input.text(), "")
 
     def test_button_labels(self):
+        """Test default button labels on GUI"""
         self.assertEqual(self.form.cancel_button.text(), "Cancel")
         self.assertEqual(self.form.change_video_info_input.text(), "Replace")
         self.assertEqual(self.form.change_video_info_input_all.text(), "Replace all")
@@ -49,6 +52,7 @@ class mainTest(unittest.TestCase):
         self.assertEqual(self.form.url_load_button.text(), "Load")
 
     def test_label_labels(self):
+        """Test default labels on GUI"""
         self.assertEqual(self.form.download_folder_label.text(), "Download folder")
         self.assertEqual(self.form.download_status.text(), "")
         self.assertEqual(
@@ -68,9 +72,11 @@ class mainTest(unittest.TestCase):
         )
 
     def test_artwork_label(self):
+        """Test default artwork label"""
         self.assertEqual(self.form.album_artwork.text(), "")
 
     def test_hyperlink_label(self):
+        """Test default label on source code hyperlink"""
         self.assertEqual(
             self.form.credit_url.text(),
             '<a href="https://github.com/irahorecka/YouTube2Mp3">source code</a>',

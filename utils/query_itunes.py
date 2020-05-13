@@ -15,7 +15,7 @@ def thread_query_itunes(args):
 
 
 def get_itunes_metadata(vid_url):
-    """Get iTunes metadata to add to mp3 file."""
+    """Get iTunes metadata to add to MP3/MP4 file."""
     vid_title = oembed_title(vid_url)
     try:
         ITUNES_META = query_itunes(vid_title)[0]
@@ -59,7 +59,7 @@ def oembed_title(vid_url):
     raise TypeError("vid_url must be a URL string.")
 
 
-def query_itunes(song_properties):
+def query_itunes(song_properties):  # perhaps the param should be named youtube_video_title
     """Download video metadata using itunespy."""
     try:
         song_itunes = itunespy.search_track(song_properties)
