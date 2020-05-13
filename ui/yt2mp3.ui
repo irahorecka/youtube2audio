@@ -703,7 +703,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Go Back</string>
+     <string>Go back</string>
     </property>
    </widget>
    <widget class="QLabel" name="album_artwork">
