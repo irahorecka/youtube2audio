@@ -16,9 +16,7 @@ class testThreading(unittest.TestCase):
 
     def example_func_for_threading(self, value):
         """Example function for testing threading"""
-        value_sum_one = value + 1
-
-        return value_sum_one
+        return value + 1
 
     def test_threading(self):
         """Test _threading.map_threads for proper threading functionality"""
@@ -52,7 +50,6 @@ class testYouTubeQuery(unittest.TestCase):
             )
         except RuntimeError:  # successfully threw RuntimeError
             youtube_video_dict = {}
-            pass
         self.assertIsInstance(youtube_video_dict, dict)
 
     def test_get_youtube_video_content_false_override(self):
@@ -65,7 +62,6 @@ class testYouTubeQuery(unittest.TestCase):
             )
         except RuntimeError:
             youtube_video_dict = {}
-            pass
         self.assertIsInstance(youtube_video_dict, dict)
 
     def test_get_youtube_playlist_content_true_override(self):

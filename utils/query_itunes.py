@@ -53,8 +53,7 @@ def oembed_title(vid_url):
         except requests.exceptions.ConnectionError:
             return
         vid_json = vid_content.json()
-        vid_title = vid_json["title"]
-        return vid_title
+        return vid_json["title"]
 
     raise TypeError("vid_url must be a URL string.")
 
