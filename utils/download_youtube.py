@@ -109,13 +109,11 @@ def set_song_metadata(directory, song_properties, song_filename, save_as_mp4):
 
     def valid_artwork():
         """Validate artwork requests response."""
-        if (
-            response is not None
-            and response.status_code == 200
-            and response.content[:3] == b"\xff\xd8\xff"
-        ):
-            return True
-        return False
+        return (
+                response is not None
+                and response.status_code == 200
+                and response.content[:3] == b"\xff\xd8\xff"
+            )
 
     # TODO Cache the image until program finishes
     try:

@@ -34,9 +34,7 @@ def get_playlist_video_info(playlist_url):
     except (urllib.error.URLError, KeyError) as error:
         raise RuntimeError(error)
 
-    vid_tuple = tuple(video for video in playlist.video_urls)
-
-    return vid_tuple
+    return tuple(playlist.video_urls)
 
 
 def get_video_info(args):
