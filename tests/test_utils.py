@@ -32,9 +32,9 @@ class testYouTubeQuery(unittest.TestCase):
 
     def setUp(self):
         self.playlist_url = (
-            "https://www.youtube.com/playlist?list=PL-UWPlRIl68oSg7qsGbVRh56bsdCbDLiU"
+            "https://www.youtube.com/playlist?list=PL3PhWT10BW3Urh8ZXXpuU9h526ChwgWKy"
         )
-        self.video_url = "https://www.youtube.com/watch?v=ixGrA0dQKeI&list=PL-UWPlRIl68oSg7qsGbVRh56bsdCbDLiU&index=2&t=0s"
+        self.video_url = "https://www.youtube.com/watch?v=HW-lXjOyUWo&list=PL3PhWT10BW3Urh8ZXXpuU9h526ChwgWKy&index=2&t=0s"
         self.video_info_list = [
             {"title": "Test1", "id": 1, "duration": 100},
             {"title": "Test2", "id": 2, "duration": 200},
