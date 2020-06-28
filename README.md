@@ -3,6 +3,7 @@
 ![Forks](https://img.shields.io/github/forks/irahorecka/YouTube2Audio)
 ![Issues](https://img.shields.io/github/issues/irahorecka/YouTube2Audio)
 ![License](https://img.shields.io/github/license/irahorecka/YouTube2Audio)
+![Version](https://img.shields.io/badge/version-v2020.06.27-orange)
 
 A desktop application to download YouTube videos as annotated MP3 or MP4 files.
 <br>
@@ -15,7 +16,7 @@ Paste a YouTube playlist or video URL and load its content. Make edits to the ta
 
 This application uses PyQt5 to provide the user interface and multithreading to execute calls asynchronously. The backend uses ```itunespy``` to suggest song annotations (i.e. "Ask butler"), ```pytube``` to download the YouTube video as an MP4 audio file, and FFmpeg to convert the MP4 file to MP3.
 
-Watch the <a href="https://i.imgur.com/yn3x6mb.mp4">video demo</a> for more information.
+Watch the [video demo](Documentation/youtube2audio.mp4) for more information.
 <hr>
 
 ## Running the application
@@ -25,7 +26,7 @@ Watch the <a href="https://i.imgur.com/yn3x6mb.mp4">video demo</a> for more info
 3) ```pip install -r requirements.txt```
 4) ```python main.py```
 
-Check <b>Troubleshooting</b> if you encounter any trouble running / using the application or downloading MP3 files. If undocumented exceptions occur, please file the issue in <a href="https://github.com/irahorecka/YouTube2Mp3/issues">issues</a>.
+Check <b>Troubleshooting</b> if you encounter any trouble running / using the application or downloading MP3 files. If undocumented exceptions occur, please file the issue in <a href="https://github.com/irahorecka/YouTube2Audio/issues">issues</a>.
 <hr>
 
 ## Download ```ffmpeg```
