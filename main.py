@@ -363,9 +363,7 @@ class MainPage(QMainWindow, UiMainWindow):
         """Get current and parent directory as str."""
         parent_dir, current_dir = os.path.split(current_path)
         parent_dir = os.path.split(parent_dir)[1]  # get tail of parent_dir
-        parent_current_dir = f"../{parent_dir}/{current_dir}"
-
-        return parent_current_dir
+        return f"../{parent_dir}/{current_dir}"
 
 
 class UrlLoading(QThread):
