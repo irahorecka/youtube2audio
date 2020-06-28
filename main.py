@@ -499,6 +499,12 @@ class DownloadingVideos(QThread):
             os.mkdir(mp4_path)
         except FileExistsError:
             pass
+        except FileNotFoundError:
+            # If the user downloads to a folder, deletes the folder, and reattempts
+            # to download to the same folder within the same session.
+            raise RuntimeError(
+                f'"{os.path.abspath(os.path.dirname(mp4_path))}" does not exist.\nEnsure this directory exists prior to executing download.'
+            )
 
         time0 = time.time()
         video_properties = (
