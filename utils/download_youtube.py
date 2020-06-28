@@ -9,6 +9,7 @@ from mutagen.id3 import ID3, APIC, TALB, TPE1, TIT2, TCON
 from ._threading import map_threads
 from .pytube_patch import apply_descrambler
 
+# Set apply_descrambler method in pytube module to pytube_patch.apply_descrambler
 pytube.__main__.apply_descrambler = apply_descrambler
 
 
@@ -17,7 +18,6 @@ def thread_query_youtube(args):
     by map_threads"""
 
     yt_link_starter = "https://www.youtube.com/watch?v="
-    # NOTE: this must have no relation to any self obj
     key_value, videos_dict = args[0]
     download_path, mp4_path = args[1]
     song_properties = args[2]
@@ -52,11 +52,12 @@ def thread_query_youtube(args):
                 ":",
                 "|",
             )
+            # remove illegal characters from song title - otherwise clipped by pytube
             for char in illegal_char:
                 mp4_filename = mp4_filename.replace(char, "")
-            mp4_filename += ".mp4"
 
-            stream.download(mp4_path, filename=f"{mp4_filename[:-4]}")
+            stream.download(mp4_path, filename=f"{mp4_filename}")
+            mp4_filename += ".mp4"  # add extension for downstream file recognition
 
             if save_as_mp4:
                 m4a_filename = "{}.m4a".format(song_properties.get("song"))
