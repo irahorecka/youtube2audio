@@ -14,5 +14,5 @@ QtPy==1.9.0
 requests==2.23.0
 typing-extensions==3.7.4.2
 urllib3==1.25.9
-youtube-dl==2020.3.24
+youtube-dl==2020.6.16.1
 zipp==3.1.0
