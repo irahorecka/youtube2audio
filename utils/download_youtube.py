@@ -44,7 +44,7 @@ def thread_query_youtube(args):
             else:
                 return get_youtube_mp3(stream)
         except Exception as error:  # not a good Exceptions catch...
-            print("Error: " + error)  # poor man's logging
+            print("Error: " + str(error))  # poor man's logging
             raise Exception
 
     def get_youtube_mp3(stream):

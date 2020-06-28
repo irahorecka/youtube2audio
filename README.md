@@ -6,9 +6,8 @@
 
 A desktop application to download YouTube videos as annotated MP3 or MP4 files.
 <br>
-<p align="left">
-<img src=https://i.imgur.com/G0r0bnn.png alt="YouTube to Audio">
-</p>
+<br>
+![Application Interface](Documentation/youtube2audio.png)
 <hr>
 
 ## Using the application
