@@ -58,7 +58,7 @@ def oembed_title(vid_url):
     raise TypeError("vid_url must be a URL string.")
 
 
-def query_itunes(song_properties):  # perhaps the param should be named youtube_video_title
+def query_itunes(song_properties):
     """Download video metadata using itunespy."""
     try:
         song_itunes = itunespy.search_track(song_properties)

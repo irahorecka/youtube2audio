@@ -2,11 +2,14 @@ import os
 import subprocess
 import requests
 from shutil import copy2
+import pytube
 from mutagen.mp3 import MP3
 from mutagen.mp4 import MP4, MP4Cover
 from mutagen.id3 import ID3, APIC, TALB, TPE1, TIT2, TCON
-from pytube import YouTube
 from ._threading import map_threads
+from .pytube_patch import apply_descrambler
+
+pytube.__main__.apply_descrambler = apply_descrambler
 
 
 def thread_query_youtube(args):
@@ -24,17 +27,42 @@ def thread_query_youtube(args):
     def get_youtube_mp4():
         """Write MP4 audio file from YouTube video."""
         try:
-            video = YouTube(full_link)
+            video = pytube.YouTube(full_link)
             stream = video.streams.filter(
                 only_audio=True, audio_codec="mp4a.40.2"
             ).first()
-            stream.download(mp4_path)
+            mp4_filename = f"{song_properties.get('song')}"
+            illegal_char = (
+                "?",
+                "'",
+                '"',
+                ".",
+                "/",
+                "\\",
+                "*",
+                "^",
+                "%",
+                "$",
+                "#",
+                "~",
+                "<",
+                ">",
+                ",",
+                ";",
+                ":",
+                "|",
+            )
+            for char in illegal_char:
+                mp4_filename = mp4_filename.replace(char, "")
+            mp4_filename += ".mp4"
+
+            stream.download(mp4_path, filename=f"{mp4_filename[:-4]}")
 
             if save_as_mp4:
-                m4a_filename = "{}.m4a".format(song_properties["song"])
+                m4a_filename = "{}.m4a".format(song_properties.get("song"))
                 # Copy song from temporary folder to destination
                 copy2(
-                    os.path.join(mp4_path, stream.default_filename),
+                    os.path.join(mp4_path, mp4_filename),
                     os.path.join(download_path, m4a_filename),
                 )
 
@@ -42,15 +70,14 @@ def thread_query_youtube(args):
                     download_path, song_properties, m4a_filename, True
                 )
             else:
-                return get_youtube_mp3(stream)
+                return get_youtube_mp3(stream, mp4_filename)
         except Exception as error:  # not a good Exceptions catch...
             print("Error: " + str(error))  # poor man's logging
             raise Exception
 
-    def get_youtube_mp3(stream):
+    def get_youtube_mp3(stream, mp4_filename):
         """Write MP3 audio file from MP4."""
-        mp4_filename = stream.default_filename  # mp4 full extension
-        mp3_filename = "{}.mp3".format(song_properties["song"])
+        mp3_filename = "{}.mp3".format(song_properties.get("song"))
 
         subprocess.call(
             [
@@ -110,10 +137,10 @@ def set_song_metadata(directory, song_properties, song_filename, save_as_mp4):
     def valid_artwork():
         """Validate artwork requests response."""
         return (
-                response is not None
-                and response.status_code == 200
-                and response.content[:3] == b"\xff\xd8\xff"
-            )
+            response is not None
+            and response.status_code == 200
+            and response.content[:3] == b"\xff\xd8\xff"
+        )
 
     # TODO Cache the image until program finishes
     try:
