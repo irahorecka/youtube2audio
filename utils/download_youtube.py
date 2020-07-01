@@ -60,7 +60,7 @@ def thread_query_youtube(args):
             mp4_filename += ".mp4"  # add extension for downstream file recognition
 
             if save_as_mp4:
-                m4a_filename = "{}.m4a".format(song_properties.get("song"))
+                m4a_filename = f"{song_properties.get("song")}.m4a"
                 # Copy song from temporary folder to destination
                 copy2(
                     os.path.join(mp4_path, mp4_filename),
@@ -78,7 +78,7 @@ def thread_query_youtube(args):
 
     def get_youtube_mp3(stream, mp4_filename):
         """Write MP3 audio file from MP4."""
-        mp3_filename = "{}.mp3".format(song_properties.get("song"))
+        mp3_filename = f"{song_properties.get("song")}.mp3"
 
         subprocess.call(
             [
