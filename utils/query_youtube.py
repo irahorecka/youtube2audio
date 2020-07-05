@@ -29,6 +29,8 @@ def get_youtube_content(youtube_url, override_error):
 def get_playlist_video_info(playlist_url):
     """Get url of videos in a YouTube playlist."""
     try:
+        # commonly returns empty list - likely a pytube.Playlist issue
+        # view issue here: https://github.com/nficano/pytube/issues/670
         playlist = Playlist(playlist_url)
     # thrown if poor internet connection or bad playlist url
     except (urllib.error.URLError, KeyError) as error:

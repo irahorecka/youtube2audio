@@ -66,5 +66,5 @@ def query_itunes(song_properties):
         for song in song_itunes:
             song.track_time = round(song.track_time / 60000, 2)
         return song_itunes
-    except Exception as error:
+    except Exception:
         return

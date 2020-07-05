@@ -12,7 +12,7 @@ class testThreading(unittest.TestCase):
     """Test utils/_threading.py"""
 
     def setUp(self):
-        import time
+        pass
 
     def example_func_for_threading(self, value):
         """Example function for testing threading"""
@@ -205,13 +205,13 @@ class testYouTubeDownload(unittest.TestCase):
     def test_get_youtube_mp4(self):
         """Test download of mp4 file (m4a) using the setUp var above"""
         download_youtube.thread_query_youtube(self.mp4_args_for_thread_query_youtube)
-        assert os.path.exists(self.m4a_file_path) == True
+        assert os.path.exists(self.m4a_file_path)
         os.remove(self.m4a_file_path)  # remove generated m4a file
 
     def test_get_youtube_mp3(self):
         """Test download of mp3 file (mp3) using the setUp var above"""
         download_youtube.thread_query_youtube(self.mp3_args_for_thread_query_youtube)
-        assert os.path.exists(self.mp3_file_path) == True
+        assert os.path.exists(self.mp3_file_path)
         os.remove(self.mp3_file_path)  # remove generated mp3 file
 
     def tearDown(self):

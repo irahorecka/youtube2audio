@@ -3,8 +3,6 @@ import os
 import sys
 import unittest
 from PyQt5.QtWidgets import QApplication
-from PyQt5.QtTest import QTest
-from PyQt5.QtCore import Qt
 
 # get directory to main.py
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))

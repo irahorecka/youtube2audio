@@ -63,6 +63,5 @@ def apply_descrambler(stream_data, key):
             ]
     else:
         stream_data[key] = [
-            {k: unquote(v) for k, v in parse_qsl(i)}
-            for i in stream_data[key].split(",")
+            {k: unquote(v) for k, v in parse_qs(i)} for i in stream_data[key].split(",")
         ]

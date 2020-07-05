@@ -2,7 +2,6 @@ import os
 import shutil
 import sys
 import time
-from functools import partial
 import requests
 import qdarkstyle
 from PyQt5.QtCore import QThread, QPersistentModelIndex, pyqtSignal
@@ -444,7 +443,7 @@ class iTunesLoading(QThread):
         index, itunes_query = tuple(zip(*query_tuple))
         try:
             # successful queries return a dict obj, which is unhashable
-            unique_queries = set(itunes_query)
+            set(itunes_query)
             return
         except TypeError:
             return True
