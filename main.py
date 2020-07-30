@@ -87,7 +87,7 @@ class MainPage(QMainWindow, UiMainWindow):
         if status:
             if status == "success":
                 return
-            elif status == "invalid url":
+            if status == "invalid url":
                 self.url_error_label.show()
             elif status == "reattempt":
                 self.url_reattempt_load_label.show()
@@ -305,7 +305,7 @@ class MainPage(QMainWindow, UiMainWindow):
         downloaded MP3 metadata."""
         playlist_properties = []
 
-        for row_index, key_value in enumerate(self.videos_dict.items()):
+        for row_index, _ in enumerate(self.videos_dict.items()):
             song_properties = {}
             song_properties["song"] = self.get_cell_text(
                 self.video_table.item(row_index, 0)
@@ -331,10 +331,6 @@ class MainPage(QMainWindow, UiMainWindow):
 
         return playlist_properties
 
-    def set_credit_url(self, url_str):
-        """Set source code url on upper right of table."""
-        QtGui.QDesktopServices.openUrl(QtCore.QUrl(url_str))
-
     def set_check_mp3_box(self):
         """if self.save_as_mp3_box is checked, uncheck
         self.save_as_mp4_box."""
@@ -346,6 +342,11 @@ class MainPage(QMainWindow, UiMainWindow):
         self.save_as_mp3_box."""
         self.save_as_mp3_box.setChecked(False)
         self.save_as_mp4_box.setChecked(True)
+
+    @staticmethod
+    def set_credit_url(url_str):
+        """Set source code url on upper right of table."""
+        QtGui.QDesktopServices.openUrl(QtCore.QUrl(url_str))
 
     @staticmethod
     def get_cell_text(cell_item):
@@ -440,11 +441,11 @@ class iTunesLoading(QThread):
     @staticmethod
     def check_itunes_nonetype(query_tuple):
         """Check if none of the queries were successful."""
-        index, itunes_query = tuple(zip(*query_tuple))
+        _, itunes_query = tuple(zip(*query_tuple))
         try:
             # successful queries return a dict obj, which is unhashable
             set(itunes_query)
-            return
+            return False
         except TypeError:
             return True
 
@@ -471,9 +472,8 @@ class ArtworkLoading(QThread):
         if response.status_code != 200:  # invalid image url
             self.loadFinished.emit(artwork_img)
             return
-        else:
-            artwork_img = response.content
-            self.loadFinished.emit(artwork_img)
+        artwork_img = response.content
+        self.loadFinished.emit(artwork_img)
 
 
 class DownloadingVideos(QThread):

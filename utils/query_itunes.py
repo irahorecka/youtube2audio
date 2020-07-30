@@ -1,3 +1,4 @@
+from json.decoder import JSONDecodeError
 import requests
 import itunespy
 
@@ -20,7 +21,7 @@ def get_itunes_metadata(vid_url):
     try:
         ITUNES_META = query_itunes(vid_title)[0]
     except TypeError:  # i.e. no information fetched from query_itunes
-        return
+        return None
 
     ITUNES_META_JSON = {
         "track_name": ITUNES_META.track_name,
@@ -51,8 +52,11 @@ def oembed_title(vid_url):
         try:
             vid_content = requests.get(oembed_url)
         except requests.exceptions.ConnectionError:
-            return
-        vid_json = vid_content.json()
+            return None
+        try:
+            vid_json = vid_content.json()
+        except JSONDecodeError:
+            return None
         return vid_json["title"]
 
     raise TypeError("vid_url must be a URL string.")
@@ -67,4 +71,4 @@ def query_itunes(song_properties):
             song.track_time = round(song.track_time / 60000, 2)
         return song_itunes
     except Exception:
-        return
+        return None

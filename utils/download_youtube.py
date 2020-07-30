@@ -1,15 +1,15 @@
 import os
 import subprocess
-import requests
 from shutil import copy2
 import pytube
+import requests
 from mutagen.mp3 import MP3
 from mutagen.mp4 import MP4, MP4Cover
 from mutagen.id3 import ID3, APIC, TALB, TPE1, TIT2, TCON
 from .pytube_patch import apply_descrambler
 
 # Set apply_descrambler method in pytube module to pytube_patch.apply_descrambler
-pytube.__main__.apply_descrambler = apply_descrambler
+# pytube.__main__.apply_descrambler = apply_descrambler
 
 
 def thread_query_youtube(args):
@@ -17,7 +17,7 @@ def thread_query_youtube(args):
     by map_threads"""
 
     yt_link_starter = "https://www.youtube.com/watch?v="
-    key_value, videos_dict = args[0]
+    _, videos_dict = args[0]
     download_path, mp4_path = args[1]
     song_properties = args[2]
     save_as_mp4 = args[3]
@@ -69,13 +69,12 @@ def thread_query_youtube(args):
                 return set_song_metadata(
                     download_path, song_properties, m4a_filename, True
                 )
-            else:
-                return get_youtube_mp3(stream, mp4_filename)
+            return get_youtube_mp3(mp4_filename)
         except Exception as error:  # not a good Exceptions catch...
             print("Error: " + str(error))  # poor man's logging
             raise Exception
 
-    def get_youtube_mp3(stream, mp4_filename):
+    def get_youtube_mp3(mp4_filename):
         """Write MP3 audio file from MP4."""
         mp3_filename = f'{song_properties.get("song")}.mp3'
 
