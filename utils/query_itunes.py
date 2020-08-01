@@ -51,12 +51,10 @@ def oembed_title(vid_url):
         oembed_url = f"https://www.youtube.com/oembed?url={vid_url}&format=json"
         try:
             vid_content = requests.get(oembed_url)
-        except requests.exceptions.ConnectionError:
-            return None
-        try:
             vid_json = vid_content.json()
-        except JSONDecodeError:
+        except (requests.exceptions.ConnectionError, JSONDecodeError):
             return None
+
         return vid_json["title"]
 
     raise TypeError("vid_url must be a URL string.")
