@@ -4,9 +4,15 @@ import sys
 import time
 import requests
 import qdarkstyle
-from PyQt5.QtCore import QThread, QPersistentModelIndex, pyqtSignal
-from PyQt5 import QtGui, QtCore, QtWidgets
-from PyQt5.QtWidgets import QApplication, QFileDialog, QMainWindow, QTableWidgetItem
+from PyQt5.QtCore import QPersistentModelIndex, Qt, QThread, QUrl, pyqtSignal
+from PyQt5.QtGui import QDesktopServices, QImage, QPixmap
+from PyQt5.QtWidgets import (
+    QAbstractItemView,
+    QApplication,
+    QFileDialog,
+    QMainWindow,
+    QTableWidgetItem,
+)
 import utils
 from ui import UiMainWindow
 
@@ -48,7 +54,7 @@ class MainPage(QMainWindow, UiMainWindow):
         self.revert_annotate.clicked.connect(self.default_annotate_table)
         self.video_table.cellPressed.connect(self.load_table_content)
         # edit table cell with single click
-        self.video_table.setEditTriggers(QtWidgets.QAbstractItemView.CurrentChanged)
+        self.video_table.setEditTriggers(QAbstractItemView.CurrentChanged)
         # Input changes in video property text box to appropriate cell.
         self.change_video_info_input.clicked.connect(self.replace_cell_item)
         self.change_video_info_input_all.clicked.connect(self.replace_cell_column)
@@ -241,14 +247,14 @@ class MainPage(QMainWindow, UiMainWindow):
         """Display selected artwork on Qpixmap widget."""
         if not artwork_content:
             qt_artwork_content = os.path.join(IMG_PATH, "default_artwork.png")
-            self.album_artwork.setPixmap(QtGui.QPixmap(qt_artwork_content))
+            self.album_artwork.setPixmap(QPixmap(qt_artwork_content))
         else:
-            qt_artwork_content = QtGui.QImage()
+            qt_artwork_content = QImage()
             qt_artwork_content.loadFromData(artwork_content)
-            self.album_artwork.setPixmap(QtGui.QPixmap.fromImage(qt_artwork_content))
+            self.album_artwork.setPixmap(QPixmap.fromImage(qt_artwork_content))
 
         self.album_artwork.setScaledContents(True)
-        self.album_artwork.setAlignment(QtCore.Qt.AlignCenter)
+        self.album_artwork.setAlignment(Qt.AlignCenter)
 
     def set_albm_artst_genr_artwrk(self, column_index):
         """Set cell content in song, album, artist, genre, or artwork
@@ -346,7 +352,7 @@ class MainPage(QMainWindow, UiMainWindow):
     @staticmethod
     def set_credit_url(url_str):
         """Set source code url on upper right of table."""
-        QtGui.QDesktopServices.openUrl(QtCore.QUrl(url_str))
+        QDesktopServices.openUrl(QUrl(url_str))
 
     @staticmethod
     def get_cell_text(cell_item):
