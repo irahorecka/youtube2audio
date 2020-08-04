@@ -6,12 +6,6 @@ import requests
 from mutagen.mp3 import MP3
 from mutagen.mp4 import MP4, MP4Cover
 from mutagen.id3 import ID3, APIC, TALB, TPE1, TIT2, TCON
-from .pytube_patch import apply_descrambler
-
-# Set apply_descrambler method in pytubeX module to pytube_patch.apply_descrambler
-# This prevents KeyError: 'cipher' commonly seen after YouTube
-# changed the key name for "cipher" to "signatureCipher"
-pytube.__main__.apply_descrambler = apply_descrambler
 
 
 def thread_query_youtube(args):
