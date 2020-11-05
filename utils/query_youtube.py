@@ -38,7 +38,13 @@ def get_playlist_video_info(playlist_url):
     except (urllib.error.URLError, KeyError) as error:
         raise RuntimeError(error)
 
-    return tuple(playlist.video_urls)
+    try:
+        video_urls = tuple(playlist.video_urls)
+    except AttributeError as error:
+        # if videos were queried unsuccessfully in playlist
+        raise RuntimeError(error)
+
+    return video_urls
 
 
 def get_video_info(args):
