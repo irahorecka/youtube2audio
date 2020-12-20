@@ -75,8 +75,5 @@ def video_content_to_dict(vid_info_list):
         if not video:
             continue
         title = video["title"]
-        video_dict[title] = {}
-        video_dict[title]["id"] = video["id"]
-        video_dict[title]["duration"] = video["duration"]
-
+        video_dict[title] = {"id": video["id"], "duration": video["duration"]}
     return video_dict
