@@ -1,9 +1,6 @@
 # <b>YouTube2Audio</b>
-![Stars](https://img.shields.io/github/stars/irahorecka/YouTube2Audio)
-![Forks](https://img.shields.io/github/forks/irahorecka/YouTube2Audio)
-![Issues](https://img.shields.io/github/issues/irahorecka/YouTube2Audio)
+![Version](https://img.shields.io/badge/version-v2020.12.19-orange)
 ![License](https://img.shields.io/github/license/irahorecka/YouTube2Audio)
-![Version](https://img.shields.io/badge/version-v2020.11.04-orange)
 
 A desktop application to download YouTube videos as annotated MP3 or MP4 files.
 <br>
