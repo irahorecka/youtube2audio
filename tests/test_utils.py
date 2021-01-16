@@ -165,12 +165,12 @@ class testYouTubeDownload(unittest.TestCase):
     """Test utils/download_youtube.py"""
 
     def setUp(self):
+        self.test_dirpath = os.path.dirname(os.path.abspath(__file__))
+        self.test_mp4_dirpath = os.path.join(self.test_dirpath, "mp4")
+
         self.mp3_args_for_thread_query_youtube = (
             ("No Time This Time - The Police", {"id": "nbXACcsTn84", "duration": 198}),
-            (
-                "/Users/irahorecka/Desktop/Harddrive_Desktop/Python/YouTube2Audio/tests",
-                "/Users/irahorecka/Desktop/Harddrive_Desktop/Python/YouTube2Audio/tests/mp4",
-            ),
+            (self.test_dirpath, self.test_mp4_dirpath,),
             {
                 "song": "No Time This Time",
                 "album": "Reggatta de Blanc (Remastered)",
@@ -182,10 +182,7 @@ class testYouTubeDownload(unittest.TestCase):
         )
         self.mp4_args_for_thread_query_youtube = (
             ("No Time This Time - The Police", {"id": "nbXACcsTn84", "duration": 198}),
-            (
-                "/Users/irahorecka/Desktop/Harddrive_Desktop/Python/YouTube2Audio/tests",
-                "/Users/irahorecka/Desktop/Harddrive_Desktop/Python/YouTube2Audio/tests/mp4",
-            ),
+            (self.test_dirpath, self.test_mp4_dirpath,),
             {
                 "song": "No Time This Time",
                 "album": "Reggatta de Blanc (Remastered)",
@@ -195,31 +192,27 @@ class testYouTubeDownload(unittest.TestCase):
             },
             True,
         )
-        self.mp3_file_path = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)), "No Time This Time.mp3"
-        )
-        self.m4a_file_path = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)), "No Time This Time.m4a"
-        )
+        self.mp3_filepath = os.path.join(self.test_dirpath, "No Time This Time.mp3")
+        self.m4a_filepath = os.path.join(self.test_dirpath, "No Time This Time.m4a")
 
     def test_get_youtube_mp4(self):
         """Test download of mp4 file (m4a) using the setUp var above"""
         download_youtube.thread_query_youtube(self.mp4_args_for_thread_query_youtube)
-        assert os.path.exists(self.m4a_file_path)
-        os.remove(self.m4a_file_path)  # remove generated m4a file
+        assert os.path.exists(self.m4a_filepath)
+        os.remove(self.m4a_filepath)  # remove generated m4a file
 
     def test_get_youtube_mp3(self):
         """Test download of mp3 file (mp3) using the setUp var above"""
         download_youtube.thread_query_youtube(self.mp3_args_for_thread_query_youtube)
-        assert os.path.exists(self.mp3_file_path)
-        os.remove(self.mp3_file_path)  # remove generated mp3 file
+        assert os.path.exists(self.mp3_filepath)
+        os.remove(self.mp3_filepath)  # remove generated mp3 file
 
     def tearDown(self):
         import shutil
 
-        shutil.rmtree(
-            os.path.join(os.path.dirname(os.path.abspath(__file__)), "mp4")
-        )  # remove mp4 dir
+        if os.path.exists(self.test_mp4_dirpath):
+            # remove mp4 dir if it exists
+            shutil.rmtree(self.test_mp4_dirpath)
 
     # TODO: add tests for mp3 and mp4 annotations -- above tests are for high-level functions.
 
