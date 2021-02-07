@@ -36,9 +36,7 @@ class MainPage(QMainWindow, UiMainWindow):
         self.revert_annotate.hide()
         # Activate hyperlink on upper right
         self.credit_url.linkActivated.connect(self.set_credit_url)
-        self.credit_url.setText(
-            '<a href="https://github.com/irahorecka/YouTube2Mp3">source code</a>'
-        )
+        self.credit_url.setText('<a href="https://github.com/irahorecka/YouTube2Mp3">source code</a>')
         # Connect the delete video button with the remove_selected_items fn.
         self.remove_from_table_button.clicked.connect(self.remove_selected_items)
         # Buttons connection with the appropriate functions
@@ -56,16 +54,14 @@ class MainPage(QMainWindow, UiMainWindow):
         # edit table cell with single click
         self.video_table.setEditTriggers(QAbstractItemView.CurrentChanged)
         # Input changes in video property text box to appropriate cell.
-        self.change_video_info_input.clicked.connect(self.replace_cell_item)
-        self.change_video_info_input_all.clicked.connect(self.replace_cell_column)
+        self.change_video_info_input.clicked.connect(self.replace_single_cell)
+        self.change_video_info_input_all.clicked.connect(self.replace_all_cells)
         self.video_info_input.returnPressed.connect(self.change_video_info_input.click)
         # Exit application
         self.cancel_button.clicked.connect(self.close)
         # Get download directory
         self.download_dir = BASE_PATH
-        self.download_folder_select.setText(
-            self.get_parent_current_dir(self.download_dir)  # get directory tail
-        )
+        self.download_folder_select.setText(self.get_parent_current_dir(self.download_dir))  # get directory tail
 
     def url_loading_button_click(self):
         """Reads input data from self.url_input and creates an instance
@@ -139,15 +135,11 @@ class MainPage(QMainWindow, UiMainWindow):
 
     def get_download_path(self):
         """Fetch download file path"""
-        self.download_dir = QFileDialog.getExistingDirectory(
-            self, "Open folder", BASE_PATH
-        )
+        self.download_dir = QFileDialog.getExistingDirectory(self, "Open folder", BASE_PATH)
         if not self.download_dir:
             self.download_dir = BASE_PATH
 
-        self.download_folder_select.setText(
-            self.get_parent_current_dir(self.download_dir)
-        )
+        self.download_folder_select.setText(self.get_parent_current_dir(self.download_dir))
 
     def download_button_click(self):
         """ Executes when the button is clicked """
@@ -162,10 +154,7 @@ class MainPage(QMainWindow, UiMainWindow):
         self.download_button.setEnabled(False)
         self.download_status.setText("Downloading...")
         self.down = DownloadingVideos(
-            self.videos_dict,
-            self.download_dir,
-            playlist_properties,
-            self.save_as_mp4_box.isChecked(),
+            self.videos_dict, self.download_dir, playlist_properties, self.save_as_mp4_box.isChecked(),
         )
         self.down.downloadCount.connect(self.download_finished)
         self.down.start()
@@ -219,9 +208,7 @@ class MainPage(QMainWindow, UiMainWindow):
         self.video_table.setItem(row_index, album_index, QTableWidgetItem(album_name))
         self.video_table.setItem(row_index, artist_index, QTableWidgetItem(artist_name))
         self.video_table.setItem(row_index, genre_index, QTableWidgetItem(genre_name))
-        self.video_table.setItem(
-            row_index, artwork_index, QTableWidgetItem(artwork_name)
-        )
+        self.video_table.setItem(row_index, artwork_index, QTableWidgetItem(artwork_name))
 
     def load_table_content(self, row, column):
         """Display selected cell content into self.video_info_input
@@ -231,17 +218,13 @@ class MainPage(QMainWindow, UiMainWindow):
 
         # load and display video artwork
         artwork_file = self.get_cell_text(self.video_table.item(row, 4))
-        self.loaded_artwork = ArtworkLoading(
-            artwork_file
-        )  # supposedly a url if populated
+        self.loaded_artwork = ArtworkLoading(artwork_file)  # supposedly a url if populated
         self.loaded_artwork.loadFinished.connect(self.display_artwork)
         self.loaded_artwork.start()
 
     def display_video_info(self, row, column):
         """Display selected cell content in self.video_info_input"""
-        self.video_info_input.setText(
-            self.get_cell_text(self.video_table.item(row, column))
-        )
+        self.video_info_input.setText(self.get_cell_text(self.video_table.item(row, column)))
 
     def display_artwork(self, artwork_content):
         """Display selected artwork on Qpixmap widget."""
@@ -256,31 +239,30 @@ class MainPage(QMainWindow, UiMainWindow):
         self.album_artwork.setScaledContents(True)
         self.album_artwork.setAlignment(Qt.AlignCenter)
 
-    def set_albm_artst_genr_artwrk(self, column_index):
-        """Set cell content in song, album, artist, genre, or artwork
-        column based on video info input or selected cell content."""
-        rows = self.video_table.rowCount()
-        for row_index in range(rows):
-            item = self.video_table.item(row_index, column_index)  # get cell value
-            if item and self.get_cell_text(item):
-                self.video_table.setItem(
-                    row_index,
-                    column_index,
-                    QTableWidgetItem(self.get_cell_text(self.video_info_input)),
-                )  # part of QWidget
-
-    def replace_cell_item(self):
+    def replace_single_cell(self):
         """Change selected cell value to value in self.video_info_input."""
         row = self.video_table.currentIndex().row()
         column = self.video_table.currentIndex().column()
         video_info_input_value = self.get_cell_text(self.video_info_input)
-        self.video_table.setItem(row, column, QTableWidgetItem(video_info_input_value))
+        self.replace_cell_item(row, column, video_info_input_value)
 
-    def replace_cell_column(self):
-        """Change every occupied cell in the selected column to value
-        in self.video_info_input."""
-        column = self.video_table.currentIndex().column()
-        self.set_albm_artst_genr_artwrk(column)
+    def replace_all_cells(self):
+        """Change all rows, except songs, in table to match selected cell row."""
+        # get row of cells to replace all others
+        replacement_row_index = self.video_table.currentIndex().row()
+
+        for row_index in range(self.video_table.rowCount()):
+            # omit first column (i.e. song)
+            for col_index in range(1, self.video_table.columnCount()):
+                # get current cell item to be deleted and cell item to replace
+                current_value = self.get_cell_text(self.video_table.item(row_index, col_index))
+                replacement_value = self.get_cell_text(self.video_table.item(replacement_row_index, col_index))
+                if current_value and replacement_value:
+                    self.replace_cell_item(row_index, col_index, replacement_value)
+
+    def replace_cell_item(self, row, column, value):
+        """Replace cell with value at row / column index."""
+        self.video_table.setItem(row, column, QTableWidgetItem(value))
 
     def remove_selected_items(self):
         """Removes the selected items from self.videos_table and self.videos_dict.
@@ -297,9 +279,7 @@ class MainPage(QMainWindow, UiMainWindow):
             row_index_list.append(row_index)
             try:
                 current_key = video_list[row][0]
-                del self.videos_dict[
-                    current_key
-                ]  # remove row item from self.videos_dict
+                del self.videos_dict[current_key]  # remove row item from self.videos_dict
             except (IndexError, KeyError):  # no item/key in video_list or videos_dict
                 pass
 
@@ -313,27 +293,15 @@ class MainPage(QMainWindow, UiMainWindow):
 
         for row_index, _ in enumerate(self.videos_dict.items()):
             song_properties = {}
-            song_properties["song"] = self.get_cell_text(
-                self.video_table.item(row_index, 0)
-            ).replace(
+            song_properties["song"] = self.get_cell_text(self.video_table.item(row_index, 0)).replace(
                 "/", "-"
             )  # will be filename -- change illegal char to legal - make func
-            song_properties["album"] = self.get_cell_text(
-                self.video_table.item(row_index, 1)
-            )
-            song_properties["artist"] = self.get_cell_text(
-                self.video_table.item(row_index, 2)
-            )
-            song_properties["genre"] = self.get_cell_text(
-                self.video_table.item(row_index, 3)
-            )
-            song_properties["artwork"] = self.get_cell_text(
-                self.video_table.item(row_index, 4)
-            )
+            song_properties["album"] = self.get_cell_text(self.video_table.item(row_index, 1))
+            song_properties["artist"] = self.get_cell_text(self.video_table.item(row_index, 2))
+            song_properties["genre"] = self.get_cell_text(self.video_table.item(row_index, 3))
+            song_properties["artwork"] = self.get_cell_text(self.video_table.item(row_index, 4))
 
-            playlist_properties.append(
-                song_properties
-            )  # this assumes that dict will be ordered like list
+            playlist_properties.append(song_properties)  # this assumes that dict will be ordered like list
 
         return playlist_properties
 
@@ -392,9 +360,7 @@ class UrlLoading(QThread):
             self.override_error = True
 
         try:
-            videos_dict = utils.get_youtube_content(
-                self.playlist_link, self.override_error
-            )
+            videos_dict = utils.get_youtube_content(self.playlist_link, self.override_error)
             if not videos_dict:
                 # if empty videos_dict returns, throw invalid url warning.
                 self.loadStatus.emit("invalid url")
@@ -404,10 +370,7 @@ class UrlLoading(QThread):
 
         except RuntimeError as error:  # handle error from video load fail
             error_message = str(error)
-            if any(
-                message in error_message
-                for message in ["not a valid URL", "Unsupported URL", "list"]
-            ):
+            if any(message in error_message for message in ["not a valid URL", "Unsupported URL", "list"]):
                 self.loadStatus.emit("invalid url")
             elif "nodename nor servname provided" in error_message:
                 self.loadStatus.emit("server error")
@@ -429,10 +392,7 @@ class iTunesLoading(QThread):
     def run(self):
         """Multithread query to iTunes - return tuple."""
         try:
-            query_iter = (
-                (row_index, key_value)
-                for row_index, key_value in enumerate(self.videos_dict.items())
-            )
+            query_iter = ((row_index, key_value) for row_index, key_value in enumerate(self.videos_dict.items()))
         except AttributeError:  # i.e. no content in table -- exit early
             return
         itunes_query = utils.map_threads(utils.thread_query_itunes, query_iter)
@@ -487,9 +447,7 @@ class DownloadingVideos(QThread):
 
     downloadCount = pyqtSignal(float)  # attempt to emit delta_t
 
-    def __init__(
-        self, videos_dict, download_path, playlist_properties, save_as_mp4, parent=None
-    ):
+    def __init__(self, videos_dict, download_path, playlist_properties, save_as_mp4, parent=None):
         QThread.__init__(self, parent)
         self.videos_dict = videos_dict
         self.download_path = download_path
@@ -513,15 +471,8 @@ class DownloadingVideos(QThread):
 
         time0 = time.time()
         video_properties = (
-            (
-                key_value,
-                (self.download_path, mp4_path),
-                self.playlist_properties[index],
-                self.save_as_mp4,
-            )
-            for index, key_value in enumerate(
-                self.videos_dict.items()
-            )  # dict is naturally sorted in iteration
+            (key_value, (self.download_path, mp4_path), self.playlist_properties[index], self.save_as_mp4,)
+            for index, key_value in enumerate(self.videos_dict.items())  # dict is naturally sorted in iteration
         )
         utils.map_threads(utils.thread_query_youtube, video_properties)
         shutil.rmtree(mp4_path)  # remove mp4 dir
