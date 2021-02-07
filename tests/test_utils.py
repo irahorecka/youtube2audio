@@ -21,9 +21,7 @@ class testThreading(unittest.TestCase):
     def test_threading(self):
         """Test _threading.map_threads for proper threading functionality"""
         iterable = [i for i in range(500)]
-        total_value_sum_one = _threading.map_threads(
-            self.example_func_for_threading, iterable
-        )
+        total_value_sum_one = _threading.map_threads(self.example_func_for_threading, iterable)
         self.assertEqual(len(list(total_value_sum_one)), 500)
 
 
@@ -31,10 +29,10 @@ class testYouTubeQuery(unittest.TestCase):
     """Test utils/youtube_query.py"""
 
     def setUp(self):
-        self.playlist_url = (
-            "https://www.youtube.com/playlist?list=PL3PhWT10BW3Urh8ZXXpuU9h526ChwgWKy"
+        self.playlist_url = "https://www.youtube.com/playlist?list=PL3PhWT10BW3Urh8ZXXpuU9h526ChwgWKy"
+        self.video_url = (
+            "https://www.youtube.com/watch?v=HW-lXjOyUWo&list=PL3PhWT10BW3Urh8ZXXpuU9h526ChwgWKy&index=2&t=0s"
         )
-        self.video_url = "https://www.youtube.com/watch?v=HW-lXjOyUWo&list=PL3PhWT10BW3Urh8ZXXpuU9h526ChwgWKy&index=2&t=0s"
         self.video_info_list = [
             {"title": "Test1", "id": 1, "duration": 100},
             {"title": "Test2", "id": 2, "duration": 200},
@@ -45,9 +43,7 @@ class testYouTubeQuery(unittest.TestCase):
         for a playlist url"""
         override_error = False
         try:
-            youtube_video_dict = query_youtube.get_youtube_content(
-                self.playlist_url, override_error
-            )
+            youtube_video_dict = query_youtube.get_youtube_content(self.playlist_url, override_error)
         except RuntimeError:  # successfully threw RuntimeError
             youtube_video_dict = {}
         self.assertIsInstance(youtube_video_dict, dict)
@@ -57,9 +53,7 @@ class testYouTubeQuery(unittest.TestCase):
         for a video url"""
         override_error = False
         try:
-            youtube_video_dict = query_youtube.get_youtube_content(
-                self.video_url, override_error
-            )
+            youtube_video_dict = query_youtube.get_youtube_content(self.video_url, override_error)
         except RuntimeError:
             youtube_video_dict = {}
         self.assertIsInstance(youtube_video_dict, dict)
@@ -68,25 +62,19 @@ class testYouTubeQuery(unittest.TestCase):
         """Test query_youtube.get_youtube_content with error override
         for a playlist url"""
         override_error = True
-        youtube_video_dict = query_youtube.get_youtube_content(
-            self.playlist_url, override_error
-        )
+        youtube_video_dict = query_youtube.get_youtube_content(self.playlist_url, override_error)
         self.assertIsInstance(youtube_video_dict, dict)
 
     def test_get_youtube_video_content_true_override(self):
         """Test query_youtube.get_youtube_content with error override
         for a video url"""
         override_error = True
-        youtube_video_dict = query_youtube.get_youtube_content(
-            self.video_url, override_error
-        )
+        youtube_video_dict = query_youtube.get_youtube_content(self.video_url, override_error)
         self.assertIsInstance(youtube_video_dict, dict)
 
     def test_get_playlist_video_info(self):
         """Test fetching individual urls in a playlist url"""
-        youtube_playlist_videos_tuple = query_youtube.get_playlist_video_info(
-            self.playlist_url
-        )
+        youtube_playlist_videos_tuple = query_youtube.get_playlist_video_info(self.playlist_url)
         self.assertIsInstance(youtube_playlist_videos_tuple, tuple)
 
     def test_get_video_info_false_override(self):

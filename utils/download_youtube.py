@@ -23,9 +23,7 @@ def thread_query_youtube(args):
         """Write MP4 audio file from YouTube video."""
         try:
             video = pytube.YouTube(full_link)
-            stream = video.streams.filter(
-                only_audio=True, audio_codec="mp4a.40.2"
-            ).first()
+            stream = video.streams.filter(only_audio=True, audio_codec="mp4a.40.2").first()
             mp4_filename = f'{song_properties.get("song")}'
             illegal_char = (
                 "?",
@@ -58,13 +56,10 @@ def thread_query_youtube(args):
                 m4a_filename = f'{song_properties.get("song")}.m4a'
                 # Copy song from temporary folder to destination
                 copy2(
-                    os.path.join(mp4_path, mp4_filename),
-                    os.path.join(download_path, m4a_filename),
+                    os.path.join(mp4_path, mp4_filename), os.path.join(download_path, m4a_filename),
                 )
 
-                return set_song_metadata(
-                    download_path, song_properties, m4a_filename, True
-                )
+                return set_song_metadata(download_path, song_properties, m4a_filename, True)
             return get_youtube_mp3(mp4_filename)
         except Exception as error:  # not a good Exceptions catch...
             print("Error: " + str(error))  # poor man's logging
@@ -75,12 +70,7 @@ def thread_query_youtube(args):
         mp3_filename = f'{song_properties.get("song")}.mp3'
 
         subprocess.call(
-            [
-                "ffmpeg",
-                "-i",
-                os.path.join(mp4_path, mp4_filename),
-                os.path.join(download_path, mp3_filename),
-            ]
+            ["ffmpeg", "-i", os.path.join(mp4_path, mp4_filename), os.path.join(download_path, mp3_filename),]
         )
         set_song_metadata(download_path, song_properties, mp3_filename, False)
 
@@ -103,9 +93,7 @@ def set_song_metadata(directory, song_properties, song_filename, save_as_mp4):
         # response content is that of a JPEG image. Source:
         # https://www.file-recovery.com/jpg-signature-format.htm.
         if valid_artwork():
-            audio.tags["covr"] = [
-                MP4Cover(response.content, imageformat=MP4Cover.FORMAT_JPEG)
-            ]
+            audio.tags["covr"] = [MP4Cover(response.content, imageformat=MP4Cover.FORMAT_JPEG)]
 
         audio.save()
 
@@ -131,11 +119,7 @@ def set_song_metadata(directory, song_properties, song_filename, save_as_mp4):
 
     def valid_artwork():
         """Validate artwork requests response."""
-        return (
-            response is not None
-            and response.status_code == 200
-            and response.content[:3] == b"\xff\xd8\xff"
-        )
+        return response is not None and response.status_code == 200 and response.content[:3] == b"\xff\xd8\xff"
 
     # TODO Cache the image until program finishes
     try:

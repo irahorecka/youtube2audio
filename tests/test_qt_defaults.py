@@ -53,21 +53,13 @@ class testMain(unittest.TestCase):
         """Test default labels on GUI"""
         self.assertEqual(self.form.download_folder_label.text(), "Download folder")
         self.assertEqual(self.form.download_status.text(), "")
-        self.assertEqual(
-            self.form.enter_playlist_url_label.text(), "Playlist or video URL"
-        )
+        self.assertEqual(self.form.enter_playlist_url_label.text(), "Playlist or video URL")
         self.assertEqual(self.form.save_filetype.text(), "Save as:")
         self.assertEqual(self.form.title_label.text(), "YouTube to Audio")
         self.assertEqual(self.form.url_fetching_data_label.text(), "Loading...")
-        self.assertEqual(
-            self.form.url_error_label.text(), "Could not get URL. Try again."
-        )
-        self.assertEqual(
-            self.form.url_poor_connection.text(), "Poor internet connection."
-        )
-        self.assertEqual(
-            self.form.url_reattempt_load_label.text(), "Reattempting load..."
-        )
+        self.assertEqual(self.form.url_error_label.text(), "Could not get URL. Try again.")
+        self.assertEqual(self.form.url_poor_connection.text(), "Poor internet connection.")
+        self.assertEqual(self.form.url_reattempt_load_label.text(), "Reattempting load...")
 
     def test_artwork_label(self):
         """Test default artwork label"""
@@ -76,8 +68,7 @@ class testMain(unittest.TestCase):
     def test_hyperlink_label(self):
         """Test default label on source code hyperlink"""
         self.assertEqual(
-            self.form.credit_url.text(),
-            '<a href="https://github.com/irahorecka/YouTube2Mp3">source code</a>',
+            self.form.credit_url.text(), '<a href="https://github.com/irahorecka/YouTube2Mp3">source code</a>',
         )
 
 

@@ -14,9 +14,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(951, 664)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(MainWindow.sizePolicy().hasHeightForWidth())
@@ -61,9 +59,7 @@ class Ui_MainWindow(object):
         font.setFamily("Arial")
         self.url_input.setFont(font)
         self.url_input.setStyleSheet("color: rgb(240, 240, 240)")
-        self.url_input.setAlignment(
-            QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter
-        )
+        self.url_input.setAlignment(QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
         self.url_input.setObjectName("url_input")
         self.url_load_button = QtWidgets.QPushButton(self.centralwidget)
         self.url_load_button.setGeometry(QtCore.QRect(40, 470, 90, 23))
@@ -311,14 +307,10 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "YouTube to Audio"))
-        self.enter_playlist_url_label.setText(
-            _translate("MainWindow", "Playlist or video URL")
-        )
+        self.enter_playlist_url_label.setText(_translate("MainWindow", "Playlist or video URL"))
         self.url_load_button.setText(_translate("MainWindow", "Load"))
         self.remove_from_table_button.setText(_translate("MainWindow", "Remove video"))
-        self.url_error_label.setText(
-            _translate("MainWindow", "Could not get URL. Try again.")
-        )
+        self.url_error_label.setText(_translate("MainWindow", "Could not get URL. Try again."))
         self.url_fetching_data_label.setText(_translate("MainWindow", "Loading..."))
         self.download_button.setText(_translate("MainWindow", "Download"))
         self.download_path.setText(_translate("MainWindow", "Select"))
@@ -339,16 +331,10 @@ class Ui_MainWindow(object):
         self.itunes_annotate.setText(_translate("MainWindow", "Ask butler"))
         self.revert_annotate.setText(_translate("MainWindow", "Go back"))
         self.change_video_info_input.setText(_translate("MainWindow", "Replace"))
-        self.change_video_info_input_all.setText(
-            _translate("MainWindow", "Replace all")
-        )
+        self.change_video_info_input_all.setText(_translate("MainWindow", "Replace all"))
         self.credit_url.setText(_translate("MainWindow", "source code"))
         self.save_as_mp4_box.setText(_translate("MainWindow", "MP4"))
         self.save_as_mp3_box.setText(_translate("MainWindow", "MP3"))
         self.save_filetype.setText(_translate("MainWindow", "Save as:"))
-        self.url_reattempt_load_label.setText(
-            _translate("MainWindow", "Reattempting load...")
-        )
-        self.url_poor_connection.setText(
-            _translate("MainWindow", "Poor internet connection.")
-        )
+        self.url_reattempt_load_label.setText(_translate("MainWindow", "Reattempting load..."))
+        self.url_poor_connection.setText(_translate("MainWindow", "Poor internet connection."))
