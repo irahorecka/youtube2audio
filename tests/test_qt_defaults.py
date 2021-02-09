@@ -31,7 +31,7 @@ class testMain(unittest.TestCase):
 
     def test_user_input_defaults(self):
         """Test default inputs for users."""
-        default_download_dir = self.form.get_parent_current_dir(self.form.download_dir)
+        default_download_dir = self.form._get_parent_current_dir(self.form.download_dir)
         self.assertEqual(self.form.download_folder_select.text(), default_download_dir)
         self.assertEqual(self.form.url_input.text(), "")
         self.assertEqual(self.form.video_info_input.text(), "")

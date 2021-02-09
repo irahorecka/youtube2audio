@@ -70,7 +70,7 @@ def thread_query_youtube(args):
         mp3_filename = f'{song_properties.get("song")}.mp3'
 
         subprocess.call(
-            ["ffmpeg", "-i", os.path.join(mp4_path, mp4_filename), os.path.join(download_path, mp3_filename),]
+            ["ffmpeg", "-i", os.path.join(mp4_path, mp4_filename), os.path.join(download_path, mp3_filename)]
         )
         set_song_metadata(download_path, song_properties, mp3_filename, False)
 

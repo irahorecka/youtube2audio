@@ -61,34 +61,36 @@ class MainPage(QMainWindow, UiMainWindow):
         self.cancel_button.clicked.connect(self.close)
         # Get download directory
         self.download_dir = BASE_PATH
-        self.download_folder_select.setText(self.get_parent_current_dir(self.download_dir))  # get directory tail
+        self.download_folder_select.setText(self._get_parent_current_dir(self.download_dir))  # get directory tail
 
     def url_loading_button_click(self):
         """Reads input data from self.url_input and creates an instance
         of the UrlLoading thread."""
-        self.videos_dict = dict()  # Clear videos_dict upon reloading new playlist.
-        playlist_url = self.get_cell_text(self.url_input)
+        # declare videos_dict upon loading url
+        self.videos_dict = {}
+        playlist_url = self._get_cell_text(self.url_input)
 
-        self.reflect_url_loading_status()
+        self._reflect_url_loading_status()
         self.url_fetching_data_label.show()
-        self.calc = UrlLoading(playlist_url)
-        self.calc.loadStatus.connect(self.reflect_url_loading_status)
-        self.calc.countChanged.connect(self.url_loading_finished)
-        self.calc.start()
+        self.url_load = UrlLoading(playlist_url)
+        self.url_load.loadStatus.connect(self._reflect_url_loading_status)
+        self.url_load.countChanged.connect(self._url_loading_finished)
+        self.url_load.start()
 
-    def reflect_url_loading_status(self, status=None):
+    def _reflect_url_loading_status(self, status=None):
         """Reflect YouTube url loading status. If no status is provided,
         hide all error label and keep table content."""
         self.video_table.clearContents()  # clear table content when loading
         self.video_info_input.setText("")  # clear video info input cell
-        self.display_artwork(None)  # clear artwork display to default image
+        self._display_artwork(None)  # clear artwork display to default image
         self.url_poor_connection.hide()
         self.url_fetching_data_label.hide()
         self.url_reattempt_load_label.hide()
         self.url_error_label.hide()
+        if status == "success":
+            return
+        # if status obj is not null, but not "success"
         if status:
-            if status == "success":
-                return
             if status == "invalid url":
                 self.url_error_label.show()
             elif status == "reattempt":
@@ -96,14 +98,14 @@ class MainPage(QMainWindow, UiMainWindow):
             elif status == "server error":
                 self.url_poor_connection.show()
             self.revert_annotate.hide()
-            self.itunes_annotate.show()  # refresh Ask butler button
+            self.itunes_annotate.show()  # refresh "Ask butler" button
 
-    def url_loading_finished(self, videos_dict, executed):
+    def _url_loading_finished(self, videos_dict, is_executed):
         """Retrieves data from thread when complete, updates GUI table."""
         # First entry of self.videos_dict in MainPage class
         self.videos_dict = videos_dict
         self.video_table.clearContents()  # clear table for new loaded content
-        if executed:
+        if is_executed:
             self.default_annotate_table()  # set table content
         else:
             self.url_error_label.show()
@@ -111,22 +113,22 @@ class MainPage(QMainWindow, UiMainWindow):
     def itunes_annotate_click(self):
         """Load iTunes annotation info on different thread."""
         self.video_info_input.setText("")
-        try:
-            assert self.videos_dict  # i.e. click annotate button with empty table
-        except (AttributeError, AssertionError):
-            self.video_info_input.setText("Could not get information.")
+        # i.e. clicked annotate button with empty table
+        if not self._assert_videos_dict(self.video_info_input, "Could not get information."):
             return
+
         self.annotate = iTunesLoading(self.videos_dict)
-        self.annotate.loadFinished.connect(self.itunes_annotate_finished)
+        self.annotate.loadFinished.connect(self._itunes_annotate_finished)
         self.annotate.start()
 
-    def itunes_annotate_finished(self, itunes_query_tuple, query_status):
+    def _itunes_annotate_finished(self, itunes_query_tuple, query_status):
         """Populate GUI table with iTunes meta information once
         iTunes annotation query complete."""
         for row_index, ITUNES_META_JSON in itunes_query_tuple:
             self.itunes_annotate_table(row_index, ITUNES_META_JSON)
 
-        if not query_status:  # No iTunes metadata available or poor connection
+        if not query_status:
+            # no iTunes metadata available or poor connection
             self.video_info_input.setText("Could not get information.")
         else:
             # show revert button if iTunes annotation loaded successfully
@@ -139,18 +141,15 @@ class MainPage(QMainWindow, UiMainWindow):
         if not self.download_dir:
             self.download_dir = BASE_PATH
 
-        self.download_folder_select.setText(self.get_parent_current_dir(self.download_dir))
+        self.download_folder_select.setText(self._get_parent_current_dir(self.download_dir))
 
     def download_button_click(self):
         """ Executes when the button is clicked """
-        try:
-            assert self.videos_dict  # assert self.videos_dict exists
-        except (AttributeError, AssertionError):
-            self.download_status.setText("No video to download.")
+        # assert self.videos_dict exists
+        if not self._assert_videos_dict(self.download_status, "No video to download."):
             return
 
         playlist_properties = self.get_playlist_properties()
-
         self.download_button.setEnabled(False)
         self.download_status.setText("Downloading...")
         self.down = DownloadingVideos(
@@ -192,10 +191,11 @@ class MainPage(QMainWindow, UiMainWindow):
             genre_name, genre_index = ITUNES_META_JSON["primary_genre_name"], 3
             artwork_name, artwork_index = ITUNES_META_JSON["artwork_url_fullres"], 4
         except TypeError:  # ITUNES_META_JSON was never called.
+            # get video title
             song_name, song_index = (
-                self.get_cell_text(self.video_table.item(row_index, 0)),
+                self._get_cell_text(self.video_table.item(row_index, 0)),
                 0,
-            )  # get video title
+            )
             if not song_name:
                 song_name = "Unknown"
 
@@ -214,19 +214,18 @@ class MainPage(QMainWindow, UiMainWindow):
         """Display selected cell content into self.video_info_input
         and display selected artwork on Qpixmap widget."""
         # display video info in self.video_info_input
-        self.display_video_info(row, column)
-
+        self._display_cell_content(row, column)
         # load and display video artwork
-        artwork_file = self.get_cell_text(self.video_table.item(row, 4))
-        self.loaded_artwork = ArtworkLoading(artwork_file)  # supposedly a url if populated
-        self.loaded_artwork.loadFinished.connect(self.display_artwork)
+        artwork_file = self._get_cell_text(self.video_table.item(row, 4))
+        self.loaded_artwork = ArtworkLoading(artwork_file)  # if populated, `artwork_file` is a url
+        self.loaded_artwork.loadFinished.connect(self._display_artwork)
         self.loaded_artwork.start()
 
-    def display_video_info(self, row, column):
+    def _display_cell_content(self, row, column):
         """Display selected cell content in self.video_info_input"""
-        self.video_info_input.setText(self.get_cell_text(self.video_table.item(row, column)))
+        self.video_info_input.setText(self._get_cell_text(self.video_table.item(row, column)))
 
-    def display_artwork(self, artwork_content):
+    def _display_artwork(self, artwork_content):
         """Display selected artwork on Qpixmap widget."""
         if not artwork_content:
             qt_artwork_content = os.path.join(IMG_PATH, "default_artwork.png")
@@ -243,8 +242,8 @@ class MainPage(QMainWindow, UiMainWindow):
         """Change selected cell value to value in self.video_info_input."""
         row = self.video_table.currentIndex().row()
         column = self.video_table.currentIndex().column()
-        video_info_input_value = self.get_cell_text(self.video_info_input)
-        self.replace_cell_item(row, column, video_info_input_value)
+        video_info_input_value = self._get_cell_text(self.video_info_input)
+        self._replace_cell_item(row, column, video_info_input_value)
 
     def replace_all_cells(self):
         """Change all rows, except songs, in table to match selected cell row."""
@@ -255,22 +254,21 @@ class MainPage(QMainWindow, UiMainWindow):
             # omit first column (i.e. song)
             for col_index in range(1, self.video_table.columnCount()):
                 # get current cell item to be deleted and cell item to replace
-                current_value = self.get_cell_text(self.video_table.item(row_index, col_index))
-                replacement_value = self.get_cell_text(self.video_table.item(replacement_row_index, col_index))
+                current_value = self._get_cell_text(self.video_table.item(row_index, col_index))
+                replacement_value = self._get_cell_text(self.video_table.item(replacement_row_index, col_index))
                 if current_value and replacement_value:
-                    self.replace_cell_item(row_index, col_index, replacement_value)
+                    self._replace_cell_item(row_index, col_index, replacement_value)
 
-    def replace_cell_item(self, row, column, value):
+    def _replace_cell_item(self, row, column, value):
         """Replace cell with value at row / column index."""
         self.video_table.setItem(row, column, QTableWidgetItem(value))
 
     def remove_selected_items(self):
         """Removes the selected items from self.videos_table and self.videos_dict.
         Table widget updates -- multiple row deletion capable."""
-        try:
+        video_list = []
+        if self._assert_videos_dict():
             video_list = [key_value for key_value in self.videos_dict.items()]
-        except AttributeError:  # i.e. empty self.videos_dict
-            video_list = []
 
         row_index_list = []
         for model_index in self.video_table.selectionModel().selectedRows():
@@ -290,16 +288,15 @@ class MainPage(QMainWindow, UiMainWindow):
         """Get video information from self.video_table to reflect to
         downloaded MP3 metadata."""
         playlist_properties = []
-
         for row_index, _ in enumerate(self.videos_dict.items()):
             song_properties = {}
-            song_properties["song"] = self.get_cell_text(self.video_table.item(row_index, 0)).replace(
+            song_properties["song"] = self._get_cell_text(self.video_table.item(row_index, 0)).replace(
                 "/", "-"
             )  # will be filename -- change illegal char to legal - make func
-            song_properties["album"] = self.get_cell_text(self.video_table.item(row_index, 1))
-            song_properties["artist"] = self.get_cell_text(self.video_table.item(row_index, 2))
-            song_properties["genre"] = self.get_cell_text(self.video_table.item(row_index, 3))
-            song_properties["artwork"] = self.get_cell_text(self.video_table.item(row_index, 4))
+            song_properties["album"] = self._get_cell_text(self.video_table.item(row_index, 1))
+            song_properties["artist"] = self._get_cell_text(self.video_table.item(row_index, 2))
+            song_properties["genre"] = self._get_cell_text(self.video_table.item(row_index, 3))
+            song_properties["artwork"] = self._get_cell_text(self.video_table.item(row_index, 4))
 
             playlist_properties.append(song_properties)  # this assumes that dict will be ordered like list
 
@@ -317,13 +314,24 @@ class MainPage(QMainWindow, UiMainWindow):
         self.save_as_mp3_box.setChecked(False)
         self.save_as_mp4_box.setChecked(True)
 
+    def _assert_videos_dict(self, qline_edit_obj=None, text=""):
+        """Assert existence of `self.videos_dict` in current program state of caller.
+        If not, display `text` to `qline_edit_obj` if `qline_edit_obj` provided."""
+        try:
+            assert self.videos_dict
+        except (AttributeError, AssertionError):
+            if qline_edit_obj:
+                qline_edit_obj.setText(text)
+            return False
+        return True
+
     @staticmethod
     def set_credit_url(url_str):
         """Set source code url on upper right of table."""
         QDesktopServices.openUrl(QUrl(url_str))
 
     @staticmethod
-    def get_cell_text(cell_item):
+    def _get_cell_text(cell_item):
         """Get text of cell value, if empty return empty str."""
         try:
             cell_item = cell_item.text()
@@ -333,7 +341,7 @@ class MainPage(QMainWindow, UiMainWindow):
             return cell_item
 
     @staticmethod
-    def get_parent_current_dir(current_path):
+    def _get_parent_current_dir(current_path):
         """Get current and parent directory as str."""
         parent_dir, current_dir = os.path.split(current_path)
         parent_dir = os.path.split(parent_dir)[1]  # get tail of parent_dir
