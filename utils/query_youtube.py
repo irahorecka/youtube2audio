@@ -2,7 +2,7 @@ import re
 import urllib
 import youtube_dl
 from pytube import Playlist
-from ._threading import map_threads
+from utils._threading import map_threads
 
 
 def get_youtube_content(youtube_url, override_error):

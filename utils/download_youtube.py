@@ -47,16 +47,15 @@ def thread_query_youtube(args):
             )
             # remove illegal characters from song title - otherwise clipped by pytube
             for char in illegal_char:
-                mp4_filename = mp4_filename.replace(char, "")
-
+                mp4_filename = mp4_filename.replace(char, "") + ".mp4"  # add extension for downstream file recognition
             stream.download(mp4_path, filename=f"{mp4_filename}")
-            mp4_filename += ".mp4"  # add extension for downstream file recognition
 
             if save_as_mp4:
                 m4a_filename = f'{song_properties.get("song")}.m4a'
                 # Copy song from temporary folder to destination
                 copy2(
-                    os.path.join(mp4_path, mp4_filename), os.path.join(download_path, m4a_filename),
+                    os.path.join(mp4_path, mp4_filename),
+                    os.path.join(download_path, m4a_filename),
                 )
 
                 return set_song_metadata(download_path, song_properties, m4a_filename, True)

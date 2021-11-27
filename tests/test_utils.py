@@ -158,7 +158,10 @@ class testYouTubeDownload(unittest.TestCase):
 
         self.mp3_args_for_thread_query_youtube = (
             ("No Time This Time - The Police", {"id": "nbXACcsTn84", "duration": 198}),
-            (self.test_dirpath, self.test_mp4_dirpath,),
+            (
+                self.test_dirpath,
+                self.test_mp4_dirpath,
+            ),
             {
                 "song": "No Time This Time",
                 "album": "Reggatta de Blanc (Remastered)",
@@ -170,7 +173,10 @@ class testYouTubeDownload(unittest.TestCase):
         )
         self.mp4_args_for_thread_query_youtube = (
             ("No Time This Time - The Police", {"id": "nbXACcsTn84", "duration": 198}),
-            (self.test_dirpath, self.test_mp4_dirpath,),
+            (
+                self.test_dirpath,
+                self.test_mp4_dirpath,
+            ),
             {
                 "song": "No Time This Time",
                 "album": "Reggatta de Blanc (Remastered)",

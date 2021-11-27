@@ -198,7 +198,10 @@ class MainPage(QMainWindow, UiMainWindow):
         self.download_button.setEnabled(False)
         self.download_status.setText("Downloading...")
         self.down = DownloadingVideos(
-            self.videos_dict, self.download_dir, playlist_properties, self.save_as_mp4_box.isChecked(),
+            self.videos_dict,
+            self.download_dir,
+            playlist_properties,
+            self.save_as_mp4_box.isChecked(),
         )
         self.down.downloadCount.connect(self._download_finished)
         self.down.start()
@@ -478,7 +481,12 @@ class DownloadingVideos(QThread):
 
         time0 = time.time()
         video_properties = (
-            (key_value, (self.download_path, mp4_path), self.playlist_properties[index], self.save_as_mp4,)
+            (
+                key_value,
+                (self.download_path, mp4_path),
+                self.playlist_properties[index],
+                self.save_as_mp4,
+            )
             for index, key_value in enumerate(self.videos_dict.items())  # dict is naturally sorted in iteration
         )
         utils.map_threads(utils.thread_query_youtube, video_properties)

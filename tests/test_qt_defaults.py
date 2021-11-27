@@ -68,7 +68,8 @@ class testMain(unittest.TestCase):
     def test_hyperlink_label(self):
         """Test default label on source code hyperlink"""
         self.assertEqual(
-            self.form.credit_url.text(), '<a href="https://github.com/irahorecka/YouTube2Mp3">source code</a>',
+            self.form.credit_url.text(),
+            '<a href="https://github.com/irahorecka/YouTube2Mp3">source code</a>',
         )
 
 
