@@ -1,9 +1,14 @@
-black:
-	rm -rf ./__pycache__ ./utils/__pycache__ ./ui/__pycache__
-	black --line-length 120 ./*.py ./utils/*.py ./tests/*.py ./ui/yt2mp3.py 
+black: ## Black format every python file to line length 120
+	find . -type f -name "*.py" | xargs black --line-length=120;
+	find . -type f -name "*.py" | xargs absolufy-imports;
+	make clean;
 
-flake:
-	flake8 ./*.py ./utils/*.py ./tests/*.py
+flake8: ## Flake8 every python file
+	find . -type f -name "*.py" -a | xargs flake8;
 
-pylint:
-	pylint ./*.py ./utils/*.py ./tests/*.py
+pylint: ## Pylint every python file
+	find . -type f -name "*.py" -a | xargs pylint;
+
+clean: ## Remove pycache
+	find . -type d -name "__pycache__" | xargs rm -r;
+	find . -type f -name ".DS_Store" | xargs rm;
