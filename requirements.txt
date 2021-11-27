@@ -1,3 +1,4 @@
+absolufy-imports==0.3.0
 astroid==2.4.2
 certifi==2020.4.5.1
 chardet==3.0.4
@@ -16,7 +17,7 @@ pyflakes==2.2.0
 pylint==2.5.3
 PyQt5==5.14.2
 PyQt5-sip==12.7.2
-pytube==10.8.5
+pytube==11.0.1
 QDarkStyle==2.8.1
 QtPy==1.9.0
 requests==2.23.0
