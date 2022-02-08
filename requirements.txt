@@ -17,10 +17,10 @@ pyflakes==2.2.0
 pylint==2.5.3
 PyQt5==5.14.2
 PyQt5-sip==12.7.2
-pytube==11.0.1
+git+https://github.com/irahorecka/pytube@97c1743#egg=pytube
 QDarkStyle==2.8.1
 QtPy==1.9.0
-requests==2.23.0
+requests>=2.23.0
 six==1.15.0
 toml==0.10.1
 typed-ast==1.4.1
