@@ -30,9 +30,7 @@ class testYouTubeQuery(unittest.TestCase):
 
     def setUp(self):
         self.playlist_url = "https://www.youtube.com/playlist?list=PL3PhWT10BW3Urh8ZXXpuU9h526ChwgWKy"
-        self.video_url = (
-            "https://www.youtube.com/watch?v=HW-lXjOyUWo&list=PL3PhWT10BW3Urh8ZXXpuU9h526ChwgWKy&index=2&t=0s"
-        )
+        self.video_url = "https://www.youtube.com/watch?v=pgXozIma-Oc&list=PL3PhWT10BW3Urh8ZXXpuU9h526ChwgWKy&index=4"
         self.video_info_list = [
             {"title": "Test1", "id": 1, "duration": 100},
             {"title": "Test2", "id": 2, "duration": 200},
@@ -111,7 +109,7 @@ class testiTunesQuery(unittest.TestCase):
             {"id": "KlmPOxwoC6Y", "duration": 212},
         )
         self.row_index = 0
-        self.video_url_for_oembed = "https://www.youtube.com/watch?v=KlmPOxwoC6Y"
+        self.video_url_for_oembed = "https://www.youtube.com/watch?v=kZyCXjNDuv8"
 
     def test_thread_query_itunes(self):
         """Test accurate parsing of youtube video url to retrieve
