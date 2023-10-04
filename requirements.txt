@@ -25,7 +25,7 @@ six==1.15.0
 toml==0.10.1
 typed-ast==1.4.1
 typing-extensions==3.7.4.2
-urllib3==1.26.5
+urllib3==1.26.17
 wrapt==1.12.1
 youtube-dl==2020.12.14
 zipp==3.1.0
