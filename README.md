@@ -1,6 +1,9 @@
-# <b>youtube2audio</b>
-![Version](https://img.shields.io/badge/version-v2023.04.12-orange)
-![License](https://img.shields.io/github/license/irahorecka/YouTube2Audio)
+# **youtube2audio**
+
+![Version](https://img.shields.io/badge/version-v2024.02.24-orange)
+[![Python 3.7+]](https://img.shields.io/badge/python-3.7+-blue.svg)(https://www.python.org/downloads/)
+[![continuous-integration](https://github.com/irahorecka/youtube2audio/workflows/continuous-integration/badge.svg?branch=main)](https://github.com/irahorecka/youtube2audio/actions)
+[![Licence](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/irahorecka/youtube2audio/main/LICENSE)
 
 A desktop application to download YouTube videos as annotated MP3 or MP4 files.
 <br>
@@ -9,6 +12,7 @@ A desktop application to download YouTube videos as annotated MP3 or MP4 files.
 <hr>
 
 ## Using the application
+
 Paste a YouTube playlist or video URL and load its content. Make edits to the table and click "Ask butler" (not shown in image above) to provide annotation hints to your videos. You can choose to download MP3 or MP4 files. Finally, select a download folder, download your videos, and just like that, you have nicely annotated audio files.
 
 This application uses PyQt5 to provide the user interface and multithreading to execute calls asynchronously. The backend uses ```itunespy``` to suggest song annotations (i.e. "Ask butler"), ```pytube``` to download the YouTube video as an MP4 audio file, and FFmpeg to convert the MP4 file to MP3.
