@@ -1,7 +1,7 @@
 # **youtube2audio**
 
 ![Version](https://img.shields.io/badge/version-v2024.02.24-orange)
-[![Python 3.7+]](https://img.shields.io/badge/python-3.7+-blue.svg)(https://www.python.org/downloads/)
+[![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/)
 [![continuous-integration](https://github.com/irahorecka/youtube2audio/workflows/continuous-integration/badge.svg?branch=main)](https://github.com/irahorecka/youtube2audio/actions)
 [![Licence](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/irahorecka/youtube2audio/main/LICENSE)
 
