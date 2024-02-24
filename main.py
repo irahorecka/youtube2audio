@@ -189,7 +189,7 @@ class MainPage(QMainWindow, UiMainWindow):
         self.download_folder_select.setText(self._get_parent_current_dir(self.download_dir))
 
     def download_button_click(self):
-        """ Executes when the button is clicked """
+        """Executes when the button is clicked"""
         # assert self.videos_dict exists
         if not self._assert_videos_dict(self.download_status, "No video to download."):
             return
@@ -465,7 +465,7 @@ class DownloadingVideos(QThread):
         self.save_as_mp4 = save_as_mp4
 
     def run(self):
-        """ Main function, downloads videos by their id while emitting progress data"""
+        """Main function, downloads videos by their id while emitting progress data"""
         # Download
         mp4_path = os.path.join(self.download_path, "mp4")
         try:
