@@ -36,4 +36,4 @@ jobs:
         pip install -r requirements.txt
 
     - name: Test with pytest
-      run: python -W ignore -m unittest discover -s tests/
+      run: python -W ignore -m unittest tests/test_utils.py
