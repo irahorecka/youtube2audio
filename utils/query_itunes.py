@@ -4,12 +4,10 @@ import itunespy
 
 
 def thread_query_itunes(args):
-    yt_link_starter = "https://www.youtube.com/watch?v="
     row_index = args[0]
     key_value = args[1]
-
     url_id = key_value[1]["id"]
-    vid_url = yt_link_starter + url_id
+    vid_url = f"https://www.youtube.com/watch?v={url_id}"
     ITUNES_META_JSON = get_itunes_metadata(vid_url)
 
     return (row_index, ITUNES_META_JSON)

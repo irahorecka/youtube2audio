@@ -19,12 +19,9 @@ def get_youtube_content(youtube_url, override_error):
         # set get_video_info parameter as tuple to comply with multithreading parameter (tuple)
         url_tuple = (adj_youtube_url, override_error)
         video_json = get_video_info(url_tuple)
-        video_info = []
-        video_info.append(video_json)  # append single video to index-able dtype
+        video_info = [video_json]
 
-    video_dict = video_content_to_dict(video_info)
-
-    return video_dict
+    return video_content_to_dict(video_info)
 
 
 def get_playlist_video_info(playlist_url):
@@ -70,10 +67,4 @@ def get_video_info(args):
 
 def video_content_to_dict(vid_info_list):
     """Convert YouTube metadata list to dictionary."""
-    video_dict = {}
-    for video in vid_info_list:
-        if not video:
-            continue
-        title = video["title"]
-        video_dict[title] = {"id": video["id"], "duration": video["duration"]}
-    return video_dict
+    return {video["title"]: {"id": video["id"], "duration": video["duration"]} for video in vid_info_list if video}
