@@ -68,7 +68,6 @@ def thread_query_youtube(args):
     def get_youtube_mp3(mp4_filename):
         """Write MP3 audio file from MP4."""
         mp3_filename = f'{song_properties.get("song")}.mp3'
-        print(os.path.join(mp4_path, mp4_filename))
         try:
             video = VideoFileClip(os.path.join(mp4_path, mp4_filename))
             video.audio.write_audiofile(os.path.join(download_path, mp3_filename))
