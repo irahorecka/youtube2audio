@@ -482,7 +482,6 @@ class DownloadingVideos(QThread):
             for index, key_value in enumerate(self.videos_dict.items())  # dict is naturally sorted in iteration
         )
         utils.map_threads(utils.thread_query_youtube, video_properties)
-        time.sleep(1)
         shutil.rmtree(mp4_path)  # remove mp4 dir
         time1 = time.time()
 
