@@ -1,4 +1,5 @@
 itunespy==1.5.5
+moviepy
 mutagen
 PyQt5
 pytube
