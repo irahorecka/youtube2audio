@@ -1,6 +1,7 @@
 """Test functions in utils/ directory"""
 import os
 import sys
+import time
 import unittest
 
 # get base directory and import util files
@@ -206,6 +207,7 @@ class testYouTubeDownload(unittest.TestCase):
 
         if os.path.exists(self.test_mp4_dirpath):
             # remove mp4 dir if it exists
+            time.sleep(1)
             shutil.rmtree(self.test_mp4_dirpath)
 
     # TODO: add tests for mp3 and mp4 annotations -- above tests are for high-level functions.
