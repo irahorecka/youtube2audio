@@ -5,7 +5,7 @@
 [![continuous-integration](https://github.com/irahorecka/youtube2audio/workflows/continuous-integration/badge.svg)](https://github.com/irahorecka/youtube2audio/actions)
 [![Licence](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/irahorecka/youtube2audio/main/LICENSE)
 
-A desktop application to download YouTube videos as annotated MP3 or MP4 files.
+A desktop GUI application to download YouTube videos as annotated MP3 or MP4 files.
 <br>
 <br>
 ![Application Interface](docs/youtube2audio.png)
