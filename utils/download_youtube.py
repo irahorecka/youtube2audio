@@ -1,11 +1,11 @@
 import os
-import subprocess
 from shutil import copy2
 import pytube
 import requests
 from mutagen.mp3 import MP3
 from mutagen.mp4 import MP4, MP4Cover
 from mutagen.id3 import ID3, APIC, TALB, TPE1, TIT2, TCON
+from moviepy.editor import VideoFileClip
 
 
 def thread_query_youtube(args):
@@ -23,7 +23,7 @@ def thread_query_youtube(args):
         """Write MP4 audio file from YouTube video."""
         try:
             video = pytube.YouTube(full_link)
-            stream = video.streams.filter(only_audio=True, audio_codec="mp4a.40.2").first()
+            stream = video.streams.filter(audio_codec="mp4a.40.2").first()
             mp4_filename = f'{song_properties.get("song")}'
             illegal_char = (
                 "?",
@@ -47,9 +47,10 @@ def thread_query_youtube(args):
             )
             # remove illegal characters from song title - otherwise clipped by pytube
             for char in illegal_char:
-                mp4_filename = mp4_filename.replace(char, "") + ".mp4"  # add extension for downstream file recognition
+                mp4_filename = mp4_filename.replace(char, "")
+            
+            mp4_filename += ".mp4"  # add extension for downstream file recognition
             stream.download(mp4_path, filename=f"{mp4_filename}")
-
             if save_as_mp4:
                 m4a_filename = f'{song_properties.get("song")}.m4a'
                 # Copy song from temporary folder to destination
@@ -57,20 +58,22 @@ def thread_query_youtube(args):
                     os.path.join(mp4_path, mp4_filename),
                     os.path.join(download_path, m4a_filename),
                 )
-
                 return set_song_metadata(download_path, song_properties, m4a_filename, True)
+
             return get_youtube_mp3(mp4_filename)
         except Exception as error:  # not a good Exceptions catch...
-            print("Error: " + str(error))  # poor man's logging
-            raise Exception
+            print(f"Error: {str(error)}")  # poor man's logging
+            raise RuntimeError from error
 
     def get_youtube_mp3(mp4_filename):
         """Write MP3 audio file from MP4."""
         mp3_filename = f'{song_properties.get("song")}.mp3'
-
-        subprocess.call(
-            ["ffmpeg", "-i", os.path.join(mp4_path, mp4_filename), os.path.join(download_path, mp3_filename)]
-        )
+        print(os.path.join(mp4_path, mp4_filename))
+        try:
+            video = VideoFileClip(os.path.join(mp4_path, mp4_filename))
+            video.audio.write_audiofile(os.path.join(download_path, mp3_filename))
+        except Exception as e:
+            print(e)
         set_song_metadata(download_path, song_properties, mp3_filename, False)
 
     return get_youtube_mp4()
@@ -83,7 +86,6 @@ def set_song_metadata(directory, song_properties, song_filename, save_as_mp4):
         """Add metadata to MP4 file."""
         # NOTE Metadata for MP4 will fail to write if any error (esp. with artwork) occurs
         audio = MP4(os.path.join(directory, song_filename))
-        audio.add_tags()
         audio.tags["\xa9alb"] = song_properties["album"]
         audio.tags["\xa9ART"] = song_properties["artist"]
         audio.tags["\xa9nam"] = song_properties["song"]
