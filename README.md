@@ -22,28 +22,11 @@ Watch the <a href="https://i.imgur.com/6gAdznH.mp4">video demo</a> for more info
 
 ## Running the application
 
-1) Download ```ffmpeg```
-2) Clone GitHub repository
-3) ```pip install -r requirements.txt```
-4) ```python main.py```
+1) Clone GitHub repository
+2) ```pip install -r requirements.txt```
+3) ```python main.py```
 
 Check <b>Troubleshooting</b> if you encounter any trouble running / using the application or downloading MP3 files. If undocumented exceptions occur, please file the issue in <a href="https://github.com/irahorecka/YouTube2Audio/issues">issues</a>.
-<hr>
-
-## Download ```ffmpeg```
-
-There are several options to install ```ffmpeg``` depending on your OS:
-
-1) Using homebrew
-    - Downloading homebrew: 
-    <a href="https://docs.brew.sh/Homebrew-on-Linux">Linux</a>,
-    <a href="https://docs.brew.sh/Installation">macOS</a>
-    -  ```brew install ffmpeg```
-2) Through ffmpeg.org
-    - <a href="https://www.ffmpeg.org/download.html#build-linux">Linux</a>,
-    <a href="https://www.ffmpeg.org/download.html#build-mac">macOS</a>,
-    <a href="https://www.ffmpeg.org/download.html#build-windows">Windows</a>
-    
 <hr>
 
 ## Troubleshooting
