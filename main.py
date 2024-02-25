@@ -1,3 +1,4 @@
+import contextlib
 import os
 import shutil
 import sys
@@ -182,10 +183,7 @@ class MainPage(QMainWindow, UiMainWindow):
 
     def get_download_path(self):
         """Fetch download file path"""
-        self.download_dir = QFileDialog.getExistingDirectory(self, "Open folder", BASE_PATH)
-        if not self.download_dir:
-            self.download_dir = BASE_PATH
-
+        self.download_dir = QFileDialog.getExistingDirectory(self, "Open folder", BASE_PATH) or BASE_PATH
         self.download_folder_select.setText(self._get_parent_current_dir(self.download_dir))
 
     def download_button_click(self):
@@ -264,18 +262,16 @@ class MainPage(QMainWindow, UiMainWindow):
         Table widget updates -- multiple row deletion capable."""
         video_list = []
         if self._assert_videos_dict():
-            video_list = [key_value for key_value in self.videos_dict.items()]
+            video_list = list(self.videos_dict.items())
 
         row_index_list = []
         for model_index in self.video_table.selectionModel().selectedRows():
             row = model_index.row()
             row_index = QPersistentModelIndex(model_index)
             row_index_list.append(row_index)
-            try:
+            with contextlib.suppress(IndexError, KeyError):
                 current_key = video_list[row][0]
                 del self.videos_dict[current_key]  # remove row item from self.videos_dict
-            except (IndexError, KeyError):  # no item/key in video_list or videos_dict
-                pass
         for index in row_index_list:
             self.video_table.removeRow(index.row())
 
@@ -407,11 +403,7 @@ class iTunesLoading(QThread):
             return
         itunes_query = utils.map_threads(utils.thread_query_itunes, query_iter)
         itunes_query_tuple = tuple(itunes_query)
-        if not self.check_itunes_nonetype(itunes_query_tuple):
-            query_status = False
-        else:
-            query_status = True
-
+        query_status = bool(self.check_itunes_nonetype(itunes_query_tuple))
         self.loadFinished.emit(itunes_query_tuple, query_status)
 
     @staticmethod
