@@ -33,7 +33,7 @@ Check <b>Troubleshooting</b> if you encounter any trouble running / using the ap
 
 1) <a href="https://github.com/pytube/pytube">`pytube`</a> is constantly upgrading to maintain compliance with YouTube's API. If you find exception messages on your terminal console during download, separately install the following `pytube` version as follows:
 
-    ```pip install git+https://github.com/irahorecka/pytube.git@97c1743```
+    ```pip install git+https://github.com/irahorecka/pytube.git@a32fff3```
 
 2) If the script completes instantly without downloading your video(s), you're probably experiencing an ```SSL: CERTIFICATE_VERIFY_FAIL``` exception. This fails to instantiate ```pytube.Youtube```, thus failing the download prematurely.
 
