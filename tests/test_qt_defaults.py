@@ -2,6 +2,7 @@
 import os
 import sys
 import unittest
+
 from PyQt5.QtWidgets import QApplication
 
 # get directory to main.py

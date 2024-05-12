@@ -1,6 +1,7 @@
 from json.decoder import JSONDecodeError
-import requests
+
 import itunespy
+import requests
 
 
 def thread_query_itunes(args):

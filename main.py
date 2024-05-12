@@ -3,8 +3,9 @@ import os
 import shutil
 import sys
 import time
-import requests
+
 import qdarkstyle
+import requests
 from PyQt5.QtCore import QPersistentModelIndex, Qt, QThread, QUrl, pyqtSignal
 from PyQt5.QtGui import QDesktopServices, QImage, QPixmap
 from PyQt5.QtWidgets import (
@@ -14,6 +15,7 @@ from PyQt5.QtWidgets import (
     QMainWindow,
     QTableWidgetItem,
 )
+
 import utils
 from ui import UiMainWindow
 
