@@ -1,7 +1,7 @@
 import os
 from shutil import copy2
 
-import pytube
+from pytubefix import YouTube
 import requests
 from mutagen.mp3 import MP3
 from mutagen.mp4 import MP4, MP4Cover
@@ -20,11 +20,23 @@ def thread_query_youtube(args):
     save_as_mp4 = args[3]
     full_link = yt_link_starter + videos_dict["id"]
 
+
+    def new_get_youtube_mp3():
+        try:
+            yt = YouTube(full_link)
+            print(yt.title)
+
+            ys = yt.streams.get_audio_only()
+            ys.download(mp3=True)
+        except Exception as error:  # not a good Exceptions catch...
+            print(f"Error: {str(error)}")  # poor man's logging
+            raise RuntimeError from error
+
     def get_youtube_mp4():
         """Write MP4 audio file from YouTube video."""
         try:
-            video = pytube.YouTube(full_link)
-            stream = video.streams.filter(audio_codec="mp4a.40.2").first()
+            video = YouTube(full_link)
+            stream = video.streams.get_highest_resolution()
             mp4_filename = f'{song_properties.get("song")}'
             illegal_char = (
                 "?",
