@@ -193,7 +193,6 @@ class MainPage(QMainWindow, UiMainWindow):
         # assert self.videos_dict exists
         if not self._assert_videos_dict(self.download_status, "No video to download."):
             return
-
         playlist_properties = self._get_playlist_properties()
         self.download_button.setEnabled(False)
         self.download_status.setText("Downloading...")

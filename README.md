@@ -23,7 +23,7 @@ Watch the <a href="https://i.imgur.com/6gAdznH.mp4">video demo</a> for more info
 ## Running the application
 
 1) Clone GitHub repository
-2) ```pip install -r requirements.txt```
+2) ```pip install -r requirements.txt --upgrade```
 3) ```python main.py```
 
 Check <b>Troubleshooting</b> if you encounter any trouble running / using the application or downloading MP3 files. If undocumented exceptions occur, please file the issue in <a href="https://github.com/irahorecka/YouTube2Audio/issues">issues</a>.

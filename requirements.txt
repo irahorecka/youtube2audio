@@ -2,7 +2,7 @@ itunespy==1.5.5
 moviepy
 mutagen
 PyQt5
-pytube
+pytubefix
 QDarkStyle
 requests
 youtube-dl==2020.12.14

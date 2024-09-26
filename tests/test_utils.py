@@ -30,9 +30,7 @@ class testYouTubeQuery(unittest.TestCase):
 
     def setUp(self):
         self.playlist_url = "https://www.youtube.com/playlist?list=OLAK5uy_kLvrSpKZQdl23lC5fpSnRtVGcjDLl2QbA"
-        self.video_url = (
-            "https://www.youtube.com/watch?v=GN-nXWHkVpA&list=OLAK5uy_kLvrSpKZQdl23lC5fpSnRtVGcjDLl2QbA&index=2"
-        )
+        self.video_url = "https://www.youtube.com/watch?v=woG54UNJRrE"
         self.video_info_list = [
             {"title": "Test1", "id": 1, "duration": 100},
             {"title": "Test2", "id": 2, "duration": 200},
@@ -111,7 +109,7 @@ class testiTunesQuery(unittest.TestCase):
             {"id": "KlmPOxwoC6Y", "duration": 212},
         )
         self.row_index = 0
-        self.video_url_for_oembed = "https://www.youtube.com/watch?v=f6XmfR6TVpQ"
+        self.video_url_for_oembed = "https://www.youtube.com/watch?v=woG54UNJRrE"
 
     def test_thread_query_itunes(self):
         """Test accurate parsing of youtube video url to retrieve
@@ -191,15 +189,19 @@ class testYouTubeDownload(unittest.TestCase):
 
     def test_get_youtube_mp4(self):
         """Test download of mp4 file (m4a) using the setUp var above"""
-        download_youtube.thread_query_youtube(self.mp4_args_for_thread_query_youtube)
-        assert os.path.exists(self.m4a_filepath)
-        os.remove(self.m4a_filepath)  # remove generated m4a file
+        try:
+            download_youtube.thread_query_youtube(self.mp4_args_for_thread_query_youtube)
+            assert os.path.exists(self.m4a_filepath)
+        finally:
+            os.remove(self.m4a_filepath)  # remove generated m4a file
 
     def test_get_youtube_mp3(self):
         """Test download of mp3 file (mp3) using the setUp var above"""
-        download_youtube.thread_query_youtube(self.mp3_args_for_thread_query_youtube)
-        assert os.path.exists(self.mp3_filepath)
-        os.remove(self.mp3_filepath)  # remove generated mp3 file
+        try:
+            download_youtube.thread_query_youtube(self.mp3_args_for_thread_query_youtube)
+            assert os.path.exists(self.mp3_filepath)
+        finally:
+            os.remove(self.mp3_filepath)  # remove generated mp3 file
 
     def tearDown(self):
         import shutil
@@ -212,4 +214,4 @@ class testYouTubeDownload(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    unittest.main(verbosity=2)
