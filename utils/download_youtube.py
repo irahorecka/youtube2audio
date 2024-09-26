@@ -20,7 +20,6 @@ def thread_query_youtube(args):
     save_as_mp4 = args[3]
     full_link = yt_link_starter + videos_dict["id"]
 
-
     def new_get_youtube_mp3():
         try:
             yt = YouTube(full_link)
