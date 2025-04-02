@@ -1,7 +1,8 @@
 itunespy==1.5.5
-moviepy
+moviepy==1.0.3
 mutagen
 PyQt5
+pytube
 pytubefix
 QDarkStyle
 requests
