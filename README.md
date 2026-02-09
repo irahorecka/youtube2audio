@@ -4,7 +4,7 @@
 [![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/)
 [![Licence](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/irahorecka/youtube2audio/main/LICENSE)
 
-A desktop GUI application to download YouTube videos as annotated MP3 or MP4 files.
+A desktop GUI application that downloads YouTube videos as annotated MP3 or MP4 files.
 <br>
 <br>
 ![Application Interface](docs/youtube2audio.png)
